@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>シフト管理</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f6f8;
+      margin: 0;
+      padding: 30px 15px;
+      color: #222;
+    }
+
+    body > h1 {
+      max-width: 520px;
+      margin: 0 auto 25px;
+    }
+
+    #loginArea,
+    #app {
+      max-width: 520px;
+      margin: 0 auto;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      font-size: 28px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 18px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #bbb;
+      border-radius: 7px;
+    }
+
+    button {
+      padding: 12px;
+      border: none;
+      border-radius: 7px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #loginButton,
+    #addShiftButton {
+      width: 100%;
+      margin-top: 20px;
+      background: #2563eb;
+      color: white;
+    }
+
+    #logoutButton {
+      padding: 8px 14px;
+      background: #eee;
+    }
+
+    .shift-form {
+      margin-top: 30px;
+      padding-top: 25px;
+      border-top: 1px solid #ddd;
+    }
+
+    .shift-list-area {
+      margin-top: 35px;
+      padding-top: 25px;
+      border-top: 1px solid #ddd;
+    }
+
+    .shift-item {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: #fafafa;
+    }
+
+    .shift-date {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 7px;
+    }
+
+    .shift-time {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .deleteButton {
+      background: #e5e7eb;
+      padding: 8px 15px;
+      font-size: 14px;
+    }
+
+    .deleteButton:hover {
+      background: #ddd;
+    }
+
+    #message {
+      max-width: 520px;
+      margin: 20px auto;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    #emptyMessage {
+      color: #777;
+    }
+
+    .login-email {
+      word-break: break-all;
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <h1>シフト管理</h1>
+
+
+  <!-- ログイン画面 -->
+  <div id="loginArea">
+
+    <h2>ログイン</h2>
+
+    <label>メールアドレス</label>
+
+    <input
+      type="email"
+      id="email"
+      placeholder="メールアドレス"
+    >
+
+    <label>パスワード</label>
+
+    <input
+      type="password"
+      id="password"
+      placeholder="パスワード"
+    >
+
+    <button id="loginButton">
+      ログイン
+    </button>
+
+  </div>
+
+
+
+  <!-- ログイン後 -->
+  <div id="app">
+
+    <h2>ログインしました</h2>
+
+    <p class="login-email">
+      ログイン中：
+      <strong id="userEmail"></strong>
+    </p>
+
+    <button id="logoutButton">
+      ログアウト
+    </button>
+
+
+
+    <!-- シフト登録 -->
+    <div class="shift-form">
+
+      <h2>シフト登録</h2>
+
+      <label>勤務日</label>
+
+      <input
+        type="date"
+        id="shiftDate"
+      >
+
+
+      <label>開始時間</label>
+
+      <input
+        type="time"
+        id="startTime"
+      >
+
+
+      <label>終了時間</label>
+
+      <input
+        type="time"
+        id="endTime"
+      >
+
+
+      <button id="addShiftButton">
+        シフトを登録
+      </button>
+
+    </div>
+
+
+
+    <!-- 登録済みシフト -->
+    <div class="shift-list-area">
+
+      <h2>登録済みシフト</h2>
+
+      <div id="shiftList"></div>
+
+      <p id="emptyMessage">
+        登録されているシフトはありません。
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <p id="message"></p>
+
+
+
+  <script type="module">
+
+    // =========================
+    // Firebase
+    // =========================
+
+    import {
+      initializeApp
+    }
+    from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+
+    // Authentication
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    }
+    from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+
+    // Firestore
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp,
+      query,
+      where,
+      onSnapshot,
+      deleteDoc,
+      doc
+    }
+    from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+
+    // =========================
+    // Firebase設定
+    // =========================
+
+    const firebaseConfig = {
+
+      apiKey:
+        "AIzaSyBKhOG_ds0dWdcJkJlg6WljpgixLXmloeM",
+
+      authDomain:
+        "shift-manager-303a5.firebaseapp.com",
+
+      projectId:
+        "shift-manager-303a5",
+
+      storageBucket:
+        "shift-manager-303a5.firebasestorage.app",
+
+      messagingSenderId:
+        "759595895300",
+
+      appId:
+        "1:759595895300:web:962ac3ee0bc16d0f158351"
+
+    };
+
+
+
+    // =========================
+    // Firebase初期化
+    // =========================
+
+    const firebaseApp =
+      initializeApp(firebaseConfig);
+
+    const auth =
+      getAuth(firebaseApp);
+
+    const db =
+      getFirestore(firebaseApp);
+
+
+
+    // =========================
+    // HTML要素
+    // =========================
+
+    const emailInput =
+      document.getElementById("email");
+
+    const passwordInput =
+      document.getElementById("password");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+    const loginArea =
+      document.getElementById("loginArea");
+
+    const appArea =
+      document.getElementById("app");
+
+    const userEmail =
+      document.getElementById("userEmail");
+
+    const message =
+      document.getElementById("message");
+
+    const shiftDate =
+      document.getElementById("shiftDate");
+
+    const startTime =
+      document.getElementById("startTime");
+
+    const endTime =
+      document.getElementById("endTime");
+
+    const addShiftButton =
+      document.getElementById("addShiftButton");
+
+    const shiftList =
+      document.getElementById("shiftList");
+
+    const emptyMessage =
+      document.getElementById("emptyMessage");
+
+
+
+    // =========================
+    // 状態
+    // =========================
+
+    let currentUser = null;
+
+    let unsubscribeShifts = null;
+
+
+
+    // =========================
+    // ログイン
+    // =========================
+
+    loginButton.addEventListener(
+      "click",
+      async () => {
+
+        try {
+
+          await signInWithEmailAndPassword(
+            auth,
+            emailInput.value,
+            passwordInput.value
+          );
+
+          message.textContent = "";
+
+        } catch (error) {
+
+          console.error(error);
+
+          message.textContent =
+            "ログインできませんでした。メールアドレスまたはパスワードを確認してください。";
+
+        }
+
+      }
+    );
+
+
+
+    // =========================
+    // ログアウト
+    // =========================
+
+    logoutButton.addEventListener(
+      "click",
+      async () => {
+
+        try {
+
+          await signOut(auth);
+
+          message.textContent = "";
+
+        } catch (error) {
+
+          console.error(error);
+
+        }
+
+      }
+    );
+
+
+
+    // =========================
+    // ログイン状態監視
+    // =========================
+
+    onAuthStateChanged(
+      auth,
+      (user) => {
+
+        currentUser = user;
+
+
+        // 古い監視を停止
+        if (unsubscribeShifts) {
+
+          unsubscribeShifts();
+
+          unsubscribeShifts = null;
+
+        }
+
+
+        if (user) {
+
+          loginArea.style.display = "none";
+
+          appArea.style.display = "block";
+
+          userEmail.textContent =
+            user.email;
+
+
+          // 自分のシフトを読み込む
+          loadShifts(user.uid);
+
+        } else {
+
+          loginArea.style.display = "block";
+
+          appArea.style.display = "none";
+
+          userEmail.textContent = "";
+
+          shiftList.innerHTML = "";
+
+        }
+
+      }
+    );
+
+
+
+    // =========================
+    // シフト登録
+    // =========================
+
+    addShiftButton.addEventListener(
+      "click",
+      async () => {
+
+        if (!currentUser) {
+
+          message.textContent =
+            "ログインしてください。";
+
+          return;
+
+        }
+
+
+        if (
+          !shiftDate.value ||
+          !startTime.value ||
+          !endTime.value
+        ) {
+
+          message.textContent =
+            "勤務日・開始時間・終了時間を入力してください。";
+
+          return;
+
+        }
+
+
+        if (endTime.value <= startTime.value) {
+
+          message.textContent =
+            "終了時間は開始時間より後にしてください。";
+
+          return;
+
+        }
+
+
+        try {
+
+          await addDoc(
+            collection(db, "shifts"),
+            {
+
+              userId:
+                currentUser.uid,
+
+              email:
+                currentUser.email,
+
+              date:
+                shiftDate.value,
+
+              startTime:
+                startTime.value,
+
+              endTime:
+                endTime.value,
+
+              createdAt:
+                serverTimestamp()
+
+            }
+          );
+
+
+          message.textContent =
+            "シフトを登録しました！";
+
+
+          // 入力欄クリア
+          shiftDate.value = "";
+          startTime.value = "";
+          endTime.value = "";
+
+
+          // 2秒後メッセージ消す
+          setTimeout(
+            () => {
+              message.textContent = "";
+            },
+            2000
+          );
+
+
+        } catch (error) {
+
+          console.error(error);
+
+          message.textContent =
+            "シフト登録に失敗しました。";
+
+        }
+
+      }
+    );
+
+
+
+    // =========================
+    // 自分のシフトを取得
+    // =========================
+
+    function loadShifts(userId) {
+
+      const q =
+        query(
+          collection(db, "shifts"),
+          where("userId", "==", userId)
+        );
+
+
+      unsubscribeShifts =
+        onSnapshot(
+
+          q,
+
+          (snapshot) => {
+
+            const shifts = [];
+
+
+            snapshot.forEach(
+              (document) => {
+
+                shifts.push({
+
+                  id:
+                    document.id,
+
+                  ...document.data()
+
+                });
+
+              }
+            );
+
+
+            // 日付・時間順
+            shifts.sort(
+              (a, b) => {
+
+                const aValue =
+                  a.date + " " + a.startTime;
+
+                const bValue =
+                  b.date + " " + b.startTime;
+
+                return aValue.localeCompare(bValue);
+
+              }
+            );
+
+
+            displayShifts(shifts);
+
+          },
+
+          (error) => {
+
+            console.error(error);
+
+            message.textContent =
+              "シフトの読み込みに失敗しました。";
+
+          }
+
+        );
+
+    }
+
+
+
+    // =========================
+    // シフト一覧表示
+    // =========================
+
+    function displayShifts(shifts) {
+
+      shiftList.innerHTML = "";
+
+
+      if (shifts.length === 0) {
+
+        emptyMessage.style.display =
+          "block";
+
+        return;
+
+      }
+
+
+      emptyMessage.style.display =
+        "none";
+
+
+      shifts.forEach(
+        (shift) => {
+
+          const item =
+            document.createElement("div");
+
+          item.className =
+            "shift-item";
+
+
+          const dateText =
+            formatDate(shift.date);
+
+
+          item.innerHTML = `
+
+            <div class="shift-date">
+              ${dateText}
+            </div>
+
+            <div class="shift-time">
+              ${shift.startTime}
+              ～
+              ${shift.endTime}
+            </div>
+
+            <button
+              class="deleteButton"
+              data-id="${shift.id}"
+            >
+              削除
+            </button>
+
+          `;
+
+
+          shiftList.appendChild(item);
+
+        }
+      );
+
+
+      // 削除ボタン
+      const deleteButtons =
+        document.querySelectorAll(
+          ".deleteButton"
+        );
+
+
+      deleteButtons.forEach(
+        (button) => {
+
+          button.addEventListener(
+            "click",
+            async () => {
+
+              const shiftId =
+                button.dataset.id;
+
+
+              const result =
+                confirm(
+                  "このシフトを削除しますか？"
+                );
+
+
+              if (!result) {
+
+                return;
+
+              }
+
+
+              try {
+
+                await deleteDoc(
+                  doc(
+                    db,
+                    "shifts",
+                    shiftId
+                  )
+                );
+
+
+                message.textContent =
+                  "シフトを削除しました。";
+
+
+                setTimeout(
+                  () => {
+
+                    message.textContent = "";
+
+                  },
+                  2000
+                );
+
+
+              } catch (error) {
+
+                console.error(error);
+
+                message.textContent =
+                  "削除に失敗しました。";
+
+              }
+
+            }
+          );
+
+        }
+      );
+
+    }
+
+
+
+    // =========================
+    // 日付を日本語表示
+    // =========================
+
+    function formatDate(dateString) {
+
+      const date =
+        new Date(
+          dateString + "T00:00:00"
+        );
+
+
+      return date.toLocaleDateString(
+        "ja-JP",
+        {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          weekday: "short"
+        }
+      );
+
+    }
+
+  </script>
+
+</body>
+</html>
