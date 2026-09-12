@@ -4,7 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>講師シフト管理</title>
+    <link rel="manifest" href="/manifest.json">
 
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <meta name="theme-color" content="#f5f6f8">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="シフト管理">
   <style>
     * { box-sizing: border-box; }
 
@@ -1976,6 +1984,21 @@
       const mm = String(month + 1).padStart(2, "0");
       const dd = String(day).padStart(2, "0");
       return `${yyyy}-${mm}-${dd}`;
+    }
+  </script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then(() => {
+            console.log("Service Worker registered");
+          })
+          .catch((error) => {
+            console.error("Service Worker registration failed:", error);
+          });
+      });
     }
   </script>
 </body>
