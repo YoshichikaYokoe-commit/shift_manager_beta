@@ -1,0 +1,22 @@
+{
+  "id": "/teacher-app",
+  "name": "講師シフト",
+  "short_name": "講師シフト",
+  "start_url": "/teacher.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "/teacher-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/teacher-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

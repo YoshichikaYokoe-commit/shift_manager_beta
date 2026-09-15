@@ -6,7 +6,7 @@
   <title>講師シフト管理</title>
     <link rel="manifest" href="/manifest.json">
 
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+   
 
     <meta name="theme-color" content="#f5f6f8">
 
@@ -152,7 +152,8 @@
     }
 
     input,
-    select {
+    select,
+    textarea {
       display: block;
       width: 100%;
       padding: 12px;
@@ -160,6 +161,60 @@
       border: 1px solid #bbb;
       border-radius: 7px;
       background: white;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+      line-height: 1.5;
+    }
+
+    .form-field-full {
+      grid-column: 1 / -1;
+    }
+
+    .shift-subject {
+      margin-bottom: 8px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .shift-details {
+      margin: 10px 0 12px;
+      border: 1px solid #dbe2ea;
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .shift-details summary {
+      cursor: pointer;
+      padding: 10px 12px;
+      font-weight: 800;
+      color: #334155;
+      background: #f8fafc;
+      user-select: none;
+    }
+
+    .shift-details-body {
+      padding: 12px;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      color: #374151;
+    }
+
+    .shift-details-label {
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #64748b;
+    }
+
+    .student-subject-summary {
+      margin: 4px 0 10px;
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.5;
     }
 
     button {
@@ -309,6 +364,85 @@
       margin-top: 8px;
       color: #666;
       font-size: 13px;
+    }
+
+    .schedule-toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 420px) auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 14px;
+    }
+
+    .schedule-toolbar label {
+      margin-top: 0;
+    }
+
+    .schedule-toolbar button {
+      width: auto;
+      min-width: 100px;
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .calendar-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      margin: 10px 0 14px;
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    .calendar-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .calendar-legend-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 3px;
+      background: #eaf2ff;
+      border: 1px solid #cbd5e1;
+    }
+
+    .calendar-legend-dot.pending {
+      background: #fef3c7;
+      border-color: #fcd34d;
+    }
+
+    .calendar-legend-dot.overdue {
+      background: #fee2e2;
+      border-color: #fca5a5;
+    }
+
+    .calendar-legend-dot.history {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .calendar-shift.calendar-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .schedule-list-details {
+      margin-top: 18px;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 14px;
+    }
+
+    .schedule-list-details summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: #334155;
+      user-select: none;
+    }
+
+    .schedule-list-body {
+      margin-top: 14px;
     }
 
     /* 一覧 */
@@ -495,7 +629,7 @@
 
     .master-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(280px, 1fr));
+      grid-template-columns: repeat(3, minmax(280px, 1fr));
       gap: 16px;
       margin-top: 14px;
     }
@@ -575,10 +709,194 @@
 
     #emptyMessage { color: #777; }
 
+
+    .shift-list-toolbar {
+      max-width: 440px;
+      margin-bottom: 20px;
+    }
+
+    .shift-list-toolbar label {
+      margin-top: 0;
+    }
+
+    .shift-group {
+      margin-top: 24px;
+    }
+
+    .shift-group:first-child {
+      margin-top: 0;
+    }
+
+    .shift-group-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: #334155;
+    }
+
+    .shift-group-count {
+      display: inline-block;
+      min-width: 24px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: #475569;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .shift-item.is-today {
+      border-left: 4px solid #2563eb;
+      background: #f8fbff;
+    }
+
+    .shift-group-overdue .shift-group-title {
+      color: #b91c1c;
+    }
+
+    .shift-group-overdue .shift-group-count {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .shift-item.is-overdue {
+      border-left: 4px solid #dc2626;
+      background: #fff1f2;
+      border-color: #fecaca;
+    }
+
+    .shift-item.is-overdue .shift-item-note {
+      color: #b91c1c;
+    }
+
+    .shift-item.is-finished {
+      opacity: 0.46;
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .shift-item.is-finished:hover {
+      opacity: 0.72;
+    }
+
+    .shift-item.is-cancelled {
+      background: #f8fafc;
+    }
+
+    .shift-item-note {
+      margin-bottom: 10px;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .calendar-shift.calendar-overdue {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .calendar-shift.calendar-history {
+      opacity: 0.48;
+      background: #f1f5f9;
+    }
+
+    .master-search {
+      margin: 18px 0 6px;
+      padding-top: 14px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .master-search label {
+      margin-top: 0;
+    }
+
+    .subjects-block {
+      margin-top: 16px;
+      padding: 14px;
+      border: 1px solid #dbe2ea;
+      border-radius: 10px;
+      background: white;
+    }
+
+    .subjects-block-title {
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+
+    .subject-section + .subject-section {
+      margin-top: 14px;
+    }
+
+    .subject-section-title {
+      margin-bottom: 7px;
+      color: #475569;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .subject-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(95px, 1fr));
+      gap: 8px 12px;
+    }
+
+    .subject-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .subject-checkbox input {
+      width: auto;
+      margin: 0;
+    }
+
+    .teacher-subject-editor {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 9px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+    }
+
+    .teacher-subject-summary {
+      margin: 6px 0 10px;
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .student-master-controls {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) auto auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .student-school-label {
+      margin-top: 3px;
+      color: #64748b;
+      font-size: 13px;
+    }
+
     @media (max-width: 700px) {
       body { padding: 18px 10px; }
       #app, #loginArea { padding: 18px; }
       .calendar-day { min-height: 105px; }
+
+      .schedule-toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .schedule-toolbar button {
+        width: 100%;
+      }
+
       .salary-month-control {
         display: block;
         max-width: none;
@@ -607,8 +925,13 @@
         margin-right: -4px;
       }
 
-      .master-row-controls {
+      .master-row-controls,
+      .student-master-controls {
         grid-template-columns: 1fr;
+      }
+
+      .subject-grid {
+        grid-template-columns: repeat(2, minmax(110px, 1fr));
       }
     }
   </style>
@@ -645,20 +968,58 @@
     </div>
 
     <nav class="tab-nav" aria-label="管理メニュー">
-      <button class="tab-button active" data-tab="calendar">カレンダー</button>
+      <button class="tab-button active" data-tab="calendar">授業予定</button>
       <button class="tab-button" data-tab="shift">シフト登録</button>
       <button class="tab-button" data-tab="salary">給与集計</button>
-      <button class="tab-button" data-tab="list">シフト一覧</button>
       <button class="tab-button" data-tab="master">マスタ管理</button>
     </nav>
 
-    <!-- カレンダー -->
+    <!-- 授業予定：カレンダー中心 -->
     <section id="tab-calendar" class="tab-panel active">
       <div class="calendar-area">
+        <div class="panel-heading">
+          <h2>授業予定</h2>
+        </div>
+
+        <div class="schedule-toolbar">
+          <div>
+            <label for="teacherSearch">講師名で絞り込み</label>
+            <input
+              type="search"
+              id="teacherSearch"
+              placeholder="例：松家未来"
+              autocomplete="off"
+            >
+          </div>
+
+          <button id="calendarCurrentMonthButton" type="button">
+            今月
+          </button>
+        </div>
+
         <div class="calendar-header">
           <button class="calendar-nav" id="prevMonthButton">←</button>
           <h2 id="calendarTitle"></h2>
           <button class="calendar-nav" id="nextMonthButton">→</button>
+        </div>
+
+        <div class="calendar-legend" aria-label="カレンダー凡例">
+          <span class="calendar-legend-item">
+            <span class="calendar-legend-dot"></span>
+            授業予定
+          </span>
+          <span class="calendar-legend-item">
+            <span class="calendar-legend-dot pending"></span>
+            講師承認待ち
+          </span>
+          <span class="calendar-legend-item">
+            <span class="calendar-legend-dot overdue"></span>
+            終了時刻超過・要確認
+          </span>
+          <span class="calendar-legend-item">
+            <span class="calendar-legend-dot history"></span>
+            実施済み・キャンセル
+          </span>
         </div>
 
         <div class="calendar-scroll">
@@ -666,8 +1027,20 @@
         </div>
 
         <p class="calendar-hint">
-          カレンダー内のシフトをクリックすると編集できます。空いている日付をクリックすると、その日で新規登録できます。
+          予定をクリックすると編集できます。空いている日付をクリックすると、その日で新規登録できます。
         </p>
+
+        <details class="schedule-list-details">
+          <summary>一覧でも確認する</summary>
+
+          <div class="schedule-list-body">
+            <div id="shiftList"></div>
+
+            <p id="emptyMessage">
+              条件に一致する授業予定はありません。
+            </p>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -698,6 +1071,13 @@
           </div>
 
           <div class="form-field">
+            <label>教科</label>
+            <select id="shiftSubjectSelect">
+              <option value="">教科を選択してください</option>
+            </select>
+          </div>
+
+          <div class="form-field">
             <label>勤務日</label>
             <input type="date" id="shiftDate">
           </div>
@@ -720,6 +1100,15 @@
           <div class="form-field">
             <label>終了時間</label>
             <input type="time" id="endTime">
+          </div>
+
+          <div class="form-field form-field-full">
+            <label>今日の予定・授業メモ</label>
+            <textarea
+              id="shiftLessonNote"
+              rows="4"
+              placeholder="例：数学IIの三角関数。教科書p.42〜45、宿題の確認、次回までに問題集p.30〜32。"
+            ></textarea>
           </div>
         </div>
 
@@ -755,23 +1144,10 @@
       </div>
     </section>
 
-    <!-- 登録済みシフト -->
-    <section id="tab-list" class="tab-panel">
-      <div class="shift-list-area">
-        <h2>登録済みシフト</h2>
-
-        <div id="shiftList"></div>
-
-        <p id="emptyMessage">
-          シフトはまだ登録されていません。
-        </p>
-      </div>
-    </section>
-
     <!-- マスタ管理 -->
     <section id="tab-master" class="tab-panel">
       <div class="master-area">
-        <h2>講師・生徒マスタ管理</h2>
+        <h2>講師・生徒・塾マスタ管理</h2>
 
         <div class="master-grid">
           <section class="master-card">
@@ -785,7 +1161,32 @@
             <label>時給</label>
             <input type="number" id="newTeacherRate" min="0" step="1" placeholder="例：2500">
 
+            <div class="subjects-block">
+              <div class="subjects-block-title">担当可能教科</div>
+
+              <div class="subject-section">
+                <div class="subject-section-title">中学生</div>
+                <div id="newTeacherSubjectsJunior" class="subject-grid"></div>
+              </div>
+
+              <div class="subject-section">
+                <div class="subject-section-title">高校生</div>
+                <div id="newTeacherSubjectsHigh" class="subject-grid"></div>
+              </div>
+            </div>
+
             <button id="addTeacherButton" class="master-add-button">講師を追加</button>
+
+            <div class="master-search">
+              <label for="teacherMasterSearch">講師検索</label>
+              <input
+                type="search"
+                id="teacherMasterSearch"
+                placeholder="講師名・メール・教科で検索"
+                autocomplete="off"
+              >
+            </div>
+
             <div id="teacherMasterList" class="master-list"></div>
           </section>
 
@@ -794,8 +1195,65 @@
             <label>生徒名</label>
             <input type="text" id="newStudentName" placeholder="例：山田花子">
 
+            <label>所属塾</label>
+            <select id="newStudentSchoolSelect">
+              <option value="">所属塾を選択してください</option>
+            </select>
+
+            <div class="subjects-block">
+              <div class="subjects-block-title">受講教科</div>
+
+              <div class="subject-section">
+                <div class="subject-section-title">中学生</div>
+                <div id="newStudentSubjectsJunior" class="subject-grid"></div>
+              </div>
+
+              <div class="subject-section">
+                <div class="subject-section-title">高校生</div>
+                <div id="newStudentSubjectsHigh" class="subject-grid"></div>
+              </div>
+            </div>
+
             <button id="addStudentButton" class="master-add-button">生徒を追加</button>
+
+            <div class="master-search">
+              <label for="studentMasterSearch">生徒検索</label>
+              <input
+                type="search"
+                id="studentMasterSearch"
+                placeholder="生徒名・所属塾・教科で検索"
+                autocomplete="off"
+              >
+            </div>
+
             <div id="studentMasterList" class="master-list"></div>
+          </section>
+
+          <section class="master-card">
+            <h3>塾を追加</h3>
+
+            <label>塾名</label>
+            <input
+              type="text"
+              id="newSchoolName"
+              placeholder="例：盛岡学習塾"
+            >
+
+            <button id="addSchoolButton" class="master-add-button">
+              塾を追加
+            </button>
+
+            <div class="master-search">
+              <label for="schoolMasterSearch">塾検索</label>
+              <input
+                type="search"
+                id="schoolMasterSearch"
+                placeholder="塾名で検索"
+                autocomplete="off"
+              >
+            </div>
+
+            <div id="schoolMasterList" class="master-list"></div>
           </section>
         </div>
       </div>
@@ -851,10 +1309,12 @@
 
     const teacherSelect = document.getElementById("teacherSelect");
     const studentSelect = document.getElementById("studentSelect");
+    const shiftSubjectSelect = document.getElementById("shiftSubjectSelect");
     const shiftDate = document.getElementById("shiftDate");
     const startTime = document.getElementById("startTime");
     const endTime = document.getElementById("endTime");
     const statusSelect = document.getElementById("statusSelect");
+    const shiftLessonNote = document.getElementById("shiftLessonNote");
 
     const formTitle = document.getElementById("formTitle");
     const editNotice = document.getElementById("editNotice");
@@ -866,6 +1326,8 @@
     const calendarGrid = document.getElementById("calendarGrid");
     const prevMonthButton = document.getElementById("prevMonthButton");
     const nextMonthButton = document.getElementById("nextMonthButton");
+    const calendarCurrentMonthButton =
+      document.getElementById("calendarCurrentMonthButton");
 
     const salaryTitle = document.getElementById("salaryTitle");
     const salaryMonthInput = document.getElementById("salaryMonth");
@@ -876,14 +1338,27 @@
     const newTeacherName = document.getElementById("newTeacherName");
     const newTeacherEmail = document.getElementById("newTeacherEmail");
     const newTeacherRate = document.getElementById("newTeacherRate");
+    const newTeacherSubjectsJunior = document.getElementById("newTeacherSubjectsJunior");
+    const newTeacherSubjectsHigh = document.getElementById("newTeacherSubjectsHigh");
     const addTeacherButton = document.getElementById("addTeacherButton");
+    const teacherMasterSearch = document.getElementById("teacherMasterSearch");
     const teacherMasterList = document.getElementById("teacherMasterList");
 
     const newStudentName = document.getElementById("newStudentName");
+    const newStudentSchoolSelect = document.getElementById("newStudentSchoolSelect");
+    const newStudentSubjectsJunior = document.getElementById("newStudentSubjectsJunior");
+    const newStudentSubjectsHigh = document.getElementById("newStudentSubjectsHigh");
     const addStudentButton = document.getElementById("addStudentButton");
+    const studentMasterSearch = document.getElementById("studentMasterSearch");
     const studentMasterList = document.getElementById("studentMasterList");
 
+    const newSchoolName = document.getElementById("newSchoolName");
+    const addSchoolButton = document.getElementById("addSchoolButton");
+    const schoolMasterSearch = document.getElementById("schoolMasterSearch");
+    const schoolMasterList = document.getElementById("schoolMasterList");
+
     const shiftList = document.getElementById("shiftList");
+    const teacherSearch = document.getElementById("teacherSearch");
     const emptyMessage = document.getElementById("emptyMessage");
     const message = document.getElementById("message");
 
@@ -911,14 +1386,105 @@
       });
     });
 
+
+    teacherSearch.addEventListener("input", () => {
+      displayShifts(currentShifts);
+      renderCalendar();
+    });
+
+    teacherMasterSearch.addEventListener("input", () => {
+      renderTeacherMasterList();
+    });
+
+    studentMasterSearch.addEventListener("input", () => {
+      renderStudentMasterList();
+    });
+
+    studentSelect.addEventListener("change", () => {
+      renderShiftSubjectOptions(studentSelect.value);
+    });
+
+    schoolMasterSearch.addEventListener("input", () => {
+      renderSchoolMasterList();
+    });
+
+    // 終了時刻を過ぎた授業が「要確認」へ移るように1分ごとに再描画
+    setInterval(() => {
+      if (currentUser) {
+        displayShifts(currentShifts);
+        renderCalendar();
+      }
+    }, 60 * 1000);
+
+    const JUNIOR_SUBJECTS = [
+      { id: "jh_japanese", label: "国語" },
+      { id: "jh_math", label: "数学" },
+      { id: "jh_english", label: "英語" },
+      { id: "jh_science", label: "理科" },
+      { id: "jh_social", label: "社会" }
+    ];
+
+    const HIGH_SUBJECTS = [
+      { id: "hs_modern_japanese", label: "現代文" },
+      { id: "hs_classical_japanese", label: "古文" },
+      { id: "hs_chinese_classics", label: "漢文" },
+      { id: "hs_math1", label: "数学I" },
+      { id: "hs_mathA", label: "数学A" },
+      { id: "hs_math2", label: "数学II" },
+      { id: "hs_mathB", label: "数学B" },
+      { id: "hs_math3", label: "数学III" },
+      { id: "hs_mathC", label: "数学C" },
+      { id: "hs_english", label: "英語" },
+      { id: "hs_physics", label: "物理" },
+      { id: "hs_chemistry", label: "化学" },
+      { id: "hs_biology", label: "生物" },
+      { id: "hs_earth_science", label: "地学" },
+      { id: "hs_japanese_history", label: "日本史" },
+      { id: "hs_world_history", label: "世界史" },
+      { id: "hs_geography", label: "地理" },
+      { id: "hs_public", label: "公共" },
+      { id: "hs_ethics", label: "倫理" },
+      { id: "hs_politics_economics", label: "政治・経済" },
+      { id: "hs_information1", label: "情報I" }
+    ];
+
+    const ALL_SUBJECTS = [...JUNIOR_SUBJECTS, ...HIGH_SUBJECTS];
+    const SUBJECT_LABELS = Object.fromEntries(
+      ALL_SUBJECTS.map((subject) => [subject.id, subject.label])
+    );
+
+    renderSubjectCheckboxes(
+      newTeacherSubjectsJunior,
+      JUNIOR_SUBJECTS,
+      "new-teacher-subject"
+    );
+    renderSubjectCheckboxes(
+      newTeacherSubjectsHigh,
+      HIGH_SUBJECTS,
+      "new-teacher-subject"
+    );
+
+    renderSubjectCheckboxes(
+      newStudentSubjectsJunior,
+      JUNIOR_SUBJECTS,
+      "new-student-subject"
+    );
+    renderSubjectCheckboxes(
+      newStudentSubjectsHigh,
+      HIGH_SUBJECTS,
+      "new-student-subject"
+    );
+
     // 状態
     let currentUser = null;
     let unsubscribeShifts = null;
     let unsubscribeTeachers = null;
     let unsubscribeStudents = null;
+    let unsubscribeSchools = null;
     let currentShifts = [];
     let currentTeachers = [];
     let currentStudents = [];
+    let currentSchools = [];
     let editingShiftId = null;
 
     const now = new Date();
@@ -953,6 +1519,7 @@
       const name = newTeacherName.value.trim();
       const email = newTeacherEmail.value.trim();
       const hourlyRate = sanitizeRate(newTeacherRate.value);
+      const subjects = getCheckedSubjectValues(".new-teacher-subject");
 
       if (!name) {
         message.textContent = "講師名を入力してください。";
@@ -974,6 +1541,7 @@
           name,
           email,
           hourlyRate,
+          subjects,
           active: true,
           createdAt: serverTimestamp()
         });
@@ -981,6 +1549,9 @@
         newTeacherName.value = "";
         newTeacherEmail.value = "";
         newTeacherRate.value = "";
+        document.querySelectorAll(".new-teacher-subject").forEach((input) => {
+          input.checked = false;
+        });
         message.textContent = "講師を追加しました。";
         clearMessageLater();
       } catch (error) {
@@ -989,23 +1560,73 @@
       }
     });
 
+    // 塾追加
+    addSchoolButton.addEventListener("click", async () => {
+      const name = newSchoolName.value.trim();
+
+      if (!name) {
+        message.textContent = "塾名を入力してください。";
+        return;
+      }
+
+      const duplicate = currentSchools.some(
+        (school) =>
+          String(school.name || "").trim().toLowerCase() === name.toLowerCase()
+      );
+
+      if (duplicate) {
+        message.textContent = "同じ名前の塾がすでに登録されています。";
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "schools"), {
+          name,
+          active: true,
+          createdAt: serverTimestamp()
+        });
+
+        newSchoolName.value = "";
+        message.textContent = "塾を追加しました。";
+        clearMessageLater();
+      } catch (error) {
+        console.error(error);
+        message.textContent = "塾の追加に失敗しました。";
+      }
+    });
+
     // 生徒追加
     addStudentButton.addEventListener("click", async () => {
       const name = newStudentName.value.trim();
+      const schoolId = newStudentSchoolSelect.value;
+      const school = currentSchools.find((item) => item.id === schoolId);
+      const subjects = getCheckedSubjectValues(".new-student-subject");
 
       if (!name) {
         message.textContent = "生徒名を入力してください。";
         return;
       }
 
+      if (!school) {
+        message.textContent = "所属塾を選択してください。";
+        return;
+      }
+
       try {
         await addDoc(collection(db, "students"), {
           name,
+          schoolId: school.id,
+          schoolName: school.name || "",
+          subjects,
           active: true,
           createdAt: serverTimestamp()
         });
 
         newStudentName.value = "";
+        newStudentSchoolSelect.value = "";
+        document.querySelectorAll(".new-student-subject").forEach((input) => {
+          input.checked = false;
+        });
         message.textContent = "生徒を追加しました。";
         clearMessageLater();
       } catch (error) {
@@ -1050,11 +1671,16 @@
         unsubscribeStudents();
         unsubscribeStudents = null;
       }
+      if (unsubscribeSchools) {
+        unsubscribeSchools();
+        unsubscribeSchools = null;
+      }
 
       if (user) {
         loginArea.style.display = "none";
         appArea.style.display = "block";
         userEmail.textContent = user.email;
+        loadSchools();
         loadTeachers();
         loadStudents();
         loadAllShifts();
@@ -1066,10 +1692,13 @@
         currentShifts = [];
         currentTeachers = [];
         currentStudents = [];
+        currentSchools = [];
         teacherMasterList.innerHTML = "";
         studentMasterList.innerHTML = "";
+        schoolMasterList.innerHTML = "";
         renderTeacherOptions();
         renderStudentOptions();
+        renderStudentSchoolOptions();
         resetForm();
       }
     });
@@ -1084,7 +1713,16 @@
       const teacherId = teacherSelect.value;
       const teacherName = teacherSelect.options[teacherSelect.selectedIndex].text;
       const studentId = studentSelect.value;
-      const studentName = studentSelect.options[studentSelect.selectedIndex].text;
+      const selectedStudent = currentStudents.find((student) => student.id === studentId);
+      const studentName = selectedStudent?.name || "未設定";
+      const schoolId = selectedStudent?.schoolId || "";
+      const schoolName =
+        selectedStudent?.schoolName ||
+        getSchoolNameById(selectedStudent?.schoolId) ||
+        "";
+      const subjectId = shiftSubjectSelect.value;
+      const subjectName = SUBJECT_LABELS[subjectId] || "";
+      const lessonNote = shiftLessonNote.value.trim();
 
       if (!teacherId) {
         message.textContent = "講師を選択してください。";
@@ -1093,6 +1731,11 @@
 
       if (!studentId) {
         message.textContent = "生徒を選択してください。";
+        return;
+      }
+
+      if (!subjectId) {
+        message.textContent = "教科を選択してください。";
         return;
       }
 
@@ -1111,6 +1754,11 @@
         teacherName,
         studentId,
         studentName,
+        schoolId,
+        schoolName,
+        subjectId,
+        subjectName,
+        lessonNote,
         date: shiftDate.value,
         startTime: startTime.value,
         endTime: endTime.value,
@@ -1169,6 +1817,13 @@
     });
 
     // 前月・翌月
+    calendarCurrentMonthButton.addEventListener("click", () => {
+      const today = new Date();
+      calendarYear = today.getFullYear();
+      calendarMonth = today.getMonth();
+      renderCalendar();
+    });
+
     prevMonthButton.addEventListener("click", () => {
       calendarMonth--;
       if (calendarMonth < 0) {
@@ -1186,6 +1841,38 @@
       }
       renderCalendar();
     });
+
+    // 塾マスタを監視
+    function loadSchools() {
+      unsubscribeSchools = onSnapshot(
+        collection(db, "schools"),
+        (snapshot) => {
+          const schools = [];
+
+          snapshot.forEach((document) => {
+            schools.push({
+              id: document.id,
+              ...document.data()
+            });
+          });
+
+          schools.sort((a, b) =>
+            String(a.name || "").localeCompare(String(b.name || ""), "ja")
+          );
+
+          currentSchools = schools;
+          renderStudentSchoolOptions();
+          renderStudentOptions();
+          renderStudentMasterList();
+          renderSchoolMasterList();
+          displayShifts(currentShifts);
+        },
+        (error) => {
+          console.error(error);
+          message.textContent = "塾マスタの読み込みに失敗しました。";
+        }
+      );
+    }
 
     // 講師マスタを監視
     function loadTeachers() {
@@ -1273,29 +1960,88 @@
         .forEach((student) => {
           const option = document.createElement("option");
           option.value = student.id;
-          option.textContent = student.name || "名称未設定";
+          option.textContent = formatStudentDisplayName(student);
           studentSelect.appendChild(option);
         });
 
       if ([...studentSelect.options].some((option) => option.value === selected)) {
         studentSelect.value = selected;
       }
+
+      renderShiftSubjectOptions(studentSelect.value);
+    }
+
+    function renderStudentSchoolOptions() {
+      const selected = newStudentSchoolSelect.value;
+
+      newStudentSchoolSelect.innerHTML =
+        '<option value="">所属塾を選択してください</option>';
+
+      currentSchools
+        .filter((school) => school.active !== false)
+        .forEach((school) => {
+          const option = document.createElement("option");
+          option.value = school.id;
+          option.textContent = school.name || "名称未設定";
+          newStudentSchoolSelect.appendChild(option);
+        });
+
+      if (
+        [...newStudentSchoolSelect.options]
+          .some((option) => option.value === selected)
+      ) {
+        newStudentSchoolSelect.value = selected;
+      }
     }
 
     function renderTeacherMasterList() {
       teacherMasterList.innerHTML = "";
 
-      if (currentTeachers.length === 0) {
-        teacherMasterList.textContent = "講師はまだ登録されていません。";
+      const keyword = teacherMasterSearch.value.trim().toLowerCase();
+
+      const filteredTeachers = currentTeachers.filter((teacher) => {
+        const searchable = [
+          teacher.name || "",
+          teacher.email || "",
+          ...(Array.isArray(teacher.subjects)
+            ? teacher.subjects.map((subjectId) => SUBJECT_LABELS[subjectId] || subjectId)
+            : [])
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        return !keyword || searchable.includes(keyword);
+      });
+
+      if (filteredTeachers.length === 0) {
+        teacherMasterList.textContent =
+          currentTeachers.length === 0
+            ? "講師はまだ登録されていません。"
+            : "条件に一致する講師はいません。";
         return;
       }
 
-      currentTeachers.forEach((teacher) => {
+      filteredTeachers.forEach((teacher) => {
         const row = document.createElement("div");
         row.className = "master-row";
 
+        const selectedSubjects = new Set(
+          Array.isArray(teacher.subjects) ? teacher.subjects : []
+        );
+
+        const subjectSummary =
+          selectedSubjects.size > 0
+            ? [...selectedSubjects]
+                .map((subjectId) => SUBJECT_LABELS[subjectId] || subjectId)
+                .join("・")
+            : "担当可能教科：未設定";
+
         row.innerHTML = `
           <div class="master-row-title">${escapeHtml(teacher.name || "名称未設定")}</div>
+          <div class="teacher-subject-summary">
+            ${selectedSubjects.size > 0 ? "担当：" : ""}${escapeHtml(subjectSummary)}
+          </div>
+
           <div class="master-row-controls">
             <input
               type="email"
@@ -1325,6 +2071,32 @@
             </label>
             <button class="master-save-button teacher-save-button" data-id="${teacher.id}">保存</button>
           </div>
+
+          <div class="teacher-subject-editor">
+            <div class="subject-section">
+              <div class="subject-section-title">中学生</div>
+              <div class="subject-grid">
+                ${buildSubjectCheckboxHtml(
+                  JUNIOR_SUBJECTS,
+                  selectedSubjects,
+                  "teacher-subject-edit",
+                  teacher.id
+                )}
+              </div>
+            </div>
+
+            <div class="subject-section">
+              <div class="subject-section-title">高校生</div>
+              <div class="subject-grid">
+                ${buildSubjectCheckboxHtml(
+                  HIGH_SUBJECTS,
+                  selectedSubjects,
+                  "teacher-subject-edit",
+                  teacher.id
+                )}
+              </div>
+            </div>
+          </div>
         `;
 
         teacherMasterList.appendChild(row);
@@ -1338,6 +2110,11 @@
           const activeInput = document.querySelector(`.teacher-active-edit[data-id="${teacherId}"]`);
 
           const email = emailInput.value.trim();
+          const subjects = [
+            ...document.querySelectorAll(
+              `.teacher-subject-edit[data-id="${teacherId}"]:checked`
+            )
+          ].map((input) => input.dataset.subject);
 
           if (email && !isValidEmail(email)) {
             message.textContent = "有効なメールアドレスを入力してください。";
@@ -1348,6 +2125,7 @@
             await updateDoc(doc(db, "teachers", teacherId), {
               email,
               hourlyRate: sanitizeRate(rateInput.value),
+              subjects,
               active: activeInput.checked,
               updatedAt: serverTimestamp()
             });
@@ -1365,19 +2143,68 @@
     function renderStudentMasterList() {
       studentMasterList.innerHTML = "";
 
-      if (currentStudents.length === 0) {
-        studentMasterList.textContent = "生徒はまだ登録されていません。";
+      const keyword = studentMasterSearch.value.trim().toLowerCase();
+
+      const filteredStudents = currentStudents.filter((student) => {
+        const searchable = [
+          student.name || "",
+          student.schoolName || "",
+          getSchoolNameById(student.schoolId) || "",
+          ...(Array.isArray(student.subjects)
+            ? student.subjects.map((subjectId) => SUBJECT_LABELS[subjectId] || subjectId)
+            : [])
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        return !keyword || searchable.includes(keyword);
+      });
+
+      if (filteredStudents.length === 0) {
+        studentMasterList.textContent =
+          currentStudents.length === 0
+            ? "生徒はまだ登録されていません。"
+            : "条件に一致する生徒はいません。";
         return;
       }
 
-      currentStudents.forEach((student) => {
+      filteredStudents.forEach((student) => {
         const row = document.createElement("div");
         row.className = "master-row";
 
+        const schoolId = student.schoolId || "";
+        const schoolName =
+          student.schoolName ||
+          getSchoolNameById(schoolId) ||
+          "所属塾未設定";
+        const selectedSubjects = new Set(
+          Array.isArray(student.subjects) ? student.subjects : []
+        );
+        const subjectSummary =
+          selectedSubjects.size > 0
+            ? [...selectedSubjects]
+                .map((subjectId) => SUBJECT_LABELS[subjectId] || subjectId)
+                .join("・")
+            : "受講教科：未設定";
+
         row.innerHTML = `
-          <div class="master-row-title">${escapeHtml(student.name || "名称未設定")}</div>
-          <div class="master-row-controls">
-            <div></div>
+          <div class="master-row-title">
+            ${escapeHtml(`（${schoolName}）${student.name || "名称未設定"}`)}
+          </div>
+          <div class="student-subject-summary">
+            ${selectedSubjects.size > 0 ? "受講：" : ""}${escapeHtml(subjectSummary)}
+          </div>
+          <div class="student-school-label">所属塾と受講教科を変更できます。</div>
+
+          <div class="student-master-controls">
+            <select
+              class="student-school-edit"
+              data-id="${student.id}"
+              aria-label="${escapeHtml(student.name || "生徒")}の所属塾"
+            >
+              ${buildSchoolOptionsHtml(schoolId, true)}
+            </select>
+
             <label class="active-control">
               <input
                 type="checkbox"
@@ -1387,7 +2214,36 @@
               >
               有効
             </label>
-            <button class="master-save-button student-save-button" data-id="${student.id}">保存</button>
+
+            <button class="master-save-button student-save-button" data-id="${student.id}">
+              保存
+            </button>
+          </div>
+
+          <div class="teacher-subject-editor">
+            <div class="subject-section">
+              <div class="subject-section-title">中学生</div>
+              <div class="subject-grid">
+                ${buildSubjectCheckboxHtml(
+                  JUNIOR_SUBJECTS,
+                  selectedSubjects,
+                  "student-subject-edit",
+                  student.id
+                )}
+              </div>
+            </div>
+
+            <div class="subject-section">
+              <div class="subject-section-title">高校生</div>
+              <div class="subject-grid">
+                ${buildSubjectCheckboxHtml(
+                  HIGH_SUBJECTS,
+                  selectedSubjects,
+                  "student-subject-edit",
+                  student.id
+                )}
+              </div>
+            </div>
           </div>
         `;
 
@@ -1398,9 +2254,20 @@
         button.addEventListener("click", async () => {
           const studentId = button.dataset.id;
           const activeInput = document.querySelector(`.student-active-edit[data-id="${studentId}"]`);
+          const schoolInput = document.querySelector(`.student-school-edit[data-id="${studentId}"]`);
+          const schoolId = schoolInput.value;
+          const school = currentSchools.find((item) => item.id === schoolId);
+          const subjects = [
+            ...document.querySelectorAll(
+              `.student-subject-edit[data-id="${studentId}"]:checked`
+            )
+          ].map((input) => input.dataset.subject);
 
           try {
             await updateDoc(doc(db, "students", studentId), {
+              schoolId,
+              schoolName: school?.name || "",
+              subjects,
               active: activeInput.checked,
               updatedAt: serverTimestamp()
             });
@@ -1410,6 +2277,114 @@
           } catch (error) {
             console.error(error);
             message.textContent = "生徒設定の保存に失敗しました。";
+          }
+        });
+      });
+    }
+
+    function renderSchoolMasterList() {
+      schoolMasterList.innerHTML = "";
+
+      const keyword = schoolMasterSearch.value.trim().toLowerCase();
+
+      const filteredSchools = currentSchools.filter((school) => {
+        const searchable = `${school.name || ""} ${school.id || ""}`.toLowerCase();
+        return !keyword || searchable.includes(keyword);
+      });
+
+      if (filteredSchools.length === 0) {
+        schoolMasterList.textContent =
+          currentSchools.length === 0
+            ? "塾はまだ登録されていません。"
+            : "条件に一致する塾はありません。";
+        return;
+      }
+
+      filteredSchools.forEach((school) => {
+        const row = document.createElement("div");
+        row.className = "master-row";
+
+        row.innerHTML = `
+          <div class="master-row-title">
+            ${escapeHtml(school.name || "名称未設定")}
+          </div>
+
+          <div class="student-school-label">
+            schoolId：${escapeHtml(school.id)}
+          </div>
+
+          <div class="student-master-controls">
+            <input
+              type="text"
+              class="school-name-edit"
+              data-id="${school.id}"
+              value="${escapeHtml(school.name || "")}"
+              placeholder="塾名"
+              aria-label="塾名"
+            >
+
+            <label class="active-control">
+              <input
+                type="checkbox"
+                class="school-active-edit"
+                data-id="${school.id}"
+                ${school.active === false ? "" : "checked"}
+              >
+              有効
+            </label>
+
+            <button
+              class="master-save-button school-save-button"
+              data-id="${school.id}"
+            >
+              保存
+            </button>
+          </div>
+        `;
+
+        schoolMasterList.appendChild(row);
+      });
+
+      document.querySelectorAll(".school-save-button").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const schoolId = button.dataset.id;
+          const nameInput = document.querySelector(
+            `.school-name-edit[data-id="${schoolId}"]`
+          );
+          const activeInput = document.querySelector(
+            `.school-active-edit[data-id="${schoolId}"]`
+          );
+
+          const name = nameInput.value.trim();
+
+          if (!name) {
+            message.textContent = "塾名を入力してください。";
+            return;
+          }
+
+          const duplicate = currentSchools.some(
+            (school) =>
+              school.id !== schoolId &&
+              String(school.name || "").trim().toLowerCase() === name.toLowerCase()
+          );
+
+          if (duplicate) {
+            message.textContent = "同じ名前の塾がすでに登録されています。";
+            return;
+          }
+
+          try {
+            await updateDoc(doc(db, "schools", schoolId), {
+              name,
+              active: activeInput.checked,
+              updatedAt: serverTimestamp()
+            });
+
+            message.textContent = "塾設定を保存しました。";
+            clearMessageLater();
+          } catch (error) {
+            console.error(error);
+            message.textContent = "塾設定の保存に失敗しました。";
           }
         });
       });
@@ -1528,9 +2503,24 @@
         dateNumber.textContent = dayNumber;
         dayCell.appendChild(dateNumber);
 
-        const dayShifts = currentShifts.filter(
-          (shift) => shift.date === dateString
-        );
+        const teacherKeyword =
+          teacherSearch.value.trim().toLowerCase();
+
+        const dayShifts = currentShifts
+          .filter((shift) => {
+            if (shift.date !== dateString) return false;
+
+            if (!teacherKeyword) return true;
+
+            return String(shift.teacherName || "")
+              .toLowerCase()
+              .includes(teacherKeyword);
+          })
+          .sort((a, b) =>
+            String(a.startTime || "").localeCompare(
+              String(b.startTime || "")
+            )
+          );
 
         dayShifts.forEach((shift) => {
           const shiftButton = document.createElement("button");
@@ -1539,14 +2529,30 @@
 
           const shiftStatus = normalizeStatus(shift.status);
 
+          if (shift.approvalStatus === "pending") {
+            shiftButton.classList.add("calendar-pending");
+          } else if (isShiftOverduePending(shift)) {
+            shiftButton.classList.add("calendar-overdue");
+          } else if (isShiftHistory(shift)) {
+            shiftButton.classList.add("calendar-history");
+          }
+
+          const calendarStatusLabel =
+            shift.approvalStatus === "pending"
+              ? "講師承認待ち"
+              : shift.approvalStatus === "rejected"
+                ? "講師却下"
+                : getStatusLabel(shiftStatus);
+
           shiftButton.innerHTML = `
             <span class="calendar-time">
               ${shift.startTime}-${shift.endTime}
             </span><br>
-            ${shift.teacherName}<br>
-            ${shift.studentName || "未設定"}<br>
+            ${escapeHtml(shift.teacherName || "未設定")}<br>
+            ${escapeHtml(formatShiftStudentName(shift))}<br>
+            ${escapeHtml(getShiftSubjectLabel(shift))}<br>
             <span class="calendar-status">
-              ${getStatusLabel(shiftStatus)}
+              ${escapeHtml(calendarStatusLabel)}
             </span>
           `;
 
@@ -1585,66 +2591,191 @@
       renderSalarySummary();
     }
 
-    // 一覧表示
+    // 授業予定一覧
     function displayShifts(shifts) {
       shiftList.innerHTML = "";
 
-      if (shifts.length === 0) {
+      const keyword = teacherSearch.value.trim().toLowerCase();
+
+      const filteredShifts = shifts.filter((shift) => {
+        const teacherName = String(shift.teacherName || "").toLowerCase();
+        return !keyword || teacherName.includes(keyword);
+      });
+
+      if (filteredShifts.length === 0) {
         emptyMessage.style.display = "block";
         return;
       }
 
       emptyMessage.style.display = "none";
 
-      shifts.forEach((shift) => {
-        const item = document.createElement("div");
-        item.className = "shift-item";
+      const todayString = getLocalDateString(new Date());
 
-        item.innerHTML = `
-          <div class="teacher-name">
-            講師：${shift.teacherName}
-          </div>
+      const todayShifts = [];
+      const futureShifts = [];
+      const overdueShifts = [];
+      const historyShifts = [];
 
-          <div class="student-name">
-            生徒：${shift.studentName || "未設定"}
-          </div>
+      filteredShifts.forEach((shift) => {
+        if (isShiftHistory(shift)) {
+          historyShifts.push(shift);
+          return;
+        }
 
-          <div class="shift-date">
-            ${formatDate(shift.date)}
-          </div>
+        if (isShiftOverduePending(shift)) {
+          overdueShifts.push(shift);
+          return;
+        }
 
-          <div class="shift-time">
-            ${shift.startTime} ～ ${shift.endTime}
-          </div>
+        if (shift.date === todayString) {
+          todayShifts.push(shift);
+          return;
+        }
 
-          <div class="shift-status ${getStatusClass(normalizeStatus(shift.status))}">
-            ${getStatusLabel(normalizeStatus(shift.status))}
-          </div>
-
-          <div class="status-quick-control">
-            <span>状態：</span>
-            <select class="statusQuickSelect" data-id="${shift.id}">
-              <option value="tentative" ${normalizeStatus(shift.status) === "tentative" ? "selected" : ""}>予定（未定）</option>
-              <option value="confirmed" ${normalizeStatus(shift.status) === "confirmed" ? "selected" : ""}>予定（確定）</option>
-              <option value="completed" ${normalizeStatus(shift.status) === "completed" ? "selected" : ""}>実施済み</option>
-              <option value="cancelled" ${normalizeStatus(shift.status) === "cancelled" ? "selected" : ""}>キャンセル</option>
-            </select>
-          </div>
-
-          <div class="shift-actions">
-            <button class="editButton" data-id="${shift.id}">
-              編集
-            </button>
-
-            <button class="deleteButton" data-id="${shift.id}">
-              削除
-            </button>
-          </div>
-        `;
-
-        shiftList.appendChild(item);
+        futureShifts.push(shift);
       });
 
+      todayShifts.sort(compareShiftDateTimeAscending);
+      futureShifts.sort(compareShiftDateTimeAscending);
+
+      overdueShifts.sort((a, b) =>
+        compareShiftDateTimeAscending(b, a)
+      );
+
+      historyShifts.sort((a, b) =>
+        compareShiftDateTimeAscending(b, a)
+      );
+
+      appendShiftGroup("今日の授業", todayShifts, "today");
+      appendShiftGroup("今後の授業", futureShifts, "future");
+      appendShiftGroup(
+        "要確認：終了時刻を過ぎています",
+        overdueShifts,
+        "overdue"
+      );
+      appendShiftGroup("完了済み・キャンセル", historyShifts, "finished");
+
+      bindShiftListEvents();
+    }
+
+    function appendShiftGroup(title, shifts, groupType) {
+      if (shifts.length === 0) return;
+
+      const group = document.createElement("section");
+      group.className = `shift-group shift-group-${groupType}`;
+
+      const heading = document.createElement("h3");
+      heading.className = "shift-group-title";
+      heading.innerHTML = `
+        <span>${escapeHtml(title)}</span>
+        <span class="shift-group-count">${shifts.length}</span>
+      `;
+      group.appendChild(heading);
+
+      shifts.forEach((shift) => {
+        const item = createShiftListItem(shift);
+
+        if (groupType === "today") {
+          item.classList.add("is-today");
+        }
+
+        if (groupType === "overdue") {
+          item.classList.add("is-overdue");
+        }
+
+        if (groupType === "finished") {
+          item.classList.add("is-finished");
+        }
+
+        if (normalizeStatus(shift.status) === "cancelled") {
+          item.classList.add("is-cancelled");
+        }
+
+        group.appendChild(item);
+      });
+
+      shiftList.appendChild(group);
+    }
+
+    function createShiftListItem(shift) {
+      const item = document.createElement("div");
+      item.className = "shift-item";
+
+      const status = normalizeStatus(shift.status);
+      const overdue = isShiftOverduePending(shift);
+      const history = isShiftHistory(shift);
+
+      let itemNote = "";
+      if (overdue) {
+        itemNote =
+          '<div class="shift-item-note">要確認：終了時刻を過ぎています。実施済み / キャンセルを設定してください。</div>';
+      } else if (history) {
+        itemNote =
+          status === "cancelled"
+            ? '<div class="shift-item-note">キャンセル済み</div>'
+            : '<div class="shift-item-note">実施済み</div>';
+      }
+
+      item.innerHTML = `
+        <div class="teacher-name">
+          講師：${escapeHtml(shift.teacherName || "未設定")}
+        </div>
+
+        <div class="student-name">
+          生徒：${escapeHtml(formatShiftStudentName(shift))}
+        </div>
+
+        <div class="shift-date">
+          ${escapeHtml(formatDate(shift.date))}
+        </div>
+
+        <div class="shift-time">
+          ${escapeHtml(shift.startTime || "--:--")} ～ ${escapeHtml(shift.endTime || "--:--")}
+        </div>
+
+        <div class="shift-subject">
+          教科：${escapeHtml(getShiftSubjectLabel(shift))}
+        </div>
+
+        <details class="shift-details">
+          <summary>詳細表示</summary>
+          <div class="shift-details-body">
+            <div class="shift-details-label">今日の予定・授業メモ</div>
+            ${escapeHtml(shift.lessonNote || "まだ入力されていません。")}
+          </div>
+        </details>
+
+        ${itemNote}
+
+        <div class="shift-status ${getStatusClass(status)}">
+          ${getStatusLabel(status)}
+        </div>
+
+        <div class="status-quick-control">
+          <span>状態：</span>
+          <select class="statusQuickSelect" data-id="${shift.id}">
+            <option value="tentative" ${status === "tentative" ? "selected" : ""}>予定（未定）</option>
+            <option value="confirmed" ${status === "confirmed" ? "selected" : ""}>予定（確定）</option>
+            <option value="completed" ${status === "completed" ? "selected" : ""}>実施済み</option>
+            <option value="cancelled" ${status === "cancelled" ? "selected" : ""}>キャンセル</option>
+          </select>
+        </div>
+
+        <div class="shift-actions">
+          <button class="editButton" data-id="${shift.id}">
+            編集
+          </button>
+
+          <button class="deleteButton" data-id="${shift.id}">
+            削除
+          </button>
+        </div>
+      `;
+
+      return item;
+    }
+
+    function bindShiftListEvents() {
       document.querySelectorAll(".statusQuickSelect").forEach((select) => {
         select.addEventListener("change", async () => {
           const shiftId = select.dataset.id;
@@ -1687,11 +2818,11 @@
 
           const status = normalizeStatus(shift.status);
 
-          // まず全シフト共通の確認
           const firstConfirm = confirm(
             "このシフトを削除しますか？\n\n" +
             `講師：${shift.teacherName || "未設定"}\n` +
-            `生徒：${shift.studentName || "未設定"}\n` +
+            `生徒：${formatShiftStudentName(shift)}\n` +
+            `教科：${getShiftSubjectLabel(shift)}\n` +
             `日時：${formatDate(shift.date)} ${shift.startTime || ""}～${shift.endTime || ""}\n` +
             `状態：${getStatusLabel(status)}\n\n` +
             "※ 授業の中止なら、削除せず「キャンセル」にしてください。"
@@ -1701,7 +2832,6 @@
             return;
           }
 
-          // 「実施済み」だけは給与履歴に影響するので追加ロック
           if (status === "completed") {
             const secondConfirm = confirm(
               "【注意】このシフトは「実施済み」です。\n\n" +
@@ -1751,6 +2881,188 @@
       });
     }
 
+    function compareShiftDateTimeAscending(a, b) {
+      const aValue = `${a.date || ""} ${a.startTime || ""}`;
+      const bValue = `${b.date || ""} ${b.startTime || ""}`;
+      return aValue.localeCompare(bValue);
+    }
+
+    function isShiftHistory(shift) {
+      const status = normalizeStatus(shift.status);
+      return status === "completed" || status === "cancelled";
+    }
+
+    function isShiftOverduePending(shift) {
+      if (isShiftHistory(shift) || !shift.date) {
+        return false;
+      }
+
+      const endTime = shift.endTime || shift.startTime || "23:59";
+      const endDateTime = new Date(`${shift.date}T${endTime}:00`);
+
+      if (Number.isNaN(endDateTime.getTime())) {
+        return false;
+      }
+
+      return endDateTime.getTime() < Date.now();
+    }
+
+    function renderSubjectCheckboxes(container, subjects, className) {
+      container.innerHTML = subjects
+        .map(
+          (subject) => `
+            <label class="subject-checkbox">
+              <input
+                type="checkbox"
+                class="${className}"
+                value="${subject.id}"
+                data-subject="${subject.id}"
+              >
+              ${escapeHtml(subject.label)}
+            </label>
+          `
+        )
+        .join("");
+    }
+
+    function renderShiftSubjectOptions(studentId = "", preferredSubjectId = "") {
+      const currentValue = preferredSubjectId || shiftSubjectSelect.value;
+      const student = currentStudents.find((item) => item.id === studentId);
+
+      let availableSubjectIds =
+        Array.isArray(student?.subjects) && student.subjects.length > 0
+          ? new Set(student.subjects)
+          : null;
+
+      shiftSubjectSelect.innerHTML =
+        '<option value="">教科を選択してください</option>';
+
+      const appendGroup = (label, subjects) => {
+        const filtered = availableSubjectIds
+          ? subjects.filter((subject) => availableSubjectIds.has(subject.id))
+          : subjects;
+
+        if (filtered.length === 0) return;
+
+        const group = document.createElement("optgroup");
+        group.label = label;
+
+        filtered.forEach((subject) => {
+          const option = document.createElement("option");
+          option.value = subject.id;
+          option.textContent = subject.label;
+          group.appendChild(option);
+        });
+
+        shiftSubjectSelect.appendChild(group);
+      };
+
+      appendGroup("中学生", JUNIOR_SUBJECTS);
+      appendGroup("高校生", HIGH_SUBJECTS);
+
+      if (
+        [...shiftSubjectSelect.options].some(
+          (option) => option.value === currentValue
+        )
+      ) {
+        shiftSubjectSelect.value = currentValue;
+      }
+    }
+
+    function getShiftSubjectLabel(shift) {
+      const subjectId = shift.subjectId || shift.subject || "";
+      return (
+        shift.subjectName ||
+        SUBJECT_LABELS[subjectId] ||
+        (subjectId ? subjectId : "教科未設定")
+      );
+    }
+
+    function buildSubjectCheckboxHtml(subjects, selectedSubjects, className, teacherId) {
+      return subjects
+        .map(
+          (subject) => `
+            <label class="subject-checkbox">
+              <input
+                type="checkbox"
+                class="${className}"
+                data-id="${teacherId}"
+                data-subject="${subject.id}"
+                ${selectedSubjects.has(subject.id) ? "checked" : ""}
+              >
+              ${escapeHtml(subject.label)}
+            </label>
+          `
+        )
+        .join("");
+    }
+
+    function getCheckedSubjectValues(selector) {
+      return [...document.querySelectorAll(`${selector}:checked`)]
+        .map((input) => input.dataset.subject || input.value)
+        .filter(Boolean);
+    }
+
+    function getSchoolNameById(schoolId) {
+      if (!schoolId) return "";
+      return currentSchools.find((school) => school.id === schoolId)?.name || "";
+    }
+
+    function formatStudentDisplayName(student) {
+      const schoolName =
+        getSchoolNameById(student.schoolId) ||
+        student.schoolName ||
+        "所属塾未設定";
+
+      return `（${schoolName}）${student.name || "名称未設定"}`;
+    }
+
+    function formatShiftStudentName(shift) {
+      const student = currentStudents.find(
+        (item) => item.id === shift.studentId
+      );
+
+      if (student) {
+        return formatStudentDisplayName(student);
+      }
+
+      const schoolName =
+        getSchoolNameById(shift.schoolId) ||
+        shift.schoolName ||
+        "所属塾未設定";
+
+      return `（${schoolName}）${shift.studentName || "未設定"}`;
+    }
+
+    function buildSchoolOptionsHtml(selectedSchoolId = "", includeUnset = false) {
+      const options = [];
+
+      if (includeUnset) {
+        options.push(
+          `<option value="" ${selectedSchoolId ? "" : "selected"}>所属塾未設定</option>`
+        );
+      }
+
+      currentSchools
+        .filter((school) => school.active !== false)
+        .forEach((school) => {
+          options.push(
+            `<option value="${escapeHtml(school.id)}" ${
+              school.id === selectedSchoolId ? "selected" : ""
+            }>${escapeHtml(school.name || "名称未設定")}</option>`
+          );
+        });
+
+      return options.join("");
+    }
+
+    function getLocalDateString(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
     // 編集開始
     function startEdit(shiftId) {
       const shift = currentShifts.find((item) => item.id === shiftId);
@@ -1764,10 +3076,13 @@
 
       teacherSelect.value = shift.teacherId || "";
       studentSelect.value = shift.studentId || "";
+      renderShiftSubjectOptions(shift.studentId || "", shift.subjectId || shift.subject || "");
+      shiftSubjectSelect.value = shift.subjectId || shift.subject || "";
       shiftDate.value = shift.date || "";
       startTime.value = shift.startTime || "";
       endTime.value = shift.endTime || "";
       statusSelect.value = normalizeStatus(shift.status);
+      shiftLessonNote.value = shift.lessonNote || "";
 
       formTitle.textContent = "シフト編集";
       saveShiftButton.textContent = "変更を保存";
@@ -1798,10 +3113,13 @@
 
       teacherSelect.value = "";
       studentSelect.value = "";
+      renderShiftSubjectOptions();
+      shiftSubjectSelect.value = "";
       shiftDate.value = "";
       startTime.value = "";
       endTime.value = "";
       statusSelect.value = "tentative";
+      shiftLessonNote.value = "";
 
       formTitle.textContent = "シフト登録";
       saveShiftButton.textContent = "シフトを登録";

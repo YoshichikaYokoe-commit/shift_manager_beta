@@ -1,0 +1,3137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>授業予約</title>
+  <meta name="theme-color" content="#2563eb">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --primary: #2563eb;
+      --primary-soft: #eff6ff;
+      --danger: #b91c1c;
+      --danger-soft: #fff1f2;
+      --success: #166534;
+      --success-soft: #f0fdf4;
+      --warning: #92400e;
+      --warning-soft: #fffbeb;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .page {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 18px 12px 56px;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    .app-title {
+      margin: 4px 0 18px;
+      font-size: 27px;
+      font-weight: 850;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(15, 23, 42, 0.07);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .school-name {
+      font-size: 22px;
+      font-weight: 850;
+      margin-bottom: 4px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .summary-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .summary-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    label {
+      display: block;
+      margin: 13px 0 6px;
+      font-weight: 750;
+    }
+
+    input, select, textarea, button {
+      width: 100%;
+      font-size: 16px;
+      border-radius: 10px;
+    }
+
+    input, select, textarea {
+      padding: 11px 12px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 105px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    button {
+      padding: 11px 14px;
+      border: none;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .primary,
+    #loginButton,
+    .reserveButton {
+      background: var(--primary);
+      color: white;
+    }
+
+    #loginButton { margin-top: 18px; }
+
+    #logoutButton {
+      width: auto;
+      padding: 9px 13px;
+      background: #e5e7eb;
+      color: #374151;
+      font-size: 14px;
+    }
+
+    .secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .danger {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+
+    .tabButton {
+      width: auto;
+      flex: 0 0 auto;
+      padding: 10px 15px;
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .tabButton.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .tabPanel { display: none; }
+    .tabPanel.active { display: block; }
+
+    .section-title {
+      margin-bottom: 6px;
+      font-size: 20px;
+    }
+
+    .section-subtitle {
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .form-grid,
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 14px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .form-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .inline-note {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .info-box,
+    .warning-box,
+    .success-box {
+      padding: 12px 13px;
+      border-radius: 10px;
+      margin: 12px 0;
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+    .info-box {
+      background: var(--primary-soft);
+      color: #1e40af;
+    }
+
+    .warning-box {
+      background: var(--warning-soft);
+      color: var(--warning);
+    }
+
+    .success-box {
+      background: var(--success-soft);
+      color: var(--success);
+    }
+
+    .series-list {
+      margin-top: 18px;
+    }
+
+    .series-card {
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 16px;
+      margin-bottom: 15px;
+      background: #fff;
+    }
+
+    .series-card.inactive {
+      opacity: 0.55;
+      background: #f8fafc;
+    }
+
+    .series-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .series-title {
+      font-size: 18px;
+      font-weight: 850;
+      margin-bottom: 4px;
+    }
+
+    .series-meta {
+      margin: 4px 0;
+      line-height: 1.55;
+    }
+
+    .series-status {
+      flex: 0 0 auto;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 850;
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .series-status.inactive {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+
+    .month-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .month-card {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 13px;
+      background: #fafcff;
+    }
+
+    .month-card.confirmed {
+      background: var(--success-soft);
+      border-color: #bbf7d0;
+    }
+
+    .month-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 9px;
+      font-weight: 850;
+    }
+
+    .month-badge {
+      padding: 3px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 850;
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .month-card.confirmed .month-badge {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .date-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: start;
+      padding: 8px 0;
+      border-top: 1px solid #e8edf3;
+    }
+
+    .date-row:first-of-type {
+      border-top: none;
+    }
+
+    .date-row input[type="checkbox"] {
+      width: auto;
+      margin-top: 3px;
+    }
+
+    .date-main {
+      font-weight: 750;
+      line-height: 1.45;
+    }
+
+    .date-sub {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .date-sub.ok { color: var(--success); }
+    .date-sub.ng { color: var(--danger); }
+    .date-sub.skip { color: var(--warning); }
+
+    .month-confirm-button {
+      margin-top: 10px;
+      background: var(--primary);
+      color: white;
+    }
+
+    .series-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .series-actions button {
+      width: auto;
+      min-width: 120px;
+    }
+
+    .availability-item,
+    .booking-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 15px;
+      margin-bottom: 12px;
+      background: white;
+    }
+
+    .availability-top,
+    .booking-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .item-title {
+      margin-bottom: 5px;
+      font-size: 18px;
+      font-weight: 850;
+    }
+
+    .item-time {
+      margin-bottom: 7px;
+      color: var(--primary);
+      font-size: 17px;
+      font-weight: 850;
+    }
+
+    .item-meta {
+      margin: 5px 0;
+      line-height: 1.55;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 2px;
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-confirmed {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-completed {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-cancelled {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+
+    .booking-item.history,
+    .booking-item.cancelled {
+      opacity: 0.58;
+      background: #f8fafc;
+    }
+
+    .booking-section-title {
+      margin: 20px 0 10px;
+      font-size: 16px;
+      font-weight: 850;
+    }
+
+    .booking-section-title:first-child {
+      margin-top: 0;
+    }
+
+    .details-box {
+      margin-top: 10px;
+      padding-top: 9px;
+      border-top: 1px solid var(--line);
+    }
+
+    .details-box summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: #334155;
+    }
+
+    .details-content {
+      margin-top: 10px;
+      padding: 11px;
+      border-radius: 10px;
+      background: #f8fafc;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+
+    .reserveButton,
+    .cancelButton {
+      margin-top: 11px;
+    }
+
+    .cancelButton {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* ===== 授業カレンダー ===== */
+    .calendar-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .calendar-toolbar-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .calendar-toolbar button {
+      width: auto;
+      min-width: 74px;
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    #calendarMonthLabel {
+      min-width: 120px;
+      text-align: center;
+      font-size: 19px;
+      font-weight: 850;
+    }
+
+    .calendar-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      margin: 10px 0 14px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .calendar-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .calendar-legend-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .calendar-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: white;
+    }
+
+    .school-calendar {
+      min-width: 850px;
+    }
+
+    .calendar-weekdays,
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .calendar-weekday {
+      padding: 9px 6px;
+      text-align: center;
+      font-weight: 850;
+      background: #f8fafc;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .calendar-weekday:last-child { border-right: none; }
+    .calendar-weekday.sunday { color: #b91c1c; }
+    .calendar-weekday.saturday { color: #1d4ed8; }
+
+    .calendar-day {
+      min-height: 126px;
+      padding: 7px;
+      background: #fff;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .calendar-day:nth-child(7n) { border-right: none; }
+    .calendar-day.other-month { background: #f8fafc; color: #94a3b8; }
+    .calendar-day.today { box-shadow: inset 0 0 0 2px #f59e0b; }
+
+    .calendar-date-number {
+      margin-bottom: 5px;
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .calendar-event {
+      display: block;
+      width: 100%;
+      margin-top: 5px;
+      padding: 6px 7px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      text-align: left;
+      font-size: 11px;
+      line-height: 1.35;
+      font-weight: 700;
+      overflow: hidden;
+    }
+
+    .calendar-event.pending { background: #fef3c7; color: #92400e; }
+    .calendar-event.confirmed { background: #dbeafe; color: #1e40af; }
+    .calendar-event.completed { background: #dcfce7; color: #166534; }
+    .calendar-event.cancelled { background: #f3f4f6; color: #6b7280; opacity: .72; text-decoration: line-through; }
+
+    .calendar-event-time {
+      display: block;
+      font-weight: 900;
+    }
+
+    .calendar-empty-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .results-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0 10px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .results-count {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .empty {
+      margin: 0;
+      padding: 26px 6px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .message {
+      min-height: 24px;
+      margin: 10px 0;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .error { color: var(--danger); }
+    .success { color: var(--success); }
+
+    @media (max-width: 780px) {
+      .page { padding: 12px 10px 42px; }
+      .card { padding: 17px; }
+      .app-title { font-size: 24px; }
+
+      .form-grid,
+      .filter-grid,
+      .form-actions,
+      .month-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full { grid-column: auto; }
+
+      .series-head,
+      .availability-top,
+      .booking-top {
+        display: block;
+      }
+
+      .series-status {
+        display: inline-flex;
+        margin-bottom: 8px;
+      }
+    }
+  </style>
+
+  <link rel="manifest" href="/manifest-school.json">
+  <link rel="apple-touch-icon" href="/school-icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="授業予約">
+
+</head>
+
+<body>
+  <div class="page">
+    <h1 class="app-title">授業予約</h1>
+
+    <section id="loginArea" class="card">
+      <h2>塾ログイン</h2>
+
+      <label for="email">メールアドレス</label>
+      <input id="email" type="email" autocomplete="email">
+
+      <label for="password">パスワード</label>
+      <input id="password" type="password" autocomplete="current-password">
+
+      <button id="loginButton">ログイン</button>
+    </section>
+
+    <main id="app" style="display:none;">
+      <section class="card">
+        <div class="topbar">
+          <div>
+            <div id="schoolName" class="school-name">塾</div>
+            <p id="loginEmail" class="muted"></p>
+
+            <div class="summary-row">
+              <span id="studentCountChip" class="summary-chip">生徒 0名</span>
+              <span id="seriesCountChip" class="summary-chip">定期授業 0件</span>
+              <span id="upcomingCountChip" class="summary-chip">予約 0件</span>
+            </div>
+          </div>
+
+          <button id="logoutButton">ログアウト</button>
+        </div>
+      </section>
+
+      <div class="tabs">
+        <button class="tabButton active" data-tab="series">定期授業</button>
+        <button class="tabButton" data-tab="single">単発予約</button>
+        <button class="tabButton" data-tab="calendar">カレンダー</button>
+        <button class="tabButton" data-tab="bookings">予約一覧</button>
+      </div>
+
+      <!-- 定期授業 -->
+      <section id="tab-series" class="tabPanel active">
+        <section class="card">
+          <h2 class="section-title">定期授業を作る</h2>
+          <p class="section-subtitle">
+            「毎週○曜日・○時」を一度登録します。実際の授業は今月＋2か月先まで表示し、
+            月ごとに不要な日だけ外して確定します。
+          </p>
+
+          <div class="form-grid">
+            <div>
+              <label for="seriesStudentSelect">生徒</label>
+              <select id="seriesStudentSelect">
+                <option value="">生徒を選択してください</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="seriesSubjectSelect">教科</label>
+              <select id="seriesSubjectSelect">
+                <option value="">教科を選択してください</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="seriesTeacherSearch">講師名検索</label>
+              <input
+                id="seriesTeacherSearch"
+                type="search"
+                placeholder="例：松家"
+                autocomplete="off"
+              >
+            </div>
+
+            <div>
+              <label for="seriesTeacherSelect">講師</label>
+              <select id="seriesTeacherSelect">
+                <option value="">講師を選択してください</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="seriesWeekday">曜日</label>
+              <select id="seriesWeekday">
+                <option value="1">月曜日</option>
+                <option value="2">火曜日</option>
+                <option value="3">水曜日</option>
+                <option value="4">木曜日</option>
+                <option value="5">金曜日</option>
+                <option value="6">土曜日</option>
+                <option value="0">日曜日</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="seriesStartTime">開始時間</label>
+              <input id="seriesStartTime" type="time">
+            </div>
+
+            <div>
+              <label for="seriesEndTime">終了時間</label>
+              <input id="seriesEndTime" type="time">
+            </div>
+
+            <div class="full">
+              <label for="seriesNote">定期授業メモ</label>
+              <textarea
+                id="seriesNote"
+                placeholder="例：学校の進度に合わせて数学II。テスト前は学校ワーク中心。"
+              ></textarea>
+            </div>
+          </div>
+
+          <div id="seriesFormInfo" class="info-box">
+            登録後、今月・翌月・翌々月の日程が自動で並びます。
+          </div>
+
+          <button id="createSeriesButton" class="primary">
+            定期授業を登録
+          </button>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">定期授業一覧</h2>
+          <p class="section-subtitle">
+            各月のチェックを確認して「○月分を予約依頼」を押すと、その月の授業が講師側の「承認待ち」に届きます。
+          </p>
+
+          <div id="seriesList" class="series-list"></div>
+          <p id="seriesEmpty" class="empty" style="display:none;">
+            定期授業はまだ登録されていません。
+          </p>
+        </section>
+      </section>
+
+      <!-- 単発予約 -->
+      <section id="tab-single" class="tabPanel">
+        <section class="card">
+          <h2 class="section-title">単発授業を予約</h2>
+          <p class="section-subtitle">
+            急な振替や1回だけの授業はこちら。講師の空き枠から直接予約します。
+          </p>
+
+          <div class="filter-grid">
+            <div>
+              <label for="singleStudentFilter">生徒</label>
+              <select id="singleStudentFilter">
+                <option value="">すべての生徒</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="singleSubjectFilter">教科</label>
+              <select id="singleSubjectFilter">
+                <option value="">すべての教科</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="singleTeacherSearch">講師名</label>
+              <input
+                id="singleTeacherSearch"
+                type="search"
+                placeholder="例：松家"
+                autocomplete="off"
+              >
+            </div>
+
+            <div>
+              <label for="singleDateFilter">日付</label>
+              <input id="singleDateFilter" type="date">
+            </div>
+          </div>
+
+          <div class="results-head">
+            <strong>予約可能な枠</strong>
+            <span id="singleResultsCount" class="results-count">0件</span>
+          </div>
+
+          <div id="singleAvailabilityList"></div>
+
+          <p id="singleAvailabilityEmpty" class="empty" style="display:none;">
+            条件に合う空き時間がありません。
+          </p>
+        </section>
+      </section>
+
+      <!-- カレンダー -->
+      <section id="tab-calendar" class="tabPanel">
+        <section class="card">
+          <h2 class="section-title">授業カレンダー</h2>
+          <p class="section-subtitle">
+            この塾の授業を月ごとに表示します。授業を押すと詳細を確認できます。
+          </p>
+
+          <div class="calendar-toolbar">
+            <button id="calendarPrevButton" type="button">← 前月</button>
+            <div class="calendar-toolbar-center">
+              <strong id="calendarMonthLabel"></strong>
+              <button id="calendarTodayButton" type="button">今月</button>
+            </div>
+            <button id="calendarNextButton" type="button">翌月 →</button>
+          </div>
+
+          <div class="calendar-legend">
+            <span class="calendar-legend-item"><span class="calendar-legend-dot" style="background:#fef3c7"></span>承認待ち</span>
+            <span class="calendar-legend-item"><span class="calendar-legend-dot" style="background:#dbeafe"></span>予約確定</span>
+            <span class="calendar-legend-item"><span class="calendar-legend-dot" style="background:#dcfce7"></span>実施済み</span>
+            <span class="calendar-legend-item"><span class="calendar-legend-dot" style="background:#f3f4f6"></span>キャンセル</span>
+          </div>
+
+          <div class="calendar-scroll">
+            <div class="school-calendar">
+              <div class="calendar-weekdays">
+                <div class="calendar-weekday sunday">日</div>
+                <div class="calendar-weekday">月</div>
+                <div class="calendar-weekday">火</div>
+                <div class="calendar-weekday">水</div>
+                <div class="calendar-weekday">木</div>
+                <div class="calendar-weekday">金</div>
+                <div class="calendar-weekday saturday">土</div>
+              </div>
+              <div id="calendarGrid" class="calendar-grid"></div>
+            </div>
+          </div>
+          <p class="calendar-empty-note">キャンセル済みも履歴として薄く表示します。</p>
+        </section>
+      </section>
+
+      <!-- 予約一覧 -->
+      <section id="tab-bookings" class="tabPanel">
+        <section class="card">
+          <h2 class="section-title">予約一覧</h2>
+          <p class="section-subtitle">
+            今後の予約を上に、終了済み・キャンセルを下に表示します。
+          </p>
+
+          <div id="bookingList"></div>
+
+          <p id="bookingEmpty" class="empty" style="display:none;">
+            予約はまだありません。
+          </p>
+        </section>
+      </section>
+    </main>
+
+    <p id="message" class="message"></p>
+  </div>
+
+  <!-- 単発予約ダイアログ代わり -->
+  <div id="singleBookingOverlay" style="display:none;">
+    <div class="page">
+      <section class="card">
+        <h2 class="section-title">単発予約の内容</h2>
+        <div id="singleSelectedSlot" class="info-box"></div>
+
+        <div class="form-grid">
+          <div>
+            <label for="singleStudentSelect">生徒</label>
+            <select id="singleStudentSelect">
+              <option value="">生徒を選択してください</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="singleSubjectSelect">教科</label>
+            <select id="singleSubjectSelect">
+              <option value="">教科を選択してください</option>
+            </select>
+          </div>
+
+          <div class="full">
+            <label for="singleLessonNote">授業予定・連絡事項</label>
+            <textarea
+              id="singleLessonNote"
+              placeholder="例：二次関数の続き、学校ワークp.20〜25"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button id="confirmSingleBookingButton" class="primary">
+            この内容で予約依頼
+          </button>
+          <button id="cancelSingleBookingButton" class="secondary">
+            やめる
+          </button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script type="module">
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      query,
+      where,
+      onSnapshot,
+      addDoc,
+      updateDoc,
+      runTransaction,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBKhOG_ds0dWdcJkJlg6WljpgixLXmloeM",
+      authDomain: "shift-manager-303a5.firebaseapp.com",
+      projectId: "shift-manager-303a5",
+      storageBucket: "shift-manager-303a5.firebasestorage.app",
+      messagingSenderId: "759595895300",
+      appId: "1:759595895300:web:962ac3ee0bc16d0f158351"
+    };
+
+    const firebaseApp = initializeApp(firebaseConfig);
+    const auth = getAuth(firebaseApp);
+    const db = getFirestore(firebaseApp);
+
+    const JUNIOR_SUBJECTS = [
+      { id: "jh_japanese", label: "中学国語" },
+      { id: "jh_math", label: "中学数学" },
+      { id: "jh_english", label: "中学英語" },
+      { id: "jh_science", label: "中学理科" },
+      { id: "jh_social", label: "中学社会" }
+    ];
+
+    const HIGH_SUBJECTS = [
+      { id: "hs_modern_japanese", label: "現代文" },
+      { id: "hs_classical_japanese", label: "古文" },
+      { id: "hs_chinese_classics", label: "漢文" },
+      { id: "hs_math1", label: "数学I" },
+      { id: "hs_mathA", label: "数学A" },
+      { id: "hs_math2", label: "数学II" },
+      { id: "hs_mathB", label: "数学B" },
+      { id: "hs_math3", label: "数学III" },
+      { id: "hs_mathC", label: "数学C" },
+      { id: "hs_english", label: "高校英語" },
+      { id: "hs_physics", label: "物理" },
+      { id: "hs_chemistry", label: "化学" },
+      { id: "hs_biology", label: "生物" },
+      { id: "hs_earth_science", label: "地学" },
+      { id: "hs_japanese_history", label: "日本史" },
+      { id: "hs_world_history", label: "世界史" },
+      { id: "hs_geography", label: "地理" },
+      { id: "hs_public", label: "公共" },
+      { id: "hs_ethics", label: "倫理" },
+      { id: "hs_politics_economics", label: "政治・経済" },
+      { id: "hs_information1", label: "情報I" }
+    ];
+
+    const ALL_SUBJECTS = [...JUNIOR_SUBJECTS, ...HIGH_SUBJECTS];
+    const SUBJECT_LABELS = Object.fromEntries(
+      ALL_SUBJECTS.map((subject) => [subject.id, subject.label])
+    );
+
+    const WEEKDAY_LABELS = {
+      0: "日曜日",
+      1: "月曜日",
+      2: "火曜日",
+      3: "水曜日",
+      4: "木曜日",
+      5: "金曜日",
+      6: "土曜日"
+    };
+
+    // ---- DOM ----
+    const loginArea = document.getElementById("loginArea");
+    const appArea = document.getElementById("app");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const loginButton = document.getElementById("loginButton");
+    const logoutButton = document.getElementById("logoutButton");
+
+    const schoolName = document.getElementById("schoolName");
+    const loginEmail = document.getElementById("loginEmail");
+    const studentCountChip = document.getElementById("studentCountChip");
+    const seriesCountChip = document.getElementById("seriesCountChip");
+    const upcomingCountChip = document.getElementById("upcomingCountChip");
+
+    const seriesStudentSelect = document.getElementById("seriesStudentSelect");
+    const seriesSubjectSelect = document.getElementById("seriesSubjectSelect");
+    const seriesTeacherSearch = document.getElementById("seriesTeacherSearch");
+    const seriesTeacherSelect = document.getElementById("seriesTeacherSelect");
+    const seriesWeekday = document.getElementById("seriesWeekday");
+    const seriesStartTime = document.getElementById("seriesStartTime");
+    const seriesEndTime = document.getElementById("seriesEndTime");
+    const seriesNote = document.getElementById("seriesNote");
+    const seriesFormInfo = document.getElementById("seriesFormInfo");
+    const createSeriesButton = document.getElementById("createSeriesButton");
+    const seriesList = document.getElementById("seriesList");
+    const seriesEmpty = document.getElementById("seriesEmpty");
+
+    const singleStudentFilter = document.getElementById("singleStudentFilter");
+    const singleSubjectFilter = document.getElementById("singleSubjectFilter");
+    const singleTeacherSearch = document.getElementById("singleTeacherSearch");
+    const singleDateFilter = document.getElementById("singleDateFilter");
+    const singleResultsCount = document.getElementById("singleResultsCount");
+    const singleAvailabilityList = document.getElementById("singleAvailabilityList");
+    const singleAvailabilityEmpty = document.getElementById("singleAvailabilityEmpty");
+
+    const bookingList = document.getElementById("bookingList");
+    const bookingEmpty = document.getElementById("bookingEmpty");
+
+    const calendarGrid = document.getElementById("calendarGrid");
+    const calendarMonthLabel = document.getElementById("calendarMonthLabel");
+    const calendarPrevButton = document.getElementById("calendarPrevButton");
+    const calendarNextButton = document.getElementById("calendarNextButton");
+    const calendarTodayButton = document.getElementById("calendarTodayButton");
+
+    const singleBookingOverlay = document.getElementById("singleBookingOverlay");
+    const singleSelectedSlot = document.getElementById("singleSelectedSlot");
+    const singleStudentSelect = document.getElementById("singleStudentSelect");
+    const singleSubjectSelect = document.getElementById("singleSubjectSelect");
+    const singleLessonNote = document.getElementById("singleLessonNote");
+    const confirmSingleBookingButton = document.getElementById("confirmSingleBookingButton");
+    const cancelSingleBookingButton = document.getElementById("cancelSingleBookingButton");
+
+    const message = document.getElementById("message");
+
+    // ---- State ----
+    let currentUser = null;
+    let currentSchool = null;
+    let currentStudents = [];
+    let currentTeachers = [];
+    let currentAvailability = [];
+    let currentBookings = [];
+    let currentSeries = [];
+    let selectedSingleAvailability = null;
+
+    const calendarNow = new Date();
+    let calendarYear = calendarNow.getFullYear();
+    let calendarMonth = calendarNow.getMonth();
+
+    let unsubscribeStudents = null;
+    let unsubscribeTeachers = null;
+    let unsubscribeAvailability = null;
+    let unsubscribeBookings = null;
+    let unsubscribeSeries = null;
+
+    // ---- Tabs ----
+    document.querySelectorAll(".tabButton").forEach((button) => {
+      button.addEventListener("click", () => activateTab(button.dataset.tab));
+    });
+
+    function activateTab(tabName) {
+      document.querySelectorAll(".tabButton").forEach((button) => {
+        button.classList.toggle("active", button.dataset.tab === tabName);
+      });
+
+      document.querySelectorAll(".tabPanel").forEach((panel) => {
+        panel.classList.toggle("active", panel.id === `tab-${tabName}`);
+      });
+
+      if (tabName === "calendar") {
+        renderCalendar();
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    calendarPrevButton.addEventListener("click", () => {
+      calendarMonth -= 1;
+      if (calendarMonth < 0) {
+        calendarMonth = 11;
+        calendarYear -= 1;
+      }
+      renderCalendar();
+    });
+
+    calendarNextButton.addEventListener("click", () => {
+      calendarMonth += 1;
+      if (calendarMonth > 11) {
+        calendarMonth = 0;
+        calendarYear += 1;
+      }
+      renderCalendar();
+    });
+
+    calendarTodayButton.addEventListener("click", () => {
+      const today = new Date();
+      calendarYear = today.getFullYear();
+      calendarMonth = today.getMonth();
+      renderCalendar();
+    });
+
+    // ---- Login ----
+    loginButton.addEventListener("click", async () => {
+      clearMessage();
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        showMessage("メールアドレスとパスワードを入力してください。", true);
+        return;
+      }
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        console.error(error);
+        showMessage("ログインできませんでした。", true);
+      }
+    });
+
+    passwordInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") loginButton.click();
+    });
+
+    logoutButton.addEventListener("click", async () => {
+      await signOut(auth);
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      cleanupListeners();
+
+      currentUser = user;
+      currentSchool = null;
+      currentStudents = [];
+      currentTeachers = [];
+      currentAvailability = [];
+      currentBookings = [];
+      currentSeries = [];
+      selectedSingleAvailability = null;
+
+      if (!user) {
+        loginArea.style.display = "block";
+        appArea.style.display = "none";
+        singleBookingOverlay.style.display = "none";
+        renderAll();
+        return;
+      }
+
+      loginArea.style.display = "none";
+      appArea.style.display = "none";
+      showMessage("塾情報を確認しています…");
+
+      try {
+        const userSnapshot = await getDoc(doc(db, "users", user.uid));
+
+        if (!userSnapshot.exists()) {
+          throw new Error("users document not found");
+        }
+
+        const profile = userSnapshot.data();
+        const roles = Array.isArray(profile.roles) ? profile.roles : [];
+
+        if (profile.active !== true) throw new Error("inactive user");
+        if (!roles.includes("school")) throw new Error("school role required");
+        if (!profile.schoolId) throw new Error("schoolId missing");
+
+        const schoolSnapshot = await getDoc(doc(db, "schools", profile.schoolId));
+
+        if (!schoolSnapshot.exists()) {
+          throw new Error("school document not found");
+        }
+
+        currentSchool = {
+          id: schoolSnapshot.id,
+          ...schoolSnapshot.data()
+        };
+
+        schoolName.textContent = currentSchool.name || "塾";
+        loginEmail.textContent = user.email || "";
+
+        appArea.style.display = "block";
+        clearMessage();
+
+        loadTeachers();
+        loadStudents();
+        loadAvailability();
+        loadBookings();
+        loadSeries();
+
+      } catch (error) {
+        console.error(error);
+
+        showMessage(
+          "このアカウントは塾用アプリを利用できません。users の roles / schoolId を確認してください。",
+          true
+        );
+      }
+    });
+
+    // ---- Loaders ----
+    function loadTeachers() {
+      unsubscribeTeachers = onSnapshot(
+        collection(db, "teachers"),
+        (snapshot) => {
+          const teachers = [];
+
+          snapshot.forEach((document) => {
+            const data = document.data();
+            if (data.active === false) return;
+
+            teachers.push({
+              id: document.id,
+              ...data
+            });
+          });
+
+          teachers.sort((a, b) =>
+            String(a.name || "").localeCompare(String(b.name || ""), "ja")
+          );
+
+          currentTeachers = teachers;
+
+          renderSeriesTeacherOptions();
+          renderSingleAvailability();
+          renderSeriesList();
+
+        },
+        (error) => {
+          console.error(error);
+          showMessage("講師情報の読み込みに失敗しました。", true);
+        }
+      );
+    }
+
+    function loadStudents() {
+      const studentQuery = query(
+        collection(db, "students"),
+        where("schoolId", "==", currentSchool.id)
+      );
+
+      unsubscribeStudents = onSnapshot(
+        studentQuery,
+        (snapshot) => {
+          const students = [];
+
+          snapshot.forEach((document) => {
+            const data = document.data();
+            if (data.active === false) return;
+
+            students.push({
+              id: document.id,
+              ...data
+            });
+          });
+
+          students.sort((a, b) =>
+            String(a.name || "").localeCompare(String(b.name || ""), "ja")
+          );
+
+          currentStudents = students;
+
+          renderStudentOptions();
+          renderSeriesSubjectOptions();
+          renderSingleSubjectFilter();
+          renderSummary();
+          renderSeriesList();
+
+        },
+        (error) => {
+          console.error(error);
+          showMessage("生徒一覧の読み込みに失敗しました。", true);
+        }
+      );
+    }
+
+    function loadAvailability() {
+      unsubscribeAvailability = onSnapshot(
+        collection(db, "availability"),
+        (snapshot) => {
+          const items = [];
+
+          snapshot.forEach((document) => {
+            const data = document.data();
+
+            if (data.active === false) return;
+            if (!data.date) return;
+
+            items.push({
+              id: document.id,
+              ...data
+            });
+          });
+
+          items.sort(compareDateTime);
+          currentAvailability = items;
+
+          renderSeriesList();
+          renderSingleAvailability();
+
+        },
+        (error) => {
+          console.error(error);
+          showMessage("空き時間の読み込みに失敗しました。", true);
+        }
+      );
+    }
+
+    function loadBookings() {
+      const bookingQuery = query(
+        collection(db, "shifts"),
+        where("schoolId", "==", currentSchool.id)
+      );
+
+      unsubscribeBookings = onSnapshot(
+        bookingQuery,
+        (snapshot) => {
+          const bookings = [];
+
+          snapshot.forEach((document) => {
+            bookings.push({
+              id: document.id,
+              ...document.data()
+            });
+          });
+
+          currentBookings = bookings;
+
+          renderBookings();
+          renderCalendar();
+          renderSeriesList();
+          renderSingleAvailability();
+          renderSummary();
+
+        },
+        (error) => {
+          console.error(error);
+          showMessage("予約一覧の読み込みに失敗しました。", true);
+        }
+      );
+    }
+
+    function loadSeries() {
+      const seriesQuery = query(
+        collection(db, "lessonSeries"),
+        where("schoolId", "==", currentSchool.id)
+      );
+
+      unsubscribeSeries = onSnapshot(
+        seriesQuery,
+        (snapshot) => {
+          const series = [];
+
+          snapshot.forEach((document) => {
+            series.push({
+              id: document.id,
+              ...document.data()
+            });
+          });
+
+          series.sort((a, b) => {
+            const av = `${a.studentName || ""} ${a.weekday ?? ""} ${a.startTime || ""}`;
+            const bv = `${b.studentName || ""} ${b.weekday ?? ""} ${b.startTime || ""}`;
+            return av.localeCompare(bv, "ja");
+          });
+
+          currentSeries = series;
+
+          renderSeriesList();
+          renderSummary();
+
+        },
+        (error) => {
+          console.error(error);
+          showMessage(
+            "定期授業の読み込みに失敗しました。Firestore Rules に lessonSeries を追加してください。",
+            true
+          );
+        }
+      );
+    }
+
+    // ---- Student / subject / teacher option linkage ----
+    function renderStudentOptions() {
+      const selects = [
+        seriesStudentSelect,
+        singleStudentFilter,
+        singleStudentSelect
+      ];
+
+      selects.forEach((select) => {
+        const previous = select.value;
+
+        if (select === singleStudentFilter) {
+          select.innerHTML = '<option value="">すべての生徒</option>';
+        } else {
+          select.innerHTML = '<option value="">生徒を選択してください</option>';
+        }
+
+        currentStudents.forEach((student) => {
+          const option = document.createElement("option");
+          option.value = student.id;
+          option.textContent = student.name || "名称未設定";
+          select.appendChild(option);
+        });
+
+        if ([...select.options].some((option) => option.value === previous)) {
+          select.value = previous;
+        }
+      });
+    }
+
+    seriesStudentSelect.addEventListener("change", () => {
+      renderSeriesSubjectOptions();
+      renderSeriesTeacherOptions();
+      updateSeriesFormInfo();
+    });
+
+    seriesSubjectSelect.addEventListener("change", () => {
+      renderSeriesTeacherOptions();
+      updateSeriesFormInfo();
+    });
+
+    seriesTeacherSearch.addEventListener("input", () => {
+      renderSeriesTeacherOptions();
+      updateSeriesFormInfo();
+    });
+
+    seriesTeacherSelect.addEventListener("change", updateSeriesFormInfo);
+    seriesWeekday.addEventListener("change", updateSeriesFormInfo);
+    seriesStartTime.addEventListener("change", updateSeriesFormInfo);
+    seriesEndTime.addEventListener("change", updateSeriesFormInfo);
+
+    function renderSeriesSubjectOptions() {
+      const previous = seriesSubjectSelect.value;
+      const student = getStudentById(seriesStudentSelect.value);
+
+      let subjects = ALL_SUBJECTS;
+
+      if (
+        student &&
+        Array.isArray(student.subjects) &&
+        student.subjects.length > 0
+      ) {
+        subjects = student.subjects.map((id) => ({
+          id,
+          label: SUBJECT_LABELS[id] || id
+        }));
+      }
+
+      seriesSubjectSelect.innerHTML =
+        '<option value="">教科を選択してください</option>';
+
+      subjects
+        .sort((a, b) => a.label.localeCompare(b.label, "ja"))
+        .forEach((subject) => {
+          const option = document.createElement("option");
+          option.value = subject.id;
+          option.textContent = subject.label;
+          seriesSubjectSelect.appendChild(option);
+        });
+
+      if ([...seriesSubjectSelect.options].some((option) => option.value === previous)) {
+        seriesSubjectSelect.value = previous;
+      }
+    }
+
+    function renderSeriesTeacherOptions() {
+      const previous = seriesTeacherSelect.value;
+      const subjectId = seriesSubjectSelect.value;
+      const teacherKeyword = seriesTeacherSearch.value.trim().toLowerCase();
+
+      seriesTeacherSelect.innerHTML =
+        '<option value="">講師を選択してください</option>';
+
+      currentTeachers
+        .filter((teacher) => {
+          const teacherName = String(teacher.name || "").toLowerCase();
+
+          if (teacherKeyword && !teacherName.includes(teacherKeyword)) {
+            return false;
+          }
+
+          if (!subjectId) return true;
+
+          const subjects = Array.isArray(teacher.subjects)
+            ? teacher.subjects
+            : [];
+
+          return subjects.length === 0 || subjects.includes(subjectId);
+        })
+        .forEach((teacher) => {
+          const option = document.createElement("option");
+          option.value = teacher.id;
+
+          const hasSubjects =
+            Array.isArray(teacher.subjects) &&
+            teacher.subjects.length > 0;
+
+          option.textContent =
+            (teacher.name || "名称未設定") +
+            (hasSubjects ? "" : "（教科未設定）");
+
+          seriesTeacherSelect.appendChild(option);
+        });
+
+      if ([...seriesTeacherSelect.options].some((option) => option.value === previous)) {
+        seriesTeacherSelect.value = previous;
+      }
+    }
+
+    function updateSeriesFormInfo() {
+      const student = getStudentById(seriesStudentSelect.value);
+      const teacher = getTeacherById(seriesTeacherSelect.value);
+      const subjectId = seriesSubjectSelect.value;
+      const weekday = Number(seriesWeekday.value);
+
+      if (!student || !teacher || !subjectId || !seriesStartTime.value || !seriesEndTime.value) {
+        seriesFormInfo.textContent =
+          "生徒・教科・講師・曜日・時間を選ぶと、登録内容の確認がここに表示されます。";
+        return;
+      }
+
+      seriesFormInfo.innerHTML = `
+        <strong>${escapeHtml(student.name || "")}</strong> /
+        ${escapeHtml(SUBJECT_LABELS[subjectId] || subjectId)} /
+        ${escapeHtml(teacher.name || "")}<br>
+        毎週 ${escapeHtml(WEEKDAY_LABELS[weekday])}
+        ${escapeHtml(seriesStartTime.value)}〜${escapeHtml(seriesEndTime.value)}
+      `;
+    }
+
+    // ---- Create recurring series ----
+    createSeriesButton.addEventListener("click", async () => {
+      const student = getStudentById(seriesStudentSelect.value);
+      const subjectId = seriesSubjectSelect.value;
+      const teacher = getTeacherById(seriesTeacherSelect.value);
+      const weekday = Number(seriesWeekday.value);
+      const startTime = seriesStartTime.value;
+      const endTime = seriesEndTime.value;
+
+      if (!student) {
+        showMessage("生徒を選択してください。", true);
+        return;
+      }
+
+      if (!subjectId) {
+        showMessage("教科を選択してください。", true);
+        return;
+      }
+
+      if (!teacher) {
+        showMessage("講師を選択してください。", true);
+        return;
+      }
+
+      if (!startTime || !endTime) {
+        showMessage("開始時間と終了時間を入力してください。", true);
+        return;
+      }
+
+      if (endTime <= startTime) {
+        showMessage("終了時間は開始時間より後にしてください。", true);
+        return;
+      }
+
+      const studentSubjects = Array.isArray(student.subjects)
+        ? student.subjects
+        : [];
+
+      if (
+        studentSubjects.length > 0 &&
+        !studentSubjects.includes(subjectId)
+      ) {
+        showMessage("この教科は生徒の受講教科に登録されていません。", true);
+        return;
+      }
+
+      const teacherSubjects = Array.isArray(teacher.subjects)
+        ? teacher.subjects
+        : [];
+
+      if (
+        teacherSubjects.length > 0 &&
+        !teacherSubjects.includes(subjectId)
+      ) {
+        showMessage("この講師は選択した教科を担当可能教科に登録していません。", true);
+        return;
+      }
+
+      const duplicate = currentSeries.some((series) => {
+        return (
+          series.active !== false &&
+          series.studentId === student.id &&
+          Number(series.weekday) === weekday &&
+          series.startTime === startTime &&
+          series.endTime === endTime
+        );
+      });
+
+      if (duplicate) {
+        showMessage("同じ生徒・曜日・時間の定期授業がすでにあります。", true);
+        return;
+      }
+
+      createSeriesButton.disabled = true;
+      createSeriesButton.textContent = "登録しています…";
+
+      try {
+        await addDoc(collection(db, "lessonSeries"), {
+          schoolId: currentSchool.id,
+          schoolName: currentSchool.name || "",
+          studentId: student.id,
+          studentName: student.name || "",
+          teacherId: teacher.id,
+          teacherName: teacher.name || "",
+          subjectId,
+          subjectName: SUBJECT_LABELS[subjectId] || subjectId,
+          weekday,
+          startTime,
+          endTime,
+          note: seriesNote.value.trim(),
+          active: true,
+          confirmedMonths: [],
+          excludedDates: [],
+          createdByUid: currentUser.uid,
+          createdByEmail: currentUser.email || "",
+          createdAt: serverTimestamp()
+        });
+
+        seriesStudentSelect.value = "";
+        seriesSubjectSelect.value = "";
+        seriesTeacherSearch.value = "";
+        seriesTeacherSelect.value = "";
+        seriesStartTime.value = "";
+        seriesEndTime.value = "";
+        seriesNote.value = "";
+        renderSeriesSubjectOptions();
+        renderSeriesTeacherOptions();
+        updateSeriesFormInfo();
+
+        showMessage("定期授業を登録しました。月ごとの日程を確認してください。");
+
+      } catch (error) {
+        console.error(error);
+        showMessage("定期授業の登録に失敗しました。", true);
+      } finally {
+        createSeriesButton.disabled = false;
+        createSeriesButton.textContent = "定期授業を登録";
+      }
+    });
+
+    // ---- Render recurring series ----
+    function renderSeriesList() {
+      seriesList.innerHTML = "";
+
+      if (currentSeries.length === 0) {
+        seriesEmpty.style.display = "block";
+        return;
+      }
+
+      seriesEmpty.style.display = "none";
+
+      currentSeries.forEach((series) => {
+        const card = document.createElement("div");
+        card.className = "series-card";
+
+        if (series.active === false) {
+          card.classList.add("inactive");
+        }
+
+        const confirmedMonths = Array.isArray(series.confirmedMonths)
+          ? series.confirmedMonths
+          : [];
+
+        const monthBlocks = getNextThreeMonthKeys()
+          .map((monthKey) => renderMonthBlock(series, monthKey, confirmedMonths))
+          .join("");
+
+        card.innerHTML = `
+          <div class="series-head">
+            <div>
+              <div class="series-title">
+                ${escapeHtml(series.studentName || "生徒未設定")}
+                / ${escapeHtml(series.subjectName || SUBJECT_LABELS[series.subjectId] || "教科未設定")}
+              </div>
+
+              <div class="series-meta">
+                講師：<strong>${escapeHtml(series.teacherName || "未設定")}</strong>
+              </div>
+
+              <div class="series-meta">
+                毎週 ${escapeHtml(WEEKDAY_LABELS[Number(series.weekday)] || "")}
+                ${escapeHtml(series.startTime || "")}〜${escapeHtml(series.endTime || "")}
+              </div>
+
+              ${
+                series.note
+                  ? `<div class="series-meta muted">${escapeHtml(series.note)}</div>`
+                  : ""
+              }
+            </div>
+
+            <span class="series-status ${series.active === false ? "inactive" : ""}">
+              ${series.active === false ? "停止中" : "継続中"}
+            </span>
+          </div>
+
+          ${
+            series.active === false
+              ? '<div class="warning-box">この定期授業は停止中です。新しい月の確定はできません。</div>'
+              : `<div class="month-grid">${monthBlocks}</div>`
+          }
+
+          <div class="series-actions">
+            ${
+              series.active === false
+                ? `<button class="secondary reactivateSeriesButton" data-id="${series.id}">再開する</button>`
+                : `<button class="danger stopSeriesButton" data-id="${series.id}">定期授業を停止</button>`
+            }
+          </div>
+        `;
+
+        seriesList.appendChild(card);
+      });
+
+      document.querySelectorAll(".confirmMonthButton").forEach((button) => {
+        button.addEventListener("click", () => {
+          confirmSeriesMonth(button.dataset.seriesId, button.dataset.month);
+        });
+      });
+
+      document.querySelectorAll(".stopSeriesButton").forEach((button) => {
+        button.addEventListener("click", () => setSeriesActive(button.dataset.id, false));
+      });
+
+      document.querySelectorAll(".reactivateSeriesButton").forEach((button) => {
+        button.addEventListener("click", () => setSeriesActive(button.dataset.id, true));
+      });
+    }
+
+    function renderMonthBlock(series, monthKey, confirmedMonths) {
+      const dates = getWeekdayDatesForMonth(
+        monthKey,
+        Number(series.weekday)
+      );
+
+      const today = getLocalDateString(new Date());
+
+      const existingSeriesShifts = currentBookings.filter((shift) => {
+        return (
+          shift.seriesId === series.id &&
+          String(shift.date || "").startsWith(monthKey)
+        );
+      });
+
+      // 旧バグで confirmedMonths だけ保存され、shift が1件も作られていない月は
+      // 「依頼済み」とみなさず、再度チェック・依頼できるようにする。
+      const hasLiveShift = existingSeriesShifts.some(
+        (shift) => shift.status !== "cancelled"
+      );
+
+      const confirmed =
+        confirmedMonths.includes(monthKey) &&
+        hasLiveShift;
+
+      const rows = dates
+        .filter((dateString) => dateString >= today)
+        .map((dateString) => {
+          const existingShift = existingSeriesShifts.find(
+            (shift) => shift.date === dateString && shift.status !== "cancelled"
+          );
+
+          if (existingShift) {
+            return `
+              <div class="date-row">
+                <input type="checkbox" checked disabled>
+                <div>
+                  <div class="date-main">${escapeHtml(formatDate(dateString))}</div>
+                  <div class="date-sub ok">${
+                    existingShift.approvalStatus === "pending"
+                      ? "講師の承認待ち"
+                      : "予約済み"
+                  }</div>
+                </div>
+              </div>
+            `;
+          }
+
+          const availability = findMatchingAvailability(
+            series.teacherId,
+            dateString,
+            series.startTime,
+            series.endTime
+          );
+
+          // 定期授業は「講師の承認」が最終ゲート。
+          // availability が未登録でも、学校は予約依頼を送れる。
+          const checked = !confirmed;
+
+          return `
+            <div class="date-row">
+              <input
+                type="checkbox"
+                class="monthDateCheckbox"
+                data-series-id="${series.id}"
+                data-month="${monthKey}"
+                data-date="${dateString}"
+                data-availability-id="${availability?.id || ""}"
+                ${checked ? "checked" : ""}
+                ${confirmed ? "disabled" : ""}
+              >
+              <div>
+                <div class="date-main">${escapeHtml(formatDate(dateString))}</div>
+                <div class="date-sub ${availability ? "ok" : "skip"}">
+                  ${
+                    availability
+                      ? `講師の空き登録あり ${escapeHtml(availability.startTime || "")}〜${escapeHtml(availability.endTime || "")}`
+                      : "空き時間の事前登録なし → 講師へ承認依頼します"
+                  }
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+
+      const displayRows = rows || `
+        <div class="date-sub skip">
+          この月に今後の対象日はありません。
+        </div>
+      `;
+
+      return `
+        <div class="month-card ${confirmed ? "confirmed" : ""}">
+          <div class="month-title">
+            <span>${escapeHtml(formatMonthKey(monthKey))}</span>
+            <span class="month-badge">${confirmed ? "依頼済み" : "未依頼"}</span>
+          </div>
+
+          ${displayRows}
+
+          ${
+            confirmed
+              ? '<div class="success-box">この月は予約依頼済みです。個別の状態は「予約一覧」から確認します。</div>'
+              : series.active === false
+                ? ""
+                : `<button
+                    class="month-confirm-button confirmMonthButton"
+                    data-series-id="${series.id}"
+                    data-month="${monthKey}"
+                   >
+                    ${escapeHtml(formatMonthKey(monthKey))}分を予約依頼
+                   </button>`
+          }
+        </div>
+      `;
+    }
+
+    async function confirmSeriesMonth(seriesId, monthKey) {
+      const series = currentSeries.find((item) => item.id === seriesId);
+
+      if (!series || series.active === false) {
+        showMessage("この定期授業は確定できません。", true);
+        return;
+      }
+
+      const checkboxes = [
+        ...document.querySelectorAll(
+          `.monthDateCheckbox[data-series-id="${seriesId}"][data-month="${monthKey}"]`
+        )
+      ];
+
+      const selectedRows = checkboxes
+        .filter((checkbox) => checkbox.checked && !checkbox.disabled)
+        .map((checkbox) => ({
+          date: checkbox.dataset.date,
+          availabilityId: checkbox.dataset.availabilityId
+        }));
+
+      const allDates = getWeekdayDatesForMonth(
+        monthKey,
+        Number(series.weekday)
+      ).filter((dateString) => dateString >= getLocalDateString(new Date()));
+
+      const selectedDateSet = new Set(selectedRows.map((row) => row.date));
+      const excludedDatesForMonth = allDates.filter(
+        (dateString) => !selectedDateSet.has(dateString)
+      );
+
+      const existingLiveMonthShifts = currentBookings.filter((shift) => {
+        return (
+          shift.seriesId === seriesId &&
+          String(shift.date || "").startsWith(monthKey) &&
+          shift.status !== "cancelled"
+        );
+      });
+
+      if (selectedRows.length === 0) {
+        const noLessonOk = confirm(
+          `${formatMonthKey(monthKey)}は選択された授業日が0件です。\n\n` +
+          "この月は授業なしとして登録しますか？"
+        );
+
+        if (!noLessonOk) return;
+      }
+
+      const ok = confirm(
+        `${formatMonthKey(monthKey)}分を予約依頼します。\n\n` +
+        `授業を作成：${selectedRows.length}件\n` +
+        `除外：${excludedDatesForMonth.length}件\n\n` +
+        "依頼後、講師が承認すると正式な授業予定になります。"
+      );
+
+      if (!ok) return;
+
+      const button = document.querySelector(
+        `.confirmMonthButton[data-series-id="${seriesId}"][data-month="${monthKey}"]`
+      );
+
+      if (button) {
+        button.disabled = true;
+        button.textContent = "確定しています…";
+      }
+
+      try {
+        const seriesRef = doc(db, "lessonSeries", seriesId);
+
+        await runTransaction(db, async (transaction) => {
+          const seriesSnapshot = await transaction.get(seriesRef);
+
+          if (!seriesSnapshot.exists()) {
+            throw new Error("SERIES_NOT_FOUND");
+          }
+
+          const latestSeries = seriesSnapshot.data();
+          const confirmedMonths = Array.isArray(latestSeries.confirmedMonths)
+            ? latestSeries.confirmedMonths
+            : [];
+
+          if (
+            confirmedMonths.includes(monthKey) &&
+            existingLiveMonthShifts.length > 0
+          ) {
+            throw new Error("MONTH_ALREADY_CONFIRMED");
+          }
+
+          const availabilityEntries = [];
+
+          // Firestore transaction は全 read を write より先に行う。
+          // availability が存在する日だけ、その枠も仮押さえする。
+          for (const row of selectedRows) {
+            if (!row.availabilityId) {
+              availabilityEntries.push({
+                row,
+                ref: null,
+                snapshot: null
+              });
+              continue;
+            }
+
+            const availabilityRef = doc(
+              db,
+              "availability",
+              row.availabilityId
+            );
+
+            const availabilitySnapshot =
+              await transaction.get(availabilityRef);
+
+            availabilityEntries.push({
+              row,
+              ref: availabilityRef,
+              snapshot: availabilitySnapshot
+            });
+          }
+
+          for (const entry of availabilityEntries) {
+            if (!entry.ref) continue;
+
+            if (!entry.snapshot || !entry.snapshot.exists()) {
+              throw new Error("AVAILABILITY_NOT_FOUND");
+            }
+
+            const availabilityData = entry.snapshot.data();
+
+            if (
+              (availabilityData.status || "open") !== "open" ||
+              availabilityData.active === false
+            ) {
+              throw new Error("AVAILABILITY_ALREADY_BOOKED");
+            }
+
+            if (
+              availabilityData.teacherId !== series.teacherId ||
+              availabilityData.date !== entry.row.date ||
+              availabilityData.startTime > series.startTime ||
+              availabilityData.endTime < series.endTime
+            ) {
+              throw new Error("AVAILABILITY_MISMATCH");
+            }
+          }
+
+          for (const entry of availabilityEntries) {
+            const shiftRef = doc(collection(db, "shifts"));
+
+            transaction.set(shiftRef, {
+              seriesId,
+              teacherId: series.teacherId,
+              teacherName: series.teacherName || "",
+              studentId: series.studentId,
+              studentName: series.studentName || "",
+              schoolId: currentSchool.id,
+              schoolName: currentSchool.name || "",
+              availabilityId: entry.row.availabilityId || "",
+              subjectId: series.subjectId,
+              subjectName:
+                series.subjectName ||
+                SUBJECT_LABELS[series.subjectId] ||
+                series.subjectId,
+              lessonNote: series.note || "",
+              date: entry.row.date,
+              startTime: series.startTime,
+              endTime: series.endTime,
+              status: "tentative",
+              approvalStatus: "pending",
+              requestedByRole: "school",
+              requestedByUid: currentUser.uid,
+              requestedAt: serverTimestamp(),
+              createdFrom: "lessonSeries",
+              createdByUid: currentUser.uid,
+              createdByEmail: currentUser.email || "",
+              createdAt: serverTimestamp()
+            });
+
+            if (entry.ref) {
+              transaction.update(entry.ref, {
+                status: "requested",
+                requestedShiftId: shiftRef.id,
+                requestedBySchoolId: currentSchool.id,
+                requestedAt: serverTimestamp(),
+                updatedAt: serverTimestamp()
+              });
+            }
+          }
+
+          const oldExcludedDates = Array.isArray(latestSeries.excludedDates)
+            ? latestSeries.excludedDates.filter(
+                (dateString) => !String(dateString).startsWith(monthKey)
+              )
+            : [];
+
+          transaction.update(seriesRef, {
+            confirmedMonths: [...new Set([...confirmedMonths, monthKey])],
+            excludedDates: [...oldExcludedDates, ...excludedDatesForMonth],
+            updatedAt: serverTimestamp()
+          });
+        });
+
+        showMessage(
+          `${formatMonthKey(monthKey)}分を予約依頼しました。講師の承認待ちです。`
+        );
+
+      } catch (error) {
+        console.error(error);
+
+        if (error.message === "MONTH_ALREADY_CONFIRMED") {
+          showMessage("この月はすでに確定済みです。", true);
+        } else if (error.message === "AVAILABILITY_ALREADY_BOOKED") {
+          showMessage(
+            "予約依頼中に他の依頼が入りました。日程を再確認してください。",
+            true
+          );
+        } else {
+          showMessage(
+            "予約依頼に失敗しました。Firestore Rules または予約状態を確認してください。",
+            true
+          );
+        }
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.textContent = `${formatMonthKey(monthKey)}分を予約依頼`;
+        }
+      }
+    }
+
+    async function setSeriesActive(seriesId, active) {
+      const series = currentSeries.find((item) => item.id === seriesId);
+
+      if (!series) return;
+
+      const action = active ? "再開" : "停止";
+
+      if (
+        !confirm(
+          `${series.studentName || "この生徒"}の定期授業を${action}しますか？\n\n` +
+          (active
+            ? "未確定の月を再び確定できるようになります。"
+            : "すでに確定済みの授業はキャンセルされません。")
+        )
+      ) {
+        return;
+      }
+
+      try {
+        await updateDoc(doc(db, "lessonSeries", seriesId), {
+          active,
+          updatedAt: serverTimestamp()
+        });
+
+        showMessage(`定期授業を${action}しました。`);
+
+      } catch (error) {
+        console.error(error);
+        showMessage(`定期授業の${action}に失敗しました。`, true);
+      }
+    }
+
+    // ---- Single booking ----
+    singleStudentFilter.addEventListener("change", () => {
+      renderSingleSubjectFilter();
+      renderSingleAvailability();
+    });
+
+    singleSubjectFilter.addEventListener("change", renderSingleAvailability);
+    singleTeacherSearch.addEventListener("input", renderSingleAvailability);
+    singleDateFilter.addEventListener("change", renderSingleAvailability);
+
+    function renderSingleSubjectFilter() {
+      const previous = singleSubjectFilter.value;
+      const student = getStudentById(singleStudentFilter.value);
+
+      let subjects = ALL_SUBJECTS;
+
+      if (
+        student &&
+        Array.isArray(student.subjects) &&
+        student.subjects.length > 0
+      ) {
+        subjects = student.subjects.map((id) => ({
+          id,
+          label: SUBJECT_LABELS[id] || id
+        }));
+      }
+
+      singleSubjectFilter.innerHTML =
+        '<option value="">すべての教科</option>';
+
+      subjects
+        .sort((a, b) => a.label.localeCompare(b.label, "ja"))
+        .forEach((subject) => {
+          const option = document.createElement("option");
+          option.value = subject.id;
+          option.textContent = subject.label;
+          singleSubjectFilter.appendChild(option);
+        });
+
+      if ([...singleSubjectFilter.options].some((option) => option.value === previous)) {
+        singleSubjectFilter.value = previous;
+      }
+    }
+
+    function renderSingleAvailability() {
+      singleAvailabilityList.innerHTML = "";
+
+      const today = getLocalDateString(new Date());
+      const subjectId = singleSubjectFilter.value;
+      const teacherKeyword = singleTeacherSearch.value.trim().toLowerCase();
+      const selectedDate = singleDateFilter.value;
+
+      const filtered = currentAvailability.filter((item) => {
+        if (item.date < today) return false;
+        if ((item.status || "open") !== "open") return false;
+
+        const teacher = getTeacherById(item.teacherId);
+
+        if (teacherKeyword) {
+          const teacherName = String(
+            item.teacherName || teacher?.name || ""
+          ).toLowerCase();
+
+          if (!teacherName.includes(teacherKeyword)) return false;
+        }
+
+        if (selectedDate && item.date !== selectedDate) return false;
+
+        if (subjectId) {
+          const teacherSubjects = Array.isArray(teacher?.subjects)
+            ? teacher.subjects
+            : [];
+
+          if (
+            teacherSubjects.length > 0 &&
+            !teacherSubjects.includes(subjectId)
+          ) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      filtered.sort(compareDateTime);
+      singleResultsCount.textContent = `${filtered.length}件`;
+
+      if (filtered.length === 0) {
+        singleAvailabilityEmpty.style.display = "block";
+        return;
+      }
+
+      singleAvailabilityEmpty.style.display = "none";
+
+      filtered.forEach((item) => {
+        const teacher = getTeacherById(item.teacherId);
+        const teacherName =
+          item.teacherName ||
+          teacher?.name ||
+          "講師";
+
+        const teacherSubjects = Array.isArray(teacher?.subjects)
+          ? teacher.subjects
+          : [];
+
+        const card = document.createElement("div");
+        card.className = "availability-item";
+
+        card.innerHTML = `
+          <div class="availability-top">
+            <div>
+              <div class="item-title">${escapeHtml(teacherName)}</div>
+              <div class="item-time">
+                ${escapeHtml(formatDate(item.date))}
+                ${escapeHtml(item.startTime || "")}〜${escapeHtml(item.endTime || "")}
+              </div>
+            </div>
+          </div>
+
+          <div class="badge-row">
+            ${
+              teacherSubjects.length
+                ? teacherSubjects
+                    .slice(0, 8)
+                    .map((id) =>
+                      `<span class="badge">${escapeHtml(SUBJECT_LABELS[id] || id)}</span>`
+                    )
+                    .join("")
+                : '<span class="muted">担当教科未設定</span>'
+            }
+          </div>
+
+          <button class="reserveButton singleReserveButton" data-id="${item.id}">
+            この枠を予約
+          </button>
+        `;
+
+        singleAvailabilityList.appendChild(card);
+      });
+
+      document.querySelectorAll(".singleReserveButton").forEach((button) => {
+        button.addEventListener("click", () => openSingleBooking(button.dataset.id));
+      });
+    }
+
+    function openSingleBooking(availabilityId) {
+      const availability = currentAvailability.find(
+        (item) => item.id === availabilityId
+      );
+
+      if (!availability) {
+        showMessage("空き枠が見つかりませんでした。", true);
+        return;
+      }
+
+      selectedSingleAvailability = availability;
+
+      const teacher = getTeacherById(availability.teacherId);
+
+      singleSelectedSlot.innerHTML = `
+        <strong>${escapeHtml(availability.teacherName || teacher?.name || "講師")}</strong><br>
+        ${escapeHtml(formatDate(availability.date))}
+        ${escapeHtml(availability.startTime || "")}〜${escapeHtml(availability.endTime || "")}
+      `;
+
+      if (
+        singleStudentFilter.value &&
+        currentStudents.some((student) => student.id === singleStudentFilter.value)
+      ) {
+        singleStudentSelect.value = singleStudentFilter.value;
+      } else {
+        singleStudentSelect.value = "";
+      }
+
+      renderSingleBookingSubjectOptions();
+
+      if (
+        singleSubjectFilter.value &&
+        [...singleSubjectSelect.options].some(
+          (option) => option.value === singleSubjectFilter.value
+        )
+      ) {
+        singleSubjectSelect.value = singleSubjectFilter.value;
+      }
+
+      singleLessonNote.value = "";
+      singleBookingOverlay.style.display = "block";
+      singleBookingOverlay.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    singleStudentSelect.addEventListener("change", renderSingleBookingSubjectOptions);
+
+    function renderSingleBookingSubjectOptions() {
+      const previous = singleSubjectSelect.value;
+      const student = getStudentById(singleStudentSelect.value);
+      const teacher = selectedSingleAvailability
+        ? getTeacherById(selectedSingleAvailability.teacherId)
+        : null;
+
+      const studentSubjects = Array.isArray(student?.subjects)
+        ? student.subjects
+        : [];
+
+      const teacherSubjects = Array.isArray(teacher?.subjects)
+        ? teacher.subjects
+        : [];
+
+      let subjectIds = ALL_SUBJECTS.map((subject) => subject.id);
+
+      if (studentSubjects.length > 0) {
+        subjectIds = studentSubjects;
+      }
+
+      if (teacherSubjects.length > 0) {
+        subjectIds = subjectIds.filter((id) => teacherSubjects.includes(id));
+      }
+
+      singleSubjectSelect.innerHTML =
+        '<option value="">教科を選択してください</option>';
+
+      [...new Set(subjectIds)]
+        .map((id) => ({
+          id,
+          label: SUBJECT_LABELS[id] || id
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label, "ja"))
+        .forEach((subject) => {
+          const option = document.createElement("option");
+          option.value = subject.id;
+          option.textContent = subject.label;
+          singleSubjectSelect.appendChild(option);
+        });
+
+      if ([...singleSubjectSelect.options].some((option) => option.value === previous)) {
+        singleSubjectSelect.value = previous;
+      }
+    }
+
+    cancelSingleBookingButton.addEventListener("click", () => {
+      selectedSingleAvailability = null;
+      singleBookingOverlay.style.display = "none";
+    });
+
+    confirmSingleBookingButton.addEventListener("click", async () => {
+      if (!selectedSingleAvailability) return;
+
+      const student = getStudentById(singleStudentSelect.value);
+      const subjectId = singleSubjectSelect.value;
+
+      if (!student) {
+        showMessage("生徒を選択してください。", true);
+        return;
+      }
+
+      if (!subjectId) {
+        showMessage("教科を選択してください。", true);
+        return;
+      }
+
+      const availabilityRef = doc(
+        db,
+        "availability",
+        selectedSingleAvailability.id
+      );
+
+      const shiftRef = doc(collection(db, "shifts"));
+
+      confirmSingleBookingButton.disabled = true;
+      confirmSingleBookingButton.textContent = "予約しています…";
+
+      try {
+        await runTransaction(db, async (transaction) => {
+          const snapshot = await transaction.get(availabilityRef);
+
+          if (!snapshot.exists()) {
+            throw new Error("AVAILABILITY_NOT_FOUND");
+          }
+
+          const data = snapshot.data();
+
+          if ((data.status || "open") !== "open" || data.active === false) {
+            throw new Error("ALREADY_BOOKED");
+          }
+
+          transaction.set(shiftRef, {
+            teacherId: data.teacherId,
+            teacherName:
+              data.teacherName ||
+              selectedSingleAvailability.teacherName ||
+              "",
+            studentId: student.id,
+            studentName: student.name || "",
+            schoolId: currentSchool.id,
+            schoolName: currentSchool.name || "",
+            availabilityId: selectedSingleAvailability.id,
+            subjectId,
+            subjectName: SUBJECT_LABELS[subjectId] || subjectId,
+            lessonNote: singleLessonNote.value.trim(),
+            date: data.date,
+            startTime: data.startTime,
+            endTime: data.endTime,
+            status: "tentative",
+            approvalStatus: "pending",
+            requestedByRole: "school",
+            requestedByUid: currentUser.uid,
+            requestedAt: serverTimestamp(),
+            createdFrom: "single",
+            createdByUid: currentUser.uid,
+            createdByEmail: currentUser.email || "",
+            createdAt: serverTimestamp()
+          });
+
+          transaction.update(availabilityRef, {
+            status: "requested",
+            requestedShiftId: shiftRef.id,
+            requestedBySchoolId: currentSchool.id,
+            requestedAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          });
+        });
+
+        selectedSingleAvailability = null;
+        singleBookingOverlay.style.display = "none";
+        showMessage("単発授業の予約依頼を送りました。講師の承認待ちです。");
+        activateTab("bookings");
+
+      } catch (error) {
+        console.error(error);
+        showMessage(
+          error.message === "ALREADY_BOOKED"
+            ? "この枠は先に予約されました。"
+            : "予約に失敗しました。",
+          true
+        );
+      } finally {
+        confirmSingleBookingButton.disabled = false;
+        confirmSingleBookingButton.textContent = "この内容で予約依頼";
+      }
+    });
+
+    // ---- Booking list / cancellation ----
+    function renderCalendar() {
+      if (!calendarGrid || !calendarMonthLabel) return;
+
+      calendarMonthLabel.textContent = `${calendarYear}年${calendarMonth + 1}月`;
+      calendarGrid.innerHTML = "";
+
+      const firstDay = new Date(calendarYear, calendarMonth, 1);
+      const firstWeekday = firstDay.getDay();
+      const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+      const prevMonthDays = new Date(calendarYear, calendarMonth, 0).getDate();
+
+      // 6週間固定にして月替わりでもレイアウトを安定させる
+      for (let cellIndex = 0; cellIndex < 42; cellIndex++) {
+        let year = calendarYear;
+        let month = calendarMonth;
+        let dayNumber;
+        let isOtherMonth = false;
+
+        if (cellIndex < firstWeekday) {
+          dayNumber = prevMonthDays - firstWeekday + cellIndex + 1;
+          month -= 1;
+          isOtherMonth = true;
+          if (month < 0) { month = 11; year -= 1; }
+        } else if (cellIndex >= firstWeekday + daysInMonth) {
+          dayNumber = cellIndex - (firstWeekday + daysInMonth) + 1;
+          month += 1;
+          isOtherMonth = true;
+          if (month > 11) { month = 0; year += 1; }
+        } else {
+          dayNumber = cellIndex - firstWeekday + 1;
+        }
+
+        const dateString = toCalendarDateString(year, month, dayNumber);
+        const dayCell = document.createElement("div");
+        dayCell.className = "calendar-day";
+        if (isOtherMonth) dayCell.classList.add("other-month");
+        if (dateString === getLocalDateString(new Date())) dayCell.classList.add("today");
+
+        const dateNumber = document.createElement("div");
+        dateNumber.className = "calendar-date-number";
+        dateNumber.textContent = dayNumber;
+        dayCell.appendChild(dateNumber);
+
+        const shifts = currentBookings
+          .filter((shift) => shift.date === dateString)
+          .sort(compareDateTime);
+
+        shifts.forEach((shift) => {
+          const eventButton = document.createElement("button");
+          eventButton.type = "button";
+          eventButton.className = `calendar-event ${getCalendarStatusClass(shift)}`;
+          eventButton.innerHTML = `
+            <span class="calendar-event-time">${escapeHtml(shift.startTime || "")}〜${escapeHtml(shift.endTime || "")}</span>
+            ${escapeHtml(shift.studentName || "生徒未設定")}<br>
+            ${escapeHtml(shift.teacherName || "講師未設定")}<br>
+            ${escapeHtml(shift.subjectName || SUBJECT_LABELS[shift.subjectId] || "")}
+          `;
+
+          eventButton.addEventListener("click", (event) => {
+            event.stopPropagation();
+            showCalendarShiftDetail(shift);
+          });
+
+          dayCell.appendChild(eventButton);
+        });
+
+        calendarGrid.appendChild(dayCell);
+      }
+    }
+
+    function getCalendarStatusClass(shift) {
+      if (shift.status === "cancelled") return "cancelled";
+      if (shift.status === "completed") return "completed";
+      if (shift.approvalStatus === "pending" || shift.status === "tentative") return "pending";
+      return "confirmed";
+    }
+
+    function getCalendarStatusLabel(shift) {
+      const statusClass = getCalendarStatusClass(shift);
+      const labels = {
+        pending: "講師承認待ち",
+        confirmed: "予約確定",
+        completed: "実施済み",
+        cancelled: "キャンセル"
+      };
+      return labels[statusClass] || "予約";
+    }
+
+    function showCalendarShiftDetail(shift) {
+      const detail = [
+        formatDate(shift.date),
+        `${shift.startTime || ""}〜${shift.endTime || ""}`,
+        `生徒：${shift.studentName || "未設定"}`,
+        `講師：${shift.teacherName || "未設定"}`,
+        `教科：${shift.subjectName || SUBJECT_LABELS[shift.subjectId] || "未設定"}`,
+        `状態：${getCalendarStatusLabel(shift)}`,
+        shift.lessonNote ? `メモ：${shift.lessonNote}` : ""
+      ].filter(Boolean).join("\n");
+
+      alert(detail);
+    }
+
+    function toCalendarDateString(year, monthIndex, day) {
+      return `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    }
+
+    function renderBookings() {
+      bookingList.innerHTML = "";
+
+      if (currentBookings.length === 0) {
+        bookingEmpty.style.display = "block";
+        return;
+      }
+
+      bookingEmpty.style.display = "none";
+
+      const upcoming = [];
+      const history = [];
+      const cancelled = [];
+
+      currentBookings.forEach((shift) => {
+        const status = shift.status || "confirmed";
+
+        if (status === "cancelled") {
+          cancelled.push(shift);
+        } else if (status === "completed" || isShiftPast(shift)) {
+          history.push(shift);
+        } else {
+          upcoming.push(shift);
+        }
+      });
+
+      upcoming.sort(compareDateTime);
+      history.sort((a, b) => compareDateTime(b, a));
+      cancelled.sort((a, b) => compareDateTime(b, a));
+
+      appendBookingSection("今後の予約", upcoming, "upcoming");
+      appendBookingSection("終了した授業", history, "history");
+      appendBookingSection("キャンセル", cancelled, "cancelled");
+    }
+
+    function appendBookingSection(title, shifts, type) {
+      if (shifts.length === 0) return;
+
+      const heading = document.createElement("div");
+      heading.className = "booking-section-title";
+      heading.textContent = `${title}（${shifts.length}件）`;
+      bookingList.appendChild(heading);
+
+      shifts.forEach((shift) => {
+        const status = shift.status || "confirmed";
+        const card = document.createElement("div");
+        card.className = "booking-item";
+
+        if (type === "history") card.classList.add("history");
+        if (type === "cancelled") card.classList.add("cancelled");
+
+        const statusClass =
+          shift.approvalStatus === "pending"
+            ? "status-pending"
+            : status === "cancelled"
+              ? "status-cancelled"
+              : status === "completed"
+                ? "status-completed"
+                : "status-confirmed";
+
+        const statusLabel =
+          shift.approvalStatus === "pending"
+            ? "講師の承認待ち"
+            : shift.approvalStatus === "rejected"
+              ? "講師が却下"
+              : status === "cancelled"
+                ? "キャンセル"
+                : status === "completed"
+                  ? "実施済み"
+                  : isShiftPast(shift)
+                    ? "終了"
+                    : "予約確定";
+
+        card.innerHTML = `
+          <div class="booking-top">
+            <div>
+              <div class="item-title">${escapeHtml(shift.teacherName || "講師")}</div>
+              <div class="item-time">
+                ${escapeHtml(formatDate(shift.date))}
+                ${escapeHtml(shift.startTime || "")}〜${escapeHtml(shift.endTime || "")}
+              </div>
+            </div>
+
+            <span class="status ${statusClass}">${statusLabel}</span>
+          </div>
+
+          <div class="item-meta">
+            生徒：<strong>${escapeHtml(shift.studentName || "未設定")}</strong>
+          </div>
+
+          <div class="item-meta">
+            教科：${escapeHtml(
+              shift.subjectName ||
+              SUBJECT_LABELS[shift.subjectId] ||
+              "未設定"
+            )}
+            ${
+              shift.seriesId
+                ? '　<span class="badge">定期授業</span>'
+                : ""
+            }
+          </div>
+
+          <details class="details-box">
+            <summary>詳細表示</summary>
+            <div class="details-content">${
+              shift.lessonNote
+                ? escapeHtml(shift.lessonNote)
+                : "授業予定・連絡事項はありません。"
+            }</div>
+
+            ${
+              shift.cancellationReason
+                ? `<div class="details-content">キャンセル理由：${escapeHtml(shift.cancellationReason)}</div>`
+                : ""
+            }
+          </details>
+
+          ${
+            status === "cancelled" || status === "completed"
+              ? ""
+              : `<button class="cancelButton" data-id="${shift.id}">
+                   この授業をキャンセル
+                 </button>`
+          }
+        `;
+
+        bookingList.appendChild(card);
+      });
+
+      document.querySelectorAll(".cancelButton").forEach((button) => {
+        if (button.dataset.bound === "1") return;
+        button.dataset.bound = "1";
+
+        button.addEventListener("click", () => {
+          cancelBooking(button.dataset.id);
+        });
+      });
+    }
+
+    async function cancelBooking(shiftId) {
+      const shift = currentBookings.find((item) => item.id === shiftId);
+
+      if (!shift) return;
+
+      const ok = confirm(
+        "この授業をキャンセルしますか？\n\n" +
+        `${shift.teacherName || ""}\n` +
+        `${formatDate(shift.date)} ${shift.startTime || ""}〜${shift.endTime || ""}\n` +
+        `生徒：${shift.studentName || ""}`
+      );
+
+      if (!ok) return;
+
+      const reason = prompt(
+        "キャンセル理由を入力してください。\n空欄でもキャンセルできます。"
+      );
+
+      const shiftRef = doc(db, "shifts", shiftId);
+
+      try {
+        await runTransaction(db, async (transaction) => {
+          const shiftSnapshot = await transaction.get(shiftRef);
+
+          if (!shiftSnapshot.exists()) {
+            throw new Error("SHIFT_NOT_FOUND");
+          }
+
+          const shiftData = shiftSnapshot.data();
+
+          if (shiftData.schoolId !== currentSchool.id) {
+            throw new Error("NOT_YOUR_SHIFT");
+          }
+
+          let availabilityRef = null;
+          let availabilitySnapshot = null;
+
+          if (shiftData.availabilityId) {
+            availabilityRef = doc(
+              db,
+              "availability",
+              shiftData.availabilityId
+            );
+
+            availabilitySnapshot = await transaction.get(availabilityRef);
+          }
+
+          transaction.update(shiftRef, {
+            status: "cancelled",
+            approvalStatus: "cancelled",
+            cancellationReason: reason || "",
+            cancelledByUid: currentUser.uid,
+            cancelledByEmail: currentUser.email || "",
+            cancelledByRole: "school",
+            cancelledAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          });
+
+          if (
+            availabilityRef &&
+            availabilitySnapshot &&
+            availabilitySnapshot.exists()
+          ) {
+            const availabilityData = availabilitySnapshot.data();
+
+            if (
+              availabilityData.status === "requested" &&
+              availabilityData.requestedShiftId === shiftId &&
+              availabilityData.requestedBySchoolId === currentSchool.id
+            ) {
+              transaction.update(availabilityRef, {
+                status: "open",
+                requestedShiftId: "",
+                requestedBySchoolId: "",
+                requestedAt: null,
+                updatedAt: serverTimestamp()
+              });
+
+            } else if (
+              availabilityData.status === "booked" &&
+              availabilityData.bookedShiftId === shiftId &&
+              availabilityData.bookedBySchoolId === currentSchool.id
+            ) {
+              transaction.update(availabilityRef, {
+                status: "open",
+                bookedShiftId: "",
+                bookedBySchoolId: "",
+                bookedAt: null,
+                updatedAt: serverTimestamp()
+              });
+            }
+          }
+        });
+
+        showMessage("授業をキャンセルしました。空き枠に戻しました。");
+
+      } catch (error) {
+        console.error(error);
+        showMessage("キャンセルに失敗しました。", true);
+      }
+    }
+
+    // ---- Helpers ----
+    function findMatchingAvailability(teacherId, date, startTime, endTime) {
+      const candidates = currentAvailability.filter((availability) => {
+        return (
+          availability.teacherId === teacherId &&
+          availability.date === date &&
+          (availability.status || "open") === "open" &&
+          availability.active !== false &&
+          availability.startTime <= startTime &&
+          availability.endTime >= endTime
+        );
+      });
+
+      if (candidates.length === 0) return null;
+
+      candidates.sort((a, b) => {
+        const aExact =
+          a.startTime === startTime && a.endTime === endTime ? 0 : 1;
+        const bExact =
+          b.startTime === startTime && b.endTime === endTime ? 0 : 1;
+
+        if (aExact !== bExact) return aExact - bExact;
+
+        return `${a.startTime} ${a.endTime}`.localeCompare(
+          `${b.startTime} ${b.endTime}`
+        );
+      });
+
+      return candidates[0];
+    }
+
+    function getNextThreeMonthKeys() {
+      const today = new Date();
+      const result = [];
+
+      for (let offset = 0; offset < 3; offset++) {
+        const date = new Date(
+          today.getFullYear(),
+          today.getMonth() + offset,
+          1
+        );
+
+        result.push(
+          `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`
+        );
+      }
+
+      return result;
+    }
+
+    function getWeekdayDatesForMonth(monthKey, weekday) {
+      const [year, month] = monthKey.split("-").map(Number);
+      const dates = [];
+
+      const daysInMonth = new Date(year, month, 0).getDate();
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month - 1, day);
+
+        if (date.getDay() === weekday) {
+          dates.push(
+            `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+          );
+        }
+      }
+
+      return dates;
+    }
+
+    function formatMonthKey(monthKey) {
+      const [year, month] = monthKey.split("-").map(Number);
+      return `${year}年${month}月`;
+    }
+
+    function getStudentById(studentId) {
+      return currentStudents.find((student) => student.id === studentId) || null;
+    }
+
+    function getTeacherById(teacherId) {
+      return currentTeachers.find((teacher) => teacher.id === teacherId) || null;
+    }
+
+    function isShiftPast(shift) {
+      if (!shift.date) return false;
+
+      const time = shift.endTime || shift.startTime || "23:59";
+      const date = new Date(`${shift.date}T${time}:00`);
+
+      if (Number.isNaN(date.getTime())) return false;
+
+      return date.getTime() < Date.now();
+    }
+
+    function compareDateTime(a, b) {
+      const av = `${a.date || ""} ${a.startTime || ""}`;
+      const bv = `${b.date || ""} ${b.startTime || ""}`;
+      return av.localeCompare(bv);
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return "日付未設定";
+
+      const date = new Date(`${dateString}T00:00:00`);
+
+      if (Number.isNaN(date.getTime())) {
+        return dateString;
+      }
+
+      const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+
+      return (
+        `${date.getMonth() + 1}月${date.getDate()}日` +
+        `（${weekdays[date.getDay()]}）`
+      );
+    }
+
+    function getLocalDateString(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
+    }
+
+    function renderSummary() {
+      studentCountChip.textContent = `生徒 ${currentStudents.length}名`;
+
+      const activeSeriesCount = currentSeries.filter(
+        (series) => series.active !== false
+      ).length;
+
+      seriesCountChip.textContent = `定期授業 ${activeSeriesCount}件`;
+
+      const upcomingCount = currentBookings.filter((shift) => {
+        const status = shift.status || "confirmed";
+
+        return (
+          status !== "cancelled" &&
+          status !== "completed" &&
+          !isShiftPast(shift)
+        );
+      }).length;
+
+      upcomingCountChip.textContent = `予約 ${upcomingCount}件`;
+    }
+
+    function renderAll() {
+      renderStudentOptions();
+      renderSeriesSubjectOptions();
+      renderSeriesTeacherOptions();
+      renderSingleSubjectFilter();
+      renderSeriesList();
+      renderSingleAvailability();
+      renderBookings();
+      renderCalendar();
+      renderSummary();
+    }
+
+    function cleanupListeners() {
+      if (unsubscribeStudents) unsubscribeStudents();
+      if (unsubscribeTeachers) unsubscribeTeachers();
+      if (unsubscribeAvailability) unsubscribeAvailability();
+      if (unsubscribeBookings) unsubscribeBookings();
+      if (unsubscribeSeries) unsubscribeSeries();
+
+      unsubscribeStudents = null;
+      unsubscribeTeachers = null;
+      unsubscribeAvailability = null;
+      unsubscribeBookings = null;
+      unsubscribeSeries = null;
+    }
+
+    function showMessage(text, isError = false) {
+      message.textContent = text;
+
+      message.classList.toggle("error", isError);
+      message.classList.toggle("success", !isError && Boolean(text));
+
+      if (text && !isError) {
+        setTimeout(() => {
+          if (message.textContent === text) {
+            clearMessage();
+          }
+        }, 3200);
+      }
+    }
+
+    function clearMessage() {
+      message.textContent = "";
+      message.classList.remove("error", "success");
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+  </script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .catch((error) => {
+            console.error("Service Worker registration failed:", error);
+          });
+      });
+    }
+  </script>
+
+</body>
+</html>

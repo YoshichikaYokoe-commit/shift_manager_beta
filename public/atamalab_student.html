@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アタマラボ 生徒</title>
+  <meta name="theme-color" content="#7c3aed">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="アタマラボ">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #f6f5fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #64748b;
+      --line: #e5e7eb;
+      --primary: #7c3aed;
+      --primary-soft: #f3e8ff;
+      --success: #166534;
+      --success-soft: #dcfce7;
+      --warning: #92400e;
+      --warning-soft: #fef3c7;
+      --danger: #991b1b;
+      --danger-soft: #fee2e2;
+      --cancelled: #6b7280;
+      --cancelled-soft: #f3f4f6;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .page {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 18px 12px 56px;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    .app-title {
+      margin: 4px 0 18px;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(15, 23, 42, 0.07);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .student-name {
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .summary-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .summary-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    label {
+      display: block;
+      margin: 13px 0 6px;
+      font-weight: 800;
+    }
+
+    input, select, textarea, button {
+      width: 100%;
+      font-size: 16px;
+      border-radius: 10px;
+    }
+
+    input, select, textarea {
+      padding: 11px 12px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 95px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    button {
+      padding: 11px 14px;
+      border: none;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    #loginButton,
+    .primary,
+    .reserveButton {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    #loginButton { margin-top: 18px; }
+
+    #logoutButton {
+      width: auto;
+      padding: 9px 13px;
+      background: #e5e7eb;
+      color: #374151;
+      font-size: 14px;
+    }
+
+    .secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .danger,
+    .cancelButton {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .tabButton {
+      width: auto;
+      flex: 0 0 auto;
+      padding: 10px 15px;
+      background: #e5e7eb;
+      color: #374151;
+      white-space: nowrap;
+    }
+
+    .tabButton.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .tabPanel { display: none; }
+    .tabPanel.active { display: block; }
+
+    .section-title {
+      margin-bottom: 6px;
+      font-size: 20px;
+    }
+
+    .section-subtitle {
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .filter-grid,
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 14px;
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    .availability-item,
+    .booking-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 15px;
+      margin-bottom: 12px;
+      background: #fff;
+    }
+
+    .availability-top,
+    .booking-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .item-title {
+      margin-bottom: 5px;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .item-time {
+      margin-bottom: 7px;
+      color: var(--primary);
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .item-meta {
+      margin: 5px 0;
+      line-height: 1.55;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 2px;
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .status-pending {
+      background: var(--warning-soft);
+      color: var(--warning);
+    }
+
+    .status-confirmed {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-completed {
+      background: var(--success-soft);
+      color: var(--success);
+    }
+
+    .status-cancelled {
+      background: var(--cancelled-soft);
+      color: var(--cancelled);
+    }
+
+    .booking-item.history,
+    .booking-item.cancelled {
+      opacity: .58;
+      background: #f8fafc;
+    }
+
+    .booking-section-title {
+      margin: 20px 0 10px;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .booking-section-title:first-child { margin-top: 0; }
+
+    .reserveButton,
+    .cancelButton {
+      margin-top: 11px;
+    }
+
+    .results-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0 10px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .results-count {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .empty {
+      margin: 0;
+      padding: 26px 6px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .message {
+      min-height: 24px;
+      margin: 10px 0;
+      text-align: center;
+      font-weight: 850;
+    }
+
+    .error { color: var(--danger); }
+    .success { color: var(--success); }
+
+    /* Calendar */
+    .calendar-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .calendar-toolbar .calendar-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .calendar-toolbar button {
+      width: auto;
+      padding: 9px 12px;
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .calendar-title {
+      font-size: 20px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .calendar-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .calendar-grid {
+      min-width: 840px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: var(--line);
+    }
+
+    .calendar-weekday {
+      padding: 9px 6px;
+      text-align: center;
+      font-weight: 900;
+      background: #f8fafc;
+    }
+
+    .calendar-weekday.sunday { color: #c62828; }
+    .calendar-weekday.saturday { color: #1565c0; }
+
+    .calendar-day {
+      min-height: 118px;
+      padding: 7px;
+      background: #fff;
+    }
+
+    .calendar-day.other-month {
+      background: #f8fafc;
+      color: #9ca3af;
+    }
+
+    .calendar-day.today {
+      box-shadow: inset 0 0 0 2px #c4b5fd;
+    }
+
+    .calendar-date-number {
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    .calendar-shift {
+      display: block;
+      width: 100%;
+      margin-top: 5px;
+      padding: 6px;
+      border-radius: 7px;
+      text-align: left;
+      font-size: 11px;
+      line-height: 1.35;
+      color: #1f2937;
+      overflow: hidden;
+    }
+
+    .calendar-shift.confirmed { background: #dbeafe; }
+    .calendar-shift.pending { background: #fef3c7; }
+    .calendar-shift.completed { background: #dcfce7; }
+    .calendar-shift.cancelled { background: #f3f4f6; opacity: .62; }
+
+    .calendar-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend-item { display: inline-flex; align-items: center; gap: 5px; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+    .legend-dot.confirmed { background: #dbeafe; }
+    .legend-dot.pending { background: #fef3c7; }
+    .legend-dot.completed { background: #dcfce7; }
+    .legend-dot.cancelled { background: #f3f4f6; border: 1px solid #d1d5db; }
+
+    /* Modal */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(15, 23, 42, .48);
+    }
+
+    .overlay.open { display: flex; }
+
+    .modal {
+      width: min(620px, 100%);
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, .22);
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .info-box {
+      padding: 12px 13px;
+      border-radius: 10px;
+      margin: 12px 0;
+      line-height: 1.6;
+      font-size: 13px;
+      background: var(--primary-soft);
+      color: #5b21b6;
+    }
+
+    @media (max-width: 780px) {
+      .page { padding: 12px 10px 42px; }
+      .card { padding: 17px; }
+      .app-title { font-size: 24px; }
+
+      .filter-grid,
+      .form-grid,
+      .modal-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .full { grid-column: auto; }
+      .availability-top,
+      .booking-top { display: block; }
+      .calendar-toolbar { align-items: flex-start; }
+      .calendar-toolbar .calendar-actions { flex-wrap: wrap; justify-content: flex-end; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <h1 class="app-title">アタマラボ</h1>
+
+    <section id="loginArea" class="card">
+      <h2>生徒ログイン</h2>
+      <label for="email">メールアドレス</label>
+      <input id="email" type="email" autocomplete="email">
+
+      <label for="password">パスワード</label>
+      <input id="password" type="password" autocomplete="current-password">
+
+      <button id="loginButton">ログイン</button>
+    </section>
+
+    <main id="app" style="display:none;">
+      <section class="card">
+        <div class="topbar">
+          <div>
+            <div id="studentName" class="student-name">生徒</div>
+            <p id="loginEmail" class="muted"></p>
+
+            <div class="summary-row">
+              <span id="teacherCountChip" class="summary-chip">担当講師 0名</span>
+              <span id="upcomingCountChip" class="summary-chip">今後の授業 0件</span>
+            </div>
+          </div>
+
+          <button id="logoutButton">ログアウト</button>
+        </div>
+      </section>
+
+      <div class="tabs">
+        <button class="tabButton active" data-tab="calendar">カレンダー</button>
+        <button class="tabButton" data-tab="reserve">予約する</button>
+        <button class="tabButton" data-tab="bookings">予約一覧</button>
+      </div>
+
+      <section id="tab-calendar" class="tabPanel active">
+        <section class="card">
+          <div class="calendar-toolbar">
+            <div id="calendarTitle" class="calendar-title"></div>
+            <div class="calendar-actions">
+              <button id="prevMonthButton">‹ 前月</button>
+              <button id="currentMonthButton">今月</button>
+              <button id="nextMonthButton">翌月 ›</button>
+            </div>
+          </div>
+
+          <div class="calendar-scroll">
+            <div id="calendarGrid" class="calendar-grid"></div>
+          </div>
+
+          <div class="calendar-legend">
+            <span class="legend-item"><span class="legend-dot confirmed"></span>予約確定</span>
+            <span class="legend-item"><span class="legend-dot pending"></span>承認待ち</span>
+            <span class="legend-item"><span class="legend-dot completed"></span>実施済み</span>
+            <span class="legend-item"><span class="legend-dot cancelled"></span>キャンセル</span>
+          </div>
+        </section>
+      </section>
+
+      <section id="tab-reserve" class="tabPanel">
+        <section class="card">
+          <h2 class="section-title">授業を予約</h2>
+          <p class="section-subtitle">
+            担当の先生が登録した空き時間から予約できます。予約するとその場で確定します。
+          </p>
+
+          <div class="filter-grid">
+            <div>
+              <label for="teacherFilter">担当講師</label>
+              <select id="teacherFilter">
+                <option value="">すべての担当講師</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="subjectFilter">教科</label>
+              <select id="subjectFilter">
+                <option value="">すべての教科</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="dateFilter">日付</label>
+              <input id="dateFilter" type="date">
+            </div>
+          </div>
+
+          <div class="results-head">
+            <strong>予約できる時間</strong>
+            <span id="availabilityCount" class="results-count">0件</span>
+          </div>
+
+          <div id="availabilityList"></div>
+          <p id="availabilityEmpty" class="empty" style="display:none;">
+            条件に合う空き時間はありません。
+          </p>
+        </section>
+      </section>
+
+      <section id="tab-bookings" class="tabPanel">
+        <section class="card">
+          <h2 class="section-title">予約一覧</h2>
+          <p class="section-subtitle">
+            今後の授業、終了した授業、キャンセル履歴を確認できます。
+          </p>
+
+          <div id="bookingList"></div>
+          <p id="bookingEmpty" class="empty" style="display:none;">予約はまだありません。</p>
+        </section>
+      </section>
+    </main>
+
+    <p id="message" class="message"></p>
+  </div>
+
+  <div id="bookingOverlay" class="overlay">
+    <div class="modal">
+      <h2 class="section-title">予約内容</h2>
+      <div id="selectedSlot" class="info-box"></div>
+
+      <div class="form-grid">
+        <div>
+          <label for="bookingSubject">教科</label>
+          <select id="bookingSubject">
+            <option value="">教科を選択してください</option>
+          </select>
+        </div>
+
+        <div class="full">
+          <label for="lessonNote">先生への連絡事項</label>
+          <textarea id="lessonNote" placeholder="例：学校のワークp.20〜25を教えてほしい"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="confirmBookingButton" class="primary">この内容で予約</button>
+        <button id="cancelBookingOverlayButton" class="secondary">やめる</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="detailOverlay" class="overlay">
+    <div class="modal">
+      <h2 class="section-title">授業詳細</h2>
+      <div id="detailContent"></div>
+      <div class="modal-actions">
+        <button id="detailCancelButton" class="danger">授業をキャンセル</button>
+        <button id="closeDetailButton" class="secondary">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      query,
+      where,
+      onSnapshot,
+      runTransaction,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBKhOG_ds0dWdcJkJlg6WljpgixLXmloeM",
+      authDomain: "shift-manager-303a5.firebaseapp.com",
+      projectId: "shift-manager-303a5",
+      storageBucket: "shift-manager-303a5.firebasestorage.app",
+      messagingSenderId: "759595895300",
+      appId: "1:759595895300:web:962ac3ee0bc16d0f158351"
+    };
+
+    const firebaseApp = initializeApp(firebaseConfig);
+    const auth = getAuth(firebaseApp);
+    const db = getFirestore(firebaseApp);
+
+    const ALL_SUBJECTS = [
+      { id: "jh_japanese", label: "中学国語" },
+      { id: "jh_math", label: "中学数学" },
+      { id: "jh_english", label: "中学英語" },
+      { id: "jh_science", label: "中学理科" },
+      { id: "jh_social", label: "中学社会" },
+      { id: "hs_modern_japanese", label: "現代文" },
+      { id: "hs_classical_japanese", label: "古文" },
+      { id: "hs_chinese_classics", label: "漢文" },
+      { id: "hs_math1", label: "数学I" },
+      { id: "hs_mathA", label: "数学A" },
+      { id: "hs_math2", label: "数学II" },
+      { id: "hs_mathB", label: "数学B" },
+      { id: "hs_math3", label: "数学III" },
+      { id: "hs_mathC", label: "数学C" },
+      { id: "hs_english", label: "高校英語" },
+      { id: "hs_physics", label: "物理" },
+      { id: "hs_chemistry", label: "化学" },
+      { id: "hs_biology", label: "生物" },
+      { id: "hs_earth_science", label: "地学" },
+      { id: "hs_japanese_history", label: "日本史" },
+      { id: "hs_world_history", label: "世界史" },
+      { id: "hs_geography", label: "地理" },
+      { id: "hs_public", label: "公共" },
+      { id: "hs_ethics", label: "倫理" },
+      { id: "hs_politics_economics", label: "政治・経済" },
+      { id: "hs_information1", label: "情報I" }
+    ];
+
+    const SUBJECT_LABELS = Object.fromEntries(
+      ALL_SUBJECTS.map((subject) => [subject.id, subject.label])
+    );
+
+    const loginArea = document.getElementById("loginArea");
+    const appArea = document.getElementById("app");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const loginButton = document.getElementById("loginButton");
+    const logoutButton = document.getElementById("logoutButton");
+    const studentName = document.getElementById("studentName");
+    const loginEmail = document.getElementById("loginEmail");
+    const teacherCountChip = document.getElementById("teacherCountChip");
+    const upcomingCountChip = document.getElementById("upcomingCountChip");
+    const teacherFilter = document.getElementById("teacherFilter");
+    const subjectFilter = document.getElementById("subjectFilter");
+    const dateFilter = document.getElementById("dateFilter");
+    const availabilityCount = document.getElementById("availabilityCount");
+    const availabilityList = document.getElementById("availabilityList");
+    const availabilityEmpty = document.getElementById("availabilityEmpty");
+    const bookingList = document.getElementById("bookingList");
+    const bookingEmpty = document.getElementById("bookingEmpty");
+    const message = document.getElementById("message");
+
+    const calendarTitle = document.getElementById("calendarTitle");
+    const calendarGrid = document.getElementById("calendarGrid");
+    const prevMonthButton = document.getElementById("prevMonthButton");
+    const currentMonthButton = document.getElementById("currentMonthButton");
+    const nextMonthButton = document.getElementById("nextMonthButton");
+
+    const bookingOverlay = document.getElementById("bookingOverlay");
+    const selectedSlot = document.getElementById("selectedSlot");
+    const bookingSubject = document.getElementById("bookingSubject");
+    const lessonNote = document.getElementById("lessonNote");
+    const confirmBookingButton = document.getElementById("confirmBookingButton");
+    const cancelBookingOverlayButton = document.getElementById("cancelBookingOverlayButton");
+
+    const detailOverlay = document.getElementById("detailOverlay");
+    const detailContent = document.getElementById("detailContent");
+    const detailCancelButton = document.getElementById("detailCancelButton");
+    const closeDetailButton = document.getElementById("closeDetailButton");
+
+    let currentUser = null;
+    let currentStudent = null;
+    let currentTeachers = [];
+    let currentAvailability = [];
+    let currentBookings = [];
+    let selectedAvailability = null;
+    let selectedDetailShiftId = null;
+    let unsubscribeAvailability = null;
+    let unsubscribeBookings = null;
+
+    const now = new Date();
+    let calendarYear = now.getFullYear();
+    let calendarMonth = now.getMonth();
+
+    document.querySelectorAll(".tabButton").forEach((button) => {
+      button.addEventListener("click", () => activateTab(button.dataset.tab));
+    });
+
+    function activateTab(tabName) {
+      document.querySelectorAll(".tabButton").forEach((button) => {
+        button.classList.toggle("active", button.dataset.tab === tabName);
+      });
+
+      document.querySelectorAll(".tabPanel").forEach((panel) => {
+        panel.classList.toggle("active", panel.id === `tab-${tabName}`);
+      });
+
+      if (tabName === "calendar") renderCalendar();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    loginButton.addEventListener("click", async () => {
+      clearMessage();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        showMessage("メールアドレスとパスワードを入力してください。", true);
+        return;
+      }
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        console.error(error);
+        showMessage("ログインできませんでした。", true);
+      }
+    });
+
+    passwordInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") loginButton.click();
+    });
+
+    logoutButton.addEventListener("click", async () => {
+      await signOut(auth);
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      cleanupListeners();
+      currentUser = user;
+      currentStudent = null;
+      currentTeachers = [];
+      currentAvailability = [];
+      currentBookings = [];
+      selectedAvailability = null;
+      selectedDetailShiftId = null;
+
+      if (!user) {
+        loginArea.style.display = "block";
+        appArea.style.display = "none";
+        renderAll();
+        return;
+      }
+
+      loginArea.style.display = "none";
+      appArea.style.display = "none";
+      showMessage("生徒情報を確認しています…");
+
+      try {
+        const userSnapshot = await getDoc(doc(db, "users", user.uid));
+        if (!userSnapshot.exists()) throw new Error("users document not found");
+
+        const profile = userSnapshot.data();
+        const roles = Array.isArray(profile.roles) ? profile.roles : [];
+
+        if (profile.active !== true) throw new Error("inactive user");
+        if (!roles.includes("atamalab_student")) throw new Error("atamalab_student role required");
+        if (!profile.atamalabStudentId) throw new Error("atamalabStudentId missing");
+
+        const studentSnapshot = await getDoc(doc(db, "atamalabStudents", profile.atamalabStudentId));
+        if (!studentSnapshot.exists()) throw new Error("student document not found");
+
+        currentStudent = {
+          id: studentSnapshot.id,
+          ...studentSnapshot.data()
+        };
+
+        studentName.textContent = currentStudent.name || "生徒";
+        loginEmail.textContent = user.email || "";
+
+        await loadAssignedTeachers();
+        loadAvailability();
+        loadBookings();
+
+        appArea.style.display = "block";
+        clearMessage();
+        renderAll();
+
+      } catch (error) {
+        console.error(error);
+        showMessage(
+          "このアカウントは生徒用アプリを利用できません。users の roles / atamalabStudentId を確認してください。",
+          true
+        );
+      }
+    });
+
+    async function loadAssignedTeachers() {
+      const ids = getAssignedTeacherIds();
+      const teachers = [];
+
+      for (const teacherId of ids) {
+        try {
+          const snapshot = await getDoc(doc(db, "teachers", teacherId));
+          if (!snapshot.exists()) continue;
+          const data = snapshot.data();
+          if (data.active === false) continue;
+          teachers.push({ id: snapshot.id, ...data });
+        } catch (error) {
+          console.error("teacher load failed", teacherId, error);
+        }
+      }
+
+      teachers.sort((a, b) =>
+        String(a.name || "").localeCompare(String(b.name || ""), "ja")
+      );
+
+      currentTeachers = teachers;
+      renderTeacherFilter();
+      renderSubjectFilter();
+      renderSummary();
+    }
+
+    function getAssignedTeacherIds() {
+      if (!currentStudent) return [];
+
+      const ids = Array.isArray(currentStudent.assignedTeacherIds)
+        ? currentStudent.assignedTeacherIds
+        : [];
+
+      if (currentStudent.assignedTeacherId) {
+        ids.push(currentStudent.assignedTeacherId);
+      }
+
+      return [...new Set(ids.filter(Boolean))];
+    }
+
+    function loadAvailability() {
+      const assignedIds = getAssignedTeacherIds();
+
+      if (assignedIds.length === 0) {
+        currentAvailability = [];
+        renderAvailability();
+        return;
+      }
+
+      // Firestore の in は最大30件。通常の担当講師数なら十分。
+      const ids = assignedIds.slice(0, 30);
+      const availabilityQuery = query(
+        collection(db, "availability"),
+        where("teacherId", "in", ids)
+      );
+
+      unsubscribeAvailability = onSnapshot(
+        availabilityQuery,
+        (snapshot) => {
+          const items = [];
+
+          snapshot.forEach((document) => {
+            const data = document.data();
+            if (data.active === false) return;
+            items.push({ id: document.id, ...data });
+          });
+
+          items.sort(compareDateTime);
+          currentAvailability = items;
+          renderAvailability();
+        },
+        (error) => {
+          console.error(error);
+          showMessage("空き時間の読み込みに失敗しました。Firestore Rules を確認してください。", true);
+        }
+      );
+    }
+
+    function loadBookings() {
+      const bookingQuery = query(
+        collection(db, "shifts"),
+        where("atamalabStudentId", "==", currentStudent.id)
+      );
+
+      unsubscribeBookings = onSnapshot(
+        bookingQuery,
+        (snapshot) => {
+          const bookings = [];
+
+          snapshot.forEach((document) => {
+            bookings.push({ id: document.id, ...document.data() });
+          });
+
+          bookings.sort(compareDateTime);
+          currentBookings = bookings;
+
+          renderBookings();
+          renderCalendar();
+          renderSummary();
+        },
+        (error) => {
+          console.error(error);
+          showMessage("予約情報の読み込みに失敗しました。Firestore Rules を確認してください。", true);
+        }
+      );
+    }
+
+    function renderTeacherFilter() {
+      const previous = teacherFilter.value;
+      teacherFilter.innerHTML = '<option value="">すべての担当講師</option>';
+
+      currentTeachers.forEach((teacher) => {
+        const option = document.createElement("option");
+        option.value = teacher.id;
+        option.textContent = teacher.name || "名称未設定";
+        teacherFilter.appendChild(option);
+      });
+
+      if ([...teacherFilter.options].some((option) => option.value === previous)) {
+        teacherFilter.value = previous;
+      }
+    }
+
+    function renderSubjectFilter() {
+      const previous = subjectFilter.value;
+      const studentSubjects = Array.isArray(currentStudent?.subjects)
+        ? currentStudent.subjects
+        : [];
+
+      let ids = studentSubjects.length
+        ? studentSubjects
+        : ALL_SUBJECTS.map((subject) => subject.id);
+
+      subjectFilter.innerHTML = '<option value="">すべての教科</option>';
+
+      [...new Set(ids)]
+        .map((id) => ({ id, label: SUBJECT_LABELS[id] || id }))
+        .sort((a, b) => a.label.localeCompare(b.label, "ja"))
+        .forEach((subject) => {
+          const option = document.createElement("option");
+          option.value = subject.id;
+          option.textContent = subject.label;
+          subjectFilter.appendChild(option);
+        });
+
+      if ([...subjectFilter.options].some((option) => option.value === previous)) {
+        subjectFilter.value = previous;
+      }
+    }
+
+    teacherFilter.addEventListener("change", renderAvailability);
+    subjectFilter.addEventListener("change", renderAvailability);
+    dateFilter.addEventListener("change", renderAvailability);
+
+    function renderAvailability() {
+      availabilityList.innerHTML = "";
+
+      if (!currentStudent) {
+        availabilityCount.textContent = "0件";
+        availabilityEmpty.style.display = "block";
+        return;
+      }
+
+      const today = getLocalDateString(new Date());
+      const assignedIds = new Set(getAssignedTeacherIds());
+      const teacherId = teacherFilter.value;
+      const subjectId = subjectFilter.value;
+      const selectedDate = dateFilter.value;
+
+      const filtered = currentAvailability.filter((item) => {
+        if (!assignedIds.has(item.teacherId)) return false;
+        if (item.date < today) return false;
+        if ((item.status || "open") !== "open") return false;
+        if (teacherId && item.teacherId !== teacherId) return false;
+        if (selectedDate && item.date !== selectedDate) return false;
+
+        if (subjectId) {
+          const teacher = getTeacherById(item.teacherId);
+          const teacherSubjects = Array.isArray(teacher?.subjects)
+            ? teacher.subjects
+            : [];
+
+          if (teacherSubjects.length > 0 && !teacherSubjects.includes(subjectId)) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      filtered.sort(compareDateTime);
+      availabilityCount.textContent = `${filtered.length}件`;
+
+      if (filtered.length === 0) {
+        availabilityEmpty.style.display = "block";
+        return;
+      }
+
+      availabilityEmpty.style.display = "none";
+
+      filtered.forEach((item) => {
+        const teacher = getTeacherById(item.teacherId);
+        const teacherName = item.teacherName || teacher?.name || "講師";
+        const teacherSubjects = Array.isArray(teacher?.subjects)
+          ? teacher.subjects
+          : [];
+
+        const card = document.createElement("div");
+        card.className = "availability-item";
+
+        card.innerHTML = `
+          <div class="availability-top">
+            <div>
+              <div class="item-title">${escapeHtml(teacherName)}</div>
+              <div class="item-time">
+                ${escapeHtml(formatDate(item.date))}
+                ${escapeHtml(item.startTime || "")}〜${escapeHtml(item.endTime || "")}
+              </div>
+            </div>
+          </div>
+
+          <div class="badge-row">
+            ${
+              teacherSubjects.length
+                ? teacherSubjects
+                    .slice(0, 8)
+                    .map((id) => `<span class="badge">${escapeHtml(SUBJECT_LABELS[id] || id)}</span>`)
+                    .join("")
+                : '<span class="muted">担当教科未設定</span>'
+            }
+          </div>
+
+          <button class="reserveButton" data-id="${item.id}">この枠を予約</button>
+        `;
+
+        availabilityList.appendChild(card);
+      });
+
+      document.querySelectorAll(".reserveButton").forEach((button) => {
+        button.addEventListener("click", () => openBooking(button.dataset.id));
+      });
+    }
+
+    function openBooking(availabilityId) {
+      const availability = currentAvailability.find((item) => item.id === availabilityId);
+      if (!availability) {
+        showMessage("空き枠が見つかりませんでした。", true);
+        return;
+      }
+
+      selectedAvailability = availability;
+      const teacher = getTeacherById(availability.teacherId);
+
+      selectedSlot.innerHTML = `
+        <strong>${escapeHtml(availability.teacherName || teacher?.name || "講師")}</strong><br>
+        ${escapeHtml(formatDate(availability.date))}<br>
+        ${escapeHtml(availability.startTime || "")}〜${escapeHtml(availability.endTime || "")}
+      `;
+
+      renderBookingSubjectOptions();
+
+      if (
+        subjectFilter.value &&
+        [...bookingSubject.options].some((option) => option.value === subjectFilter.value)
+      ) {
+        bookingSubject.value = subjectFilter.value;
+      }
+
+      lessonNote.value = "";
+      bookingOverlay.classList.add("open");
+    }
+
+    function renderBookingSubjectOptions() {
+      const teacher = selectedAvailability
+        ? getTeacherById(selectedAvailability.teacherId)
+        : null;
+
+      const studentSubjects = Array.isArray(currentStudent?.subjects)
+        ? currentStudent.subjects
+        : [];
+
+      const teacherSubjects = Array.isArray(teacher?.subjects)
+        ? teacher.subjects
+        : [];
+
+      let ids = studentSubjects.length
+        ? studentSubjects
+        : ALL_SUBJECTS.map((subject) => subject.id);
+
+      if (teacherSubjects.length > 0) {
+        ids = ids.filter((id) => teacherSubjects.includes(id));
+      }
+
+      bookingSubject.innerHTML = '<option value="">教科を選択してください</option>';
+
+      [...new Set(ids)]
+        .map((id) => ({ id, label: SUBJECT_LABELS[id] || id }))
+        .sort((a, b) => a.label.localeCompare(b.label, "ja"))
+        .forEach((subject) => {
+          const option = document.createElement("option");
+          option.value = subject.id;
+          option.textContent = subject.label;
+          bookingSubject.appendChild(option);
+        });
+    }
+
+    cancelBookingOverlayButton.addEventListener("click", () => {
+      selectedAvailability = null;
+      bookingOverlay.classList.remove("open");
+    });
+
+    bookingOverlay.addEventListener("click", (event) => {
+      if (event.target === bookingOverlay) {
+        selectedAvailability = null;
+        bookingOverlay.classList.remove("open");
+      }
+    });
+
+    confirmBookingButton.addEventListener("click", async () => {
+      if (!selectedAvailability || !currentStudent) return;
+
+      const subjectId = bookingSubject.value;
+      if (!subjectId) {
+        showMessage("教科を選択してください。", true);
+        return;
+      }
+
+      const availabilityRef = doc(db, "availability", selectedAvailability.id);
+      const shiftRef = doc(collection(db, "shifts"));
+
+      confirmBookingButton.disabled = true;
+      confirmBookingButton.textContent = "予約しています…";
+
+      try {
+        await runTransaction(db, async (transaction) => {
+          const snapshot = await transaction.get(availabilityRef);
+
+          if (!snapshot.exists()) throw new Error("AVAILABILITY_NOT_FOUND");
+
+          const data = snapshot.data();
+
+          if ((data.status || "open") !== "open" || data.active === false) {
+            throw new Error("ALREADY_BOOKED");
+          }
+
+          if (!getAssignedTeacherIds().includes(data.teacherId)) {
+            throw new Error("NOT_ASSIGNED_TEACHER");
+          }
+
+          const teacher = getTeacherById(data.teacherId);
+
+          transaction.set(shiftRef, {
+            teacherId: data.teacherId,
+            teacherName: data.teacherName || teacher?.name || "",
+            // 既存の講師・管理者画面との互換用。
+            // アタマラボ生徒の本当のIDは atamalabStudentId を使う。
+            studentId: `atamalab__${currentStudent.id}`,
+            atamalabStudentId: currentStudent.id,
+            studentName: currentStudent.name || "",
+            schoolId: "atamalab",
+            schoolName: "アタマラボ",
+            serviceType: "atamalab",
+            availabilityId: selectedAvailability.id,
+            subjectId,
+            subjectName: SUBJECT_LABELS[subjectId] || subjectId,
+            lessonNote: lessonNote.value.trim(),
+            date: data.date,
+            startTime: data.startTime,
+            endTime: data.endTime,
+            status: "confirmed",
+            approvalStatus: "approved",
+            requestedByRole: "atamalab_student",
+            requestedByUid: currentUser.uid,
+            requestedAt: serverTimestamp(),
+            bookedByAtamalabStudentId: currentStudent.id,
+            bookedAt: serverTimestamp(),
+            createdFrom: "student",
+            createdByUid: currentUser.uid,
+            createdByEmail: currentUser.email || "",
+            createdAt: serverTimestamp()
+          });
+
+          transaction.update(availabilityRef, {
+            status: "booked",
+            bookedShiftId: shiftRef.id,
+            bookedByAtamalabStudentId: currentStudent.id,
+            bookedAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          });
+        });
+
+        selectedAvailability = null;
+        bookingOverlay.classList.remove("open");
+        showMessage("授業を予約しました。");
+        activateTab("calendar");
+
+      } catch (error) {
+        console.error(error);
+
+        if (error.message === "ALREADY_BOOKED") {
+          showMessage("この枠は先に予約されました。別の時間を選んでください。", true);
+        } else if (error.message === "NOT_ASSIGNED_TEACHER") {
+          showMessage("担当講師ではないため予約できません。", true);
+        } else {
+          showMessage("予約に失敗しました。Firestore Rules を確認してください。", true);
+        }
+      } finally {
+        confirmBookingButton.disabled = false;
+        confirmBookingButton.textContent = "この内容で予約";
+      }
+    });
+
+    function renderBookings() {
+      bookingList.innerHTML = "";
+
+      if (currentBookings.length === 0) {
+        bookingEmpty.style.display = "block";
+        return;
+      }
+
+      bookingEmpty.style.display = "none";
+
+      const upcoming = [];
+      const history = [];
+      const cancelled = [];
+
+      currentBookings.forEach((shift) => {
+        const status = normalizeStatus(shift.status);
+
+        if (status === "cancelled") {
+          cancelled.push(shift);
+        } else if (status === "completed" || isShiftPast(shift)) {
+          history.push(shift);
+        } else {
+          upcoming.push(shift);
+        }
+      });
+
+      upcoming.sort(compareDateTime);
+      history.sort((a, b) => compareDateTime(b, a));
+      cancelled.sort((a, b) => compareDateTime(b, a));
+
+      appendBookingSection("今後の授業", upcoming, "upcoming");
+      appendBookingSection("終了した授業", history, "history");
+      appendBookingSection("キャンセル", cancelled, "cancelled");
+    }
+
+    function appendBookingSection(title, shifts, type) {
+      if (shifts.length === 0) return;
+
+      const heading = document.createElement("div");
+      heading.className = "booking-section-title";
+      heading.textContent = `${title}（${shifts.length}件）`;
+      bookingList.appendChild(heading);
+
+      shifts.forEach((shift) => {
+        const card = document.createElement("div");
+        card.className = "booking-item";
+        if (type === "history") card.classList.add("history");
+        if (type === "cancelled") card.classList.add("cancelled");
+
+        const status = normalizeStatus(shift.status);
+        const statusClass = getStatusClass(shift);
+        const statusLabel = getStatusLabel(shift);
+
+        card.innerHTML = `
+          <div class="booking-top">
+            <div>
+              <div class="item-title">${escapeHtml(shift.teacherName || "講師")}</div>
+              <div class="item-time">
+                ${escapeHtml(formatDate(shift.date))}
+                ${escapeHtml(shift.startTime || "")}〜${escapeHtml(shift.endTime || "")}
+              </div>
+            </div>
+            <span class="status ${statusClass}">${escapeHtml(statusLabel)}</span>
+          </div>
+
+          <div class="item-meta">教科：<strong>${escapeHtml(shift.subjectName || SUBJECT_LABELS[shift.subjectId] || "未設定")}</strong></div>
+          ${shift.lessonNote ? `<div class="item-meta muted">連絡事項：${escapeHtml(shift.lessonNote)}</div>` : ""}
+
+          ${
+            type === "upcoming" && status !== "cancelled"
+              ? `<button class="cancelButton" data-id="${shift.id}">この授業をキャンセル</button>`
+              : ""
+          }
+        `;
+
+        bookingList.appendChild(card);
+      });
+
+      document.querySelectorAll(".cancelButton").forEach((button) => {
+        button.addEventListener("click", () => cancelShift(button.dataset.id));
+      });
+    }
+
+    async function cancelShift(shiftId) {
+      const shift = currentBookings.find((item) => item.id === shiftId);
+      if (!shift || !currentStudent) return;
+
+      const ok = confirm(
+        "この授業をキャンセルしますか？\n\n" +
+        `${shift.teacherName || ""}\n` +
+        `${formatDate(shift.date)} ${shift.startTime || ""}〜${shift.endTime || ""}`
+      );
+
+      if (!ok) return;
+
+      const reason = prompt("キャンセル理由を入力してください。\n空欄でもキャンセルできます。");
+      const shiftRef = doc(db, "shifts", shiftId);
+
+      try {
+        await runTransaction(db, async (transaction) => {
+          const shiftSnapshot = await transaction.get(shiftRef);
+          if (!shiftSnapshot.exists()) throw new Error("SHIFT_NOT_FOUND");
+
+          const shiftData = shiftSnapshot.data();
+          if (shiftData.atamalabStudentId !== currentStudent.id) {
+            throw new Error("NOT_YOUR_SHIFT");
+          }
+
+          let availabilityRef = null;
+          let availabilitySnapshot = null;
+
+          if (shiftData.availabilityId) {
+            availabilityRef = doc(db, "availability", shiftData.availabilityId);
+            availabilitySnapshot = await transaction.get(availabilityRef);
+          }
+
+          transaction.update(shiftRef, {
+            status: "cancelled",
+            approvalStatus: "cancelled",
+            cancellationReason: reason || "",
+            cancelledByUid: currentUser.uid,
+            cancelledByEmail: currentUser.email || "",
+            cancelledByRole: "student",
+            cancelledAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          });
+
+          if (availabilityRef && availabilitySnapshot?.exists()) {
+            const availabilityData = availabilitySnapshot.data();
+
+            if (
+              availabilityData.status === "booked" &&
+              availabilityData.bookedShiftId === shiftId &&
+              availabilityData.bookedByAtamalabStudentId === currentStudent.id
+            ) {
+              transaction.update(availabilityRef, {
+                status: "open",
+                bookedShiftId: "",
+                bookedByAtamalabStudentId: "",
+                bookedAt: null,
+                updatedAt: serverTimestamp()
+              });
+            }
+          }
+        });
+
+        showMessage("授業をキャンセルしました。空き枠に戻しました。");
+        closeDetail();
+
+      } catch (error) {
+        console.error(error);
+        showMessage("キャンセルに失敗しました。Firestore Rules を確認してください。", true);
+      }
+    }
+
+    prevMonthButton.addEventListener("click", () => {
+      calendarMonth--;
+      if (calendarMonth < 0) {
+        calendarMonth = 11;
+        calendarYear--;
+      }
+      renderCalendar();
+    });
+
+    nextMonthButton.addEventListener("click", () => {
+      calendarMonth++;
+      if (calendarMonth > 11) {
+        calendarMonth = 0;
+        calendarYear++;
+      }
+      renderCalendar();
+    });
+
+    currentMonthButton.addEventListener("click", () => {
+      const today = new Date();
+      calendarYear = today.getFullYear();
+      calendarMonth = today.getMonth();
+      renderCalendar();
+    });
+
+    function renderCalendar() {
+      calendarTitle.textContent = `${calendarYear}年${calendarMonth + 1}月`;
+      calendarGrid.innerHTML = "";
+
+      const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+      weekdays.forEach((weekday, index) => {
+        const header = document.createElement("div");
+        header.className = "calendar-weekday";
+        if (index === 0) header.classList.add("sunday");
+        if (index === 6) header.classList.add("saturday");
+        header.textContent = weekday;
+        calendarGrid.appendChild(header);
+      });
+
+      const firstDay = new Date(calendarYear, calendarMonth, 1);
+      const firstWeekday = firstDay.getDay();
+      const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+      const prevMonthDays = new Date(calendarYear, calendarMonth, 0).getDate();
+      const totalCells = Math.ceil((firstWeekday + daysInMonth) / 7) * 7;
+      const todayString = getLocalDateString(new Date());
+
+      for (let cellIndex = 0; cellIndex < totalCells; cellIndex++) {
+        let year = calendarYear;
+        let month = calendarMonth;
+        let dayNumber;
+        let isOtherMonth = false;
+
+        if (cellIndex < firstWeekday) {
+          dayNumber = prevMonthDays - firstWeekday + cellIndex + 1;
+          month--;
+          isOtherMonth = true;
+          if (month < 0) {
+            month = 11;
+            year--;
+          }
+        } else if (cellIndex >= firstWeekday + daysInMonth) {
+          dayNumber = cellIndex - (firstWeekday + daysInMonth) + 1;
+          month++;
+          isOtherMonth = true;
+          if (month > 11) {
+            month = 0;
+            year++;
+          }
+        } else {
+          dayNumber = cellIndex - firstWeekday + 1;
+        }
+
+        const dateString = toDateString(year, month, dayNumber);
+        const dayCell = document.createElement("div");
+        dayCell.className = "calendar-day";
+        if (isOtherMonth) dayCell.classList.add("other-month");
+        if (dateString === todayString) dayCell.classList.add("today");
+
+        const dateNumber = document.createElement("div");
+        dateNumber.className = "calendar-date-number";
+        dateNumber.textContent = dayNumber;
+        dayCell.appendChild(dateNumber);
+
+        const shifts = currentBookings
+          .filter((shift) => shift.date === dateString)
+          .sort(compareDateTime);
+
+        shifts.forEach((shift) => {
+          const button = document.createElement("button");
+          button.className = `calendar-shift ${getCalendarStatusClass(shift)}`;
+          button.innerHTML = `
+            <strong>${escapeHtml(shift.startTime || "")}-${escapeHtml(shift.endTime || "")}</strong><br>
+            ${escapeHtml(shift.teacherName || "講師")}<br>
+            ${escapeHtml(shift.subjectName || SUBJECT_LABELS[shift.subjectId] || "")}
+          `;
+          button.addEventListener("click", () => openDetail(shift.id));
+          dayCell.appendChild(button);
+        });
+
+        calendarGrid.appendChild(dayCell);
+      }
+    }
+
+    function openDetail(shiftId) {
+      const shift = currentBookings.find((item) => item.id === shiftId);
+      if (!shift) return;
+
+      selectedDetailShiftId = shiftId;
+
+      detailContent.innerHTML = `
+        <div class="item-time">${escapeHtml(formatDate(shift.date))} ${escapeHtml(shift.startTime || "")}〜${escapeHtml(shift.endTime || "")}</div>
+        <div class="item-meta">講師：<strong>${escapeHtml(shift.teacherName || "未設定")}</strong></div>
+        <div class="item-meta">教科：<strong>${escapeHtml(shift.subjectName || SUBJECT_LABELS[shift.subjectId] || "未設定")}</strong></div>
+        <div class="item-meta">状態：<strong>${escapeHtml(getStatusLabel(shift))}</strong></div>
+        ${shift.lessonNote ? `<div class="item-meta">連絡事項：${escapeHtml(shift.lessonNote)}</div>` : ""}
+      `;
+
+      const status = normalizeStatus(shift.status);
+      detailCancelButton.style.display =
+        status !== "cancelled" && status !== "completed" && !isShiftPast(shift)
+          ? "block"
+          : "none";
+
+      detailOverlay.classList.add("open");
+    }
+
+    detailCancelButton.addEventListener("click", () => {
+      if (selectedDetailShiftId) cancelShift(selectedDetailShiftId);
+    });
+
+    closeDetailButton.addEventListener("click", closeDetail);
+
+    detailOverlay.addEventListener("click", (event) => {
+      if (event.target === detailOverlay) closeDetail();
+    });
+
+    function closeDetail() {
+      selectedDetailShiftId = null;
+      detailOverlay.classList.remove("open");
+    }
+
+    function renderSummary() {
+      teacherCountChip.textContent = `担当講師 ${currentTeachers.length}名`;
+
+      const today = getLocalDateString(new Date());
+      const upcoming = currentBookings.filter((shift) => {
+        const status = normalizeStatus(shift.status);
+        return shift.date >= today && status !== "cancelled" && status !== "completed";
+      });
+
+      upcomingCountChip.textContent = `今後の授業 ${upcoming.length}件`;
+    }
+
+    function renderAll() {
+      renderTeacherFilter();
+      renderSubjectFilter();
+      renderAvailability();
+      renderBookings();
+      renderCalendar();
+      renderSummary();
+    }
+
+    function cleanupListeners() {
+      if (unsubscribeAvailability) unsubscribeAvailability();
+      if (unsubscribeBookings) unsubscribeBookings();
+      unsubscribeAvailability = null;
+      unsubscribeBookings = null;
+    }
+
+    function getTeacherById(id) {
+      return currentTeachers.find((teacher) => teacher.id === id) || null;
+    }
+
+    function normalizeStatus(status) {
+      const valid = ["tentative", "confirmed", "completed", "cancelled"];
+      return valid.includes(status) ? status : "tentative";
+    }
+
+    function getStatusLabel(shift) {
+      const status = normalizeStatus(shift.status);
+      if (status === "cancelled") return "キャンセル";
+      if (status === "completed") return "実施済み";
+      if (shift.approvalStatus === "pending") return "承認待ち";
+      return "予約確定";
+    }
+
+    function getStatusClass(shift) {
+      const status = normalizeStatus(shift.status);
+      if (status === "cancelled") return "status-cancelled";
+      if (status === "completed") return "status-completed";
+      if (shift.approvalStatus === "pending") return "status-pending";
+      return "status-confirmed";
+    }
+
+    function getCalendarStatusClass(shift) {
+      const status = normalizeStatus(shift.status);
+      if (status === "cancelled") return "cancelled";
+      if (status === "completed") return "completed";
+      if (shift.approvalStatus === "pending") return "pending";
+      return "confirmed";
+    }
+
+    function compareDateTime(a, b) {
+      const av = `${a.date || ""} ${a.startTime || ""}`;
+      const bv = `${b.date || ""} ${b.startTime || ""}`;
+      return av.localeCompare(bv);
+    }
+
+    function isShiftPast(shift) {
+      if (!shift.date) return false;
+      const end = shift.endTime || shift.startTime || "23:59";
+      const target = new Date(`${shift.date}T${end}:00`);
+      return !Number.isNaN(target.getTime()) && target.getTime() < Date.now();
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return "日付未設定";
+      const date = new Date(`${dateString}T00:00:00`);
+      if (Number.isNaN(date.getTime())) return dateString;
+      const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+      return `${date.getMonth() + 1}月${date.getDate()}日（${weekdays[date.getDay()]}）`;
+    }
+
+    function getLocalDateString(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function toDateString(year, monthIndex, day) {
+      return `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    }
+
+    function showMessage(text, isError = false) {
+      message.textContent = text;
+      message.classList.toggle("error", isError);
+      message.classList.toggle("success", !isError && Boolean(text));
+
+      if (text && !isError) {
+        setTimeout(() => {
+          if (message.textContent === text) clearMessage();
+        }, 2800);
+      }
+    }
+
+    function clearMessage() {
+      message.textContent = "";
+      message.classList.remove("error", "success");
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+  </script>
+</body>
+</html>

@@ -2,105 +2,56 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>講師シフト</title>
-
   <meta name="theme-color" content="#2563eb">
 
   <style>
-    * {
-      box-sizing: border-box;
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #f5f7fb;
+      --card: #fff;
+      --text: #1f2937;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --primary: #2563eb;
+      --primary-soft: #eff6ff;
+      --warning: #92400e;
+      --warning-soft: #fef3c7;
+      --danger: #b91c1c;
+      --danger-soft: #fee2e2;
+      --success: #166534;
+      --success-soft: #dcfce7;
     }
 
     body {
       margin: 0;
-      padding: 0;
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-      background: #f5f6f8;
-      color: #1f2937;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
 
     .page {
-      width: 100%;
-      max-width: 760px;
+      max-width: 1040px;
       margin: 0 auto;
-      padding: 18px 12px 50px;
+      padding: 18px 12px 54px;
     }
 
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
+    h1, h2, h3, p { margin-top: 0; }
 
     .app-title {
-      margin: 6px 0 18px;
+      margin: 4px 0 18px;
       font-size: 27px;
-      font-weight: 800;
+      font-weight: 850;
     }
 
     .card {
-      background: white;
+      background: var(--card);
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 16px;
-
-      box-shadow:
-        0 2px 12px rgba(0, 0, 0, 0.07);
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
-      margin-bottom: 6px;
-      font-weight: 700;
-    }
-
-    input,
-    button,
-    select {
-      width: 100%;
-      font-size: 16px;
-      border-radius: 10px;
-    }
-
-    input,
-    select {
-      padding: 13px;
-      border: 1px solid #cbd5e1;
-      background: white;
-    }
-
-    button {
-      border: none;
-      padding: 13px 16px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    #loginButton {
-      margin-top: 20px;
-      background: #2563eb;
-      color: white;
-    }
-
-    #logoutButton {
-      width: auto;
-      background: #e5e7eb;
-      color: #374151;
-      padding: 9px 13px;
-      font-size: 14px;
+      box-shadow: 0 2px 12px rgba(15,23,42,0.07);
     }
 
     .topbar {
@@ -108,82 +59,356 @@
       justify-content: space-between;
       align-items: flex-start;
       gap: 12px;
-      margin-bottom: 16px;
     }
 
     .teacher-name {
+      font-size: 23px;
+      font-weight: 850;
       margin-bottom: 4px;
-      font-size: 24px;
-      font-weight: 800;
     }
 
     .teacher-email {
       margin: 0;
-      color: #64748b;
+      color: var(--muted);
       font-size: 13px;
       word-break: break-all;
     }
 
-    .section-title {
-      margin-bottom: 14px;
-      font-size: 19px;
+    .summary-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
     }
 
-    .shift-item {
-      border: 1px solid #e2e8f0;
-      border-radius: 13px;
+    .summary-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .summary-chip.pending {
+      background: var(--warning-soft);
+      color: var(--warning);
+    }
+
+    label {
+      display: block;
+      margin: 13px 0 6px;
+      font-weight: 750;
+    }
+
+    input, select, button {
+      width: 100%;
+      font-size: 16px;
+      border-radius: 10px;
+    }
+
+    input, select {
+      padding: 11px 12px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+    }
+
+    button {
+      padding: 11px 14px;
+      border: none;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    #loginButton {
+      margin-top: 18px;
+      background: var(--primary);
+      color: #fff;
+    }
+
+    #logoutButton {
+      width: auto;
+      padding: 9px 13px;
+      background: #e5e7eb;
+      color: #374151;
+      font-size: 14px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+
+    .tabButton {
+      width: auto;
+      flex: 0 0 auto;
+      padding: 10px 15px;
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .tabButton.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .tabPanel { display: none; }
+    .tabPanel.active { display: block; }
+
+    .section-title {
+      margin-bottom: 6px;
+      font-size: 20px;
+    }
+
+    .section-subtitle {
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* Calendar */
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .calendar-header h2 {
+      margin: 0;
+      flex: 1;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .calendar-nav {
+      width: auto;
+      min-width: 52px;
+      padding: 9px 12px;
+      background: #eef2f7;
+      color: #334155;
+    }
+
+    .calendar-scroll {
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(118px, 1fr));
+      min-width: 826px;
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .calendar-weekday,
+    .calendar-day {
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .calendar-weekday {
+      padding: 9px 6px;
+      text-align: center;
+      font-weight: 850;
+      background: #f8fafc;
+    }
+
+    .calendar-weekday.sunday { color: #c62828; }
+    .calendar-weekday.saturday { color: #1565c0; }
+
+    .calendar-day {
+      min-height: 135px;
+      padding: 7px;
+      background: #fff;
+    }
+
+    .calendar-day.other-month {
+      background: #f8fafc;
+      color: #94a3b8;
+    }
+
+    .calendar-day.today {
+      background: #fffdf1;
+    }
+
+    .calendar-date-number {
+      margin-bottom: 6px;
+      font-weight: 850;
+    }
+
+    .calendar-event {
+      display: block;
+      width: 100%;
+      margin-top: 5px;
+      padding: 6px;
+      border-radius: 7px;
+      text-align: left;
+      font-size: 11px;
+      line-height: 1.35;
+      color: #1f2937;
+      background: #eaf2ff;
+    }
+
+    .calendar-event.pending {
+      background: var(--warning-soft);
+      color: #78350f;
+    }
+
+    .calendar-event.completed {
+      background: var(--success-soft);
+      color: #166534;
+      opacity: 0.75;
+    }
+
+    .calendar-event.cancelled {
+      background: #f1f5f9;
+      color: #64748b;
+      opacity: 0.55;
+    }
+
+    .calendar-event.overdue {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .calendar-event-time {
+      font-weight: 850;
+    }
+
+    .calendar-detail {
+      display: none;
+      margin-top: 16px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f8fafc;
+      line-height: 1.65;
+    }
+
+    .calendar-detail.show {
+      display: block;
+    }
+
+    .detail-note {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 9px;
+      background: #fff;
+      white-space: pre-wrap;
+    }
+
+    /* Approval */
+    .approval-item {
+      border: 1px solid #f4d58d;
+      border-left: 4px solid #f59e0b;
+      border-radius: 14px;
       padding: 15px;
       margin-bottom: 12px;
-      background: #ffffff;
+      background: #fffdf5;
     }
 
-    .shift-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .shift-date {
-      font-size: 16px;
-      font-weight: 800;
+    .approval-title {
+      font-size: 17px;
+      font-weight: 850;
       margin-bottom: 6px;
     }
 
-    .shift-time {
-      color: #2563eb;
-      font-size: 18px;
-      font-weight: 800;
+    .approval-time {
+      color: var(--primary);
+      font-size: 17px;
+      font-weight: 850;
       margin-bottom: 7px;
     }
 
-    .shift-student {
-      margin-bottom: 8px;
+    .approval-meta {
+      margin: 5px 0;
+      line-height: 1.55;
     }
 
-    .status {
-      display: inline-block;
-      padding: 5px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 800;
+    .approval-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 12px;
     }
 
-    .status-tentative {
-      background: #fef3c7;
-      color: #92400e;
+    .approveButton {
+      background: var(--success-soft);
+      color: var(--success);
     }
 
-    .status-confirmed {
-      background: #dbeafe;
-      color: #1e40af;
+    .rejectButton {
+      background: var(--danger-soft);
+      color: var(--danger);
     }
 
-    .status-completed {
-      background: #dcfce7;
-      color: #166534;
+    /* Availability */
+    .availability-form {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr 1fr;
+      gap: 10px;
+      align-items: end;
     }
 
-    .status-cancelled {
-      background: #f3f4f6;
-      color: #6b7280;
+    .availability-form label {
+      margin-top: 0;
+    }
+
+    #addAvailabilityButton {
+      margin-top: 12px;
+      background: var(--primary);
+      color: white;
+    }
+
+    .availability-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 14px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+
+    .availability-date {
+      font-weight: 850;
+      margin-bottom: 4px;
+    }
+
+    .availability-time {
+      color: var(--primary);
+      font-weight: 850;
+    }
+
+    .availability-delete {
+      width: auto;
+      flex: 0 0 auto;
+      padding: 9px 12px;
+      background: var(--danger-soft);
+      color: var(--danger);
+      font-size: 14px;
+    }
+
+    .availability-note {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* Result */
+    .month-control {
+      margin-bottom: 15px;
     }
 
     .summary-grid {
@@ -203,115 +428,97 @@
       display: block;
       margin-bottom: 5px;
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 850;
     }
 
     .summary-label {
+      color: var(--muted);
       font-size: 12px;
-      color: #64748b;
     }
 
-    .month-control {
-      margin-bottom: 15px;
+    .shift-item {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 15px;
+      margin-bottom: 12px;
+      background: #fff;
     }
 
-    .month-control label {
-      margin-top: 0;
+    .shift-date {
+      margin-bottom: 6px;
+      font-size: 16px;
+      font-weight: 850;
+    }
+
+    .shift-time {
+      margin-bottom: 7px;
+      color: var(--primary);
+      font-size: 18px;
+      font-weight: 850;
+    }
+
+    .shift-meta {
+      margin: 5px 0;
+      line-height: 1.55;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .status-tentative {
+      background: var(--warning-soft);
+      color: var(--warning);
+    }
+
+    .status-confirmed {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-completed {
+      background: var(--success-soft);
+      color: var(--success);
+    }
+
+    .status-cancelled {
+      background: #f3f4f6;
+      color: #6b7280;
     }
 
     .empty-message {
       margin: 0;
-      padding: 20px 5px;
+      padding: 22px 5px;
       text-align: center;
-      color: #64748b;
+      color: var(--muted);
     }
 
     .message {
       min-height: 24px;
       margin: 12px 0;
       text-align: center;
-      font-weight: 700;
-      color: #b91c1c;
-    }
-
-    .availability-form {
-      display: grid;
-      grid-template-columns: 1.25fr 1fr 1fr;
-      gap: 10px;
-      align-items: end;
-    }
-
-    .availability-form label {
-      margin-top: 0;
-    }
-
-    #addAvailabilityButton {
-      margin-top: 12px;
-      background: #2563eb;
-      color: white;
-    }
-
-    .availability-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      border: 1px solid #e2e8f0;
-      border-radius: 13px;
-      padding: 14px;
-      margin-bottom: 10px;
-      background: #fff;
-    }
-
-    .availability-main {
-      min-width: 0;
-    }
-
-    .availability-date {
       font-weight: 800;
-      margin-bottom: 4px;
+      color: var(--danger);
     }
 
-    .availability-time {
-      color: #2563eb;
-      font-weight: 800;
-    }
+    @media (max-width: 640px) {
+      .page { padding: 12px 10px 40px; }
+      .card { padding: 17px; }
+      .app-title { font-size: 24px; }
+      .teacher-name { font-size: 21px; }
 
-    .availability-delete {
-      width: auto;
-      flex: 0 0 auto;
-      padding: 9px 12px;
-      background: #fee2e2;
-      color: #991b1b;
-      font-size: 14px;
-    }
-
-    .availability-note {
-      margin: 12px 0 0;
-      color: #64748b;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 540px) {
-      .page {
-        padding: 12px 10px 40px;
-      }
-
-      .card {
-        padding: 17px;
-      }
-
-      .app-title {
-        font-size: 24px;
-      }
-
-      .teacher-name {
-        font-size: 21px;
-      }
-
+      .availability-form,
+      .approval-actions,
       .summary-grid {
         grid-template-columns: 1fr;
+      }
+
+      .availability-item {
+        align-items: flex-start;
       }
 
       .summary-item {
@@ -319,318 +526,182 @@
         justify-content: space-between;
         align-items: center;
         text-align: left;
-        padding: 13px;
       }
 
       .summary-value {
         margin: 0;
         order: 2;
       }
-
-      .summary-label {
-        order: 1;
-        font-size: 14px;
-      }
-
-      .availability-form {
-        grid-template-columns: 1fr;
-      }
-
-      .availability-item {
-        align-items: flex-start;
-      }
     }
   </style>
+
+  <link rel="manifest" href="/manifest-teacher.json">
+  <link rel="apple-touch-icon" href="/teacher-icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="講師シフト">
+
 </head>
 
 <body>
-
   <div class="page">
-
-    <h1 class="app-title">
-      講師シフト
-    </h1>
-
-
-    <!-- ============================= -->
-    <!-- ログイン画面 -->
-    <!-- ============================= -->
+    <h1 class="app-title">講師シフト</h1>
 
     <section id="loginArea" class="card">
+      <h2>講師ログイン</h2>
 
-      <h2>
-        講師ログイン
-      </h2>
+      <label for="email">メールアドレス</label>
+      <input type="email" id="email" autocomplete="email" placeholder="teacher@example.com">
 
-      <label for="email">
-        メールアドレス
-      </label>
+      <label for="password">パスワード</label>
+      <input type="password" id="password" autocomplete="current-password" placeholder="パスワード">
 
-      <input
-        type="email"
-        id="email"
-        autocomplete="email"
-        placeholder="teacher@example.com"
-      >
-
-
-      <label for="password">
-        パスワード
-      </label>
-
-      <input
-        type="password"
-        id="password"
-        autocomplete="current-password"
-        placeholder="パスワード"
-      >
-
-
-      <button id="loginButton">
-        ログイン
-      </button>
-
+      <button id="loginButton">ログイン</button>
     </section>
 
-
-    <!-- ============================= -->
-    <!-- 講師画面 -->
-    <!-- ============================= -->
-
     <main id="app" style="display:none;">
-
-
-      <!-- 講師情報 -->
-
       <section class="card">
-
         <div class="topbar">
-
           <div>
+            <div id="teacherName" class="teacher-name">講師</div>
+            <p id="teacherEmail" class="teacher-email"></p>
 
-            <div
-              id="teacherName"
-              class="teacher-name"
-            >
-              講師
+            <div class="summary-row">
+              <span id="pendingCountChip" class="summary-chip pending">承認待ち 0件</span>
+              <span id="upcomingCountChip" class="summary-chip">今後の授業 0件</span>
+              <span id="openCountChip" class="summary-chip">空き枠 0件</span>
+            </div>
+          </div>
+
+          <button id="logoutButton">ログアウト</button>
+        </div>
+      </section>
+
+      <div class="tabs">
+        <button class="tabButton active" data-tab="calendar">カレンダー</button>
+        <button id="approvalTabButton" class="tabButton" data-tab="approvals">承認待ち</button>
+        <button class="tabButton" data-tab="availability">空き時間</button>
+        <button class="tabButton" data-tab="results">実績</button>
+      </div>
+
+      <section id="tab-calendar" class="tabPanel active">
+        <section class="card">
+          <div class="calendar-header">
+            <button id="prevMonthButton" class="calendar-nav">←</button>
+            <h2 id="calendarTitle"></h2>
+            <button id="nextMonthButton" class="calendar-nav">→</button>
+          </div>
+
+          <div class="calendar-scroll">
+            <div id="calendarGrid" class="calendar-grid"></div>
+          </div>
+
+          <div id="calendarDetail" class="calendar-detail"></div>
+        </section>
+      </section>
+
+      <section id="tab-approvals" class="tabPanel">
+        <section class="card">
+          <h2 class="section-title">塾からの予約依頼</h2>
+          <p class="section-subtitle">
+            承認すると「予定（確定）」になります。却下すると、その空き枠は再び予約可能になります。
+          </p>
+
+          <div id="approvalList"></div>
+
+          <p id="approvalEmpty" class="empty-message" style="display:none;">
+            承認待ちの予約依頼はありません。
+          </p>
+        </section>
+      </section>
+
+      <section id="tab-availability" class="tabPanel">
+        <section class="card">
+          <h2 class="section-title">空き時間登録</h2>
+
+          <div class="availability-form">
+            <div>
+              <label for="availabilityDate">日付</label>
+              <input type="date" id="availabilityDate">
             </div>
 
-            <p
-              id="teacherEmail"
-              class="teacher-email"
-            ></p>
+            <div>
+              <label for="availabilityStartTime">開始</label>
+              <input type="time" id="availabilityStartTime">
+            </div>
 
+            <div>
+              <label for="availabilityEndTime">終了</label>
+              <input type="time" id="availabilityEndTime">
+            </div>
           </div>
 
-
-          <button id="logoutButton">
-            ログアウト
+          <button id="addAvailabilityButton" type="button">
+            空き時間として登録
           </button>
 
-        </div>
+          <p class="availability-note">
+            現在は日付単位で登録します。承認待ち・予約済みの枠は削除対象には出しません。
+          </p>
 
+          <h3 style="margin-top:22px; margin-bottom:12px;">
+            登録済みの空き時間
+          </h3>
 
+          <div id="availabilityList"></div>
+
+          <p id="availabilityEmpty" class="empty-message" style="display:none;">
+            今後の空き時間は登録されていません。
+          </p>
+        </section>
       </section>
 
+      <section id="tab-results" class="tabPanel">
+        <section class="card">
+          <h2 class="section-title">月別実績</h2>
 
-      <!-- 空き時間登録 -->
-
-      <section class="card">
-
-        <h2 class="section-title">
-          空き時間登録
-        </h2>
-
-        <div class="availability-form">
-
-          <div>
-            <label for="availabilityDate">日付</label>
-            <input type="date" id="availabilityDate">
+          <div class="month-control">
+            <label for="summaryMonth">集計する月</label>
+            <input type="month" id="summaryMonth">
           </div>
 
-          <div>
-            <label for="availabilityStartTime">開始</label>
-            <input type="time" id="availabilityStartTime">
+          <div class="summary-grid">
+            <div class="summary-item">
+              <span id="completedCount" class="summary-value">0</span>
+              <span class="summary-label">実施済み</span>
+            </div>
+
+            <div class="summary-item">
+              <span id="completedHours" class="summary-value">0時間</span>
+              <span class="summary-label">勤務時間</span>
+            </div>
+
+            <div class="summary-item">
+              <span id="salaryAmount" class="summary-value">0円</span>
+              <span class="summary-label">給与見込み</span>
+            </div>
           </div>
+        </section>
 
-          <div>
-            <label for="availabilityEndTime">終了</label>
-            <input type="time" id="availabilityEndTime">
-          </div>
+        <section class="card">
+          <h2 id="monthlyTitle" class="section-title">今月の授業</h2>
+          <div id="monthlyShiftList"></div>
 
-        </div>
-
-        <button id="addAvailabilityButton" type="button">
-          空き時間として登録
-        </button>
-
-        <p class="availability-note">
-          登録した時間帯は、将来の塾側予約画面から選べるようにします。
-          すでに登録済みの空き時間と重なる時間帯は登録できません。
-        </p>
-
-        <h3 style="margin-top:22px; margin-bottom:12px;">
-          登録済みの空き時間
-        </h3>
-
-        <div id="availabilityList"></div>
-
-        <p
-          id="availabilityEmpty"
-          class="empty-message"
-          style="display:none;"
-        >
-          今後の空き時間は登録されていません。
-        </p>
-
+          <p id="monthlyEmpty" class="empty-message" style="display:none;">
+            この月の授業はありません。
+          </p>
+        </section>
       </section>
-
-
-      <!-- 今後の授業 -->
-
-      <section class="card">
-
-        <h2 class="section-title">
-          今後の授業
-        </h2>
-
-        <div id="upcomingShiftList">
-        </div>
-
-        <p
-          id="upcomingEmpty"
-          class="empty-message"
-          style="display:none;"
-        >
-          今後の授業はありません。
-        </p>
-
-      </section>
-
-
-      <!-- 月別実績 -->
-
-      <section class="card">
-
-        <h2 class="section-title">
-          月別実績
-        </h2>
-
-
-        <div class="month-control">
-
-          <label for="summaryMonth">
-            集計する月
-          </label>
-
-          <input
-            type="month"
-            id="summaryMonth"
-          >
-
-        </div>
-
-
-        <div class="summary-grid">
-
-          <div class="summary-item">
-
-            <span
-              id="completedCount"
-              class="summary-value"
-            >
-              0
-            </span>
-
-            <span class="summary-label">
-              実施済み
-            </span>
-
-          </div>
-
-
-          <div class="summary-item">
-
-            <span
-              id="completedHours"
-              class="summary-value"
-            >
-              0時間
-            </span>
-
-            <span class="summary-label">
-              勤務時間
-            </span>
-
-          </div>
-
-
-          <div class="summary-item">
-
-            <span
-              id="salaryAmount"
-              class="summary-value"
-            >
-              0円
-            </span>
-
-            <span class="summary-label">
-              給与見込み
-            </span>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- 月内の授業 -->
-
-      <section class="card">
-
-        <h2
-          id="monthlyTitle"
-          class="section-title"
-        >
-          今月の授業
-        </h2>
-
-        <div id="monthlyShiftList">
-        </div>
-
-        <p
-          id="monthlyEmpty"
-          class="empty-message"
-          style="display:none;"
-        >
-          この月の授業はありません。
-        </p>
-
-      </section>
-
     </main>
 
-
-    <p
-      id="message"
-      class="message"
-    ></p>
-
+    <p id="message" class="message"></p>
   </div>
 
-
-
-  <!-- ============================= -->
-  <!-- Firebase -->
-  <!-- ============================= -->
-
   <script type="module">
-
     import {
       initializeApp
     } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-
 
     import {
       getAuth,
@@ -639,7 +710,6 @@
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-
     import {
       getFirestore,
       doc,
@@ -647,1495 +717,1095 @@
       collection,
       addDoc,
       deleteDoc,
-      serverTimestamp,
       query,
       where,
-      onSnapshot
+      onSnapshot,
+      runTransaction,
+      serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
-
-
-    // ===================================
-    // Firebase設定
-    // 管理者アプリと同じFirebaseを使用
-    // ===================================
-
     const firebaseConfig = {
-
-      apiKey:
-        "AIzaSyBKhOG_ds0dWdcJkJlg6WljpgixLXmloeM",
-
-      authDomain:
-        "shift-manager-303a5.firebaseapp.com",
-
-      projectId:
-        "shift-manager-303a5",
-
-      storageBucket:
-        "shift-manager-303a5.firebasestorage.app",
-
-      messagingSenderId:
-        "759595895300",
-
-      appId:
-        "1:759595895300:web:962ac3ee0bc16d0f158351"
-
+      apiKey: "AIzaSyBKhOG_ds0dWdcJkJlg6WljpgixLXmloeM",
+      authDomain: "shift-manager-303a5.firebaseapp.com",
+      projectId: "shift-manager-303a5",
+      storageBucket: "shift-manager-303a5.firebasestorage.app",
+      messagingSenderId: "759595895300",
+      appId: "1:759595895300:web:962ac3ee0bc16d0f158351"
     };
 
+    const firebaseApp = initializeApp(firebaseConfig);
+    const auth = getAuth(firebaseApp);
+    const db = getFirestore(firebaseApp);
 
-    const firebaseApp =
-      initializeApp(firebaseConfig);
+    const loginArea = document.getElementById("loginArea");
+    const appArea = document.getElementById("app");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const loginButton = document.getElementById("loginButton");
+    const logoutButton = document.getElementById("logoutButton");
 
-    const auth =
-      getAuth(firebaseApp);
+    const teacherName = document.getElementById("teacherName");
+    const teacherEmail = document.getElementById("teacherEmail");
+    const pendingCountChip = document.getElementById("pendingCountChip");
+    const approvalTabButton = document.getElementById("approvalTabButton");
+    const upcomingCountChip = document.getElementById("upcomingCountChip");
+    const openCountChip = document.getElementById("openCountChip");
 
-    const db =
-      getFirestore(firebaseApp);
+    const calendarTitle = document.getElementById("calendarTitle");
+    const calendarGrid = document.getElementById("calendarGrid");
+    const calendarDetail = document.getElementById("calendarDetail");
+    const prevMonthButton = document.getElementById("prevMonthButton");
+    const nextMonthButton = document.getElementById("nextMonthButton");
 
+    const approvalList = document.getElementById("approvalList");
+    const approvalEmpty = document.getElementById("approvalEmpty");
 
+    const availabilityDate = document.getElementById("availabilityDate");
+    const availabilityStartTime = document.getElementById("availabilityStartTime");
+    const availabilityEndTime = document.getElementById("availabilityEndTime");
+    const addAvailabilityButton = document.getElementById("addAvailabilityButton");
+    const availabilityList = document.getElementById("availabilityList");
+    const availabilityEmpty = document.getElementById("availabilityEmpty");
 
-    // ===================================
-    // HTML要素
-    // ===================================
+    const summaryMonth = document.getElementById("summaryMonth");
+    const completedCount = document.getElementById("completedCount");
+    const completedHours = document.getElementById("completedHours");
+    const salaryAmount = document.getElementById("salaryAmount");
+    const monthlyShiftList = document.getElementById("monthlyShiftList");
+    const monthlyEmpty = document.getElementById("monthlyEmpty");
+    const monthlyTitle = document.getElementById("monthlyTitle");
 
-    const loginArea =
-      document.getElementById("loginArea");
-
-    const appArea =
-      document.getElementById("app");
-
-    const emailInput =
-      document.getElementById("email");
-
-    const passwordInput =
-      document.getElementById("password");
-
-    const loginButton =
-      document.getElementById("loginButton");
-
-    const logoutButton =
-      document.getElementById("logoutButton");
-
-    const teacherName =
-      document.getElementById("teacherName");
-
-    const teacherEmail =
-      document.getElementById("teacherEmail");
-
-    const availabilityDate =
-      document.getElementById("availabilityDate");
-
-    const availabilityStartTime =
-      document.getElementById("availabilityStartTime");
-
-    const availabilityEndTime =
-      document.getElementById("availabilityEndTime");
-
-    const addAvailabilityButton =
-      document.getElementById("addAvailabilityButton");
-
-    const availabilityList =
-      document.getElementById("availabilityList");
-
-    const availabilityEmpty =
-      document.getElementById("availabilityEmpty");
-
-    const upcomingShiftList =
-      document.getElementById("upcomingShiftList");
-
-    const upcomingEmpty =
-      document.getElementById("upcomingEmpty");
-
-    const summaryMonth =
-      document.getElementById("summaryMonth");
-
-    const completedCount =
-      document.getElementById("completedCount");
-
-    const completedHours =
-      document.getElementById("completedHours");
-
-    const salaryAmount =
-      document.getElementById("salaryAmount");
-
-    const monthlyShiftList =
-      document.getElementById("monthlyShiftList");
-
-    const monthlyEmpty =
-      document.getElementById("monthlyEmpty");
-
-    const monthlyTitle =
-      document.getElementById("monthlyTitle");
-
-    const message =
-      document.getElementById("message");
-
-
-
-    // ===================================
-    // 状態
-    // ===================================
+    const message = document.getElementById("message");
 
     let currentUser = null;
-
     let currentTeacher = null;
-
     let currentShifts = [];
-
     let currentAvailabilities = [];
-
     let unsubscribeShifts = null;
-
     let unsubscribeAvailability = null;
 
-
-
-    // ===================================
-    // 初期月
-    // ===================================
-
-    const today =
-      new Date();
+    const now = new Date();
+    let calendarYear = now.getFullYear();
+    let calendarMonth = now.getMonth();
 
     summaryMonth.value =
-      `${today.getFullYear()}-${String(
-        today.getMonth() + 1
-      ).padStart(2, "0")}`;
+      `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 
-    const todayStringForAvailability =
-      getLocalDateString(today);
+    availabilityDate.min = getLocalDateString(now);
+    availabilityDate.value = getLocalDateString(now);
 
-    availabilityDate.min =
-      todayStringForAvailability;
+    document.querySelectorAll(".tabButton").forEach((button) => {
+      button.addEventListener("click", () => activateTab(button.dataset.tab));
+    });
 
-    availabilityDate.value =
-      todayStringForAvailability;
+    pendingCountChip.style.cursor = "pointer";
+    pendingCountChip.addEventListener("click", () => {
+      activateTab("approvals");
+    });
 
+    function activateTab(tabName) {
+      document.querySelectorAll(".tabButton").forEach((button) => {
+        button.classList.toggle("active", button.dataset.tab === tabName);
+      });
 
+      document.querySelectorAll(".tabPanel").forEach((panel) => {
+        panel.classList.toggle("active", panel.id === `tab-${tabName}`);
+      });
 
-    // ===================================
-    // ログイン
-    // ===================================
+      renderHeaderSummary();
+    }
 
-    loginButton.addEventListener(
-      "click",
-      async () => {
+    loginButton.addEventListener("click", async () => {
+      message.textContent = "";
 
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        message.textContent = "メールアドレスとパスワードを入力してください。";
+        return;
+      }
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        console.error(error);
+        message.textContent = "ログインできませんでした。";
+      }
+    });
+
+    passwordInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") loginButton.click();
+    });
+
+    logoutButton.addEventListener("click", async () => {
+      await signOut(auth);
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
+      cleanupShiftListener();
+      cleanupAvailabilityListener();
+
+      if (!user) {
+        currentTeacher = null;
+        currentShifts = [];
+        currentAvailabilities = [];
+
+        loginArea.style.display = "block";
+        appArea.style.display = "none";
+        teacherName.textContent = "講師";
+        teacherEmail.textContent = "";
+        renderAll();
+        return;
+      }
+
+      loginArea.style.display = "none";
+      appArea.style.display = "none";
+      message.textContent = "講師情報を確認しています…";
+
+      try {
+        currentTeacher = await loadLoggedInTeacher(user);
+
+        teacherName.textContent = `${currentTeacher.name || "講師"} さん`;
+        teacherEmail.textContent = user.email || currentTeacher.email || "";
+
+        appArea.style.display = "block";
         message.textContent = "";
 
-        const email =
-          emailInput.value.trim();
+        loadTeacherShifts(currentTeacher.id);
+        loadTeacherAvailability(currentTeacher.id);
 
-        const password =
-          passwordInput.value;
-
-
-        if (!email || !password) {
-
-          message.textContent =
-            "メールアドレスとパスワードを入力してください。";
-
-          return;
-        }
-
-
-        try {
-
-          await signInWithEmailAndPassword(
-            auth,
-            email,
-            password
-          );
-
-        } catch (error) {
-
-          console.error(error);
-
-          message.textContent =
-            "ログインできませんでした。";
-
-        }
-
-      }
-    );
-
-
-
-    // Enterでもログイン
-
-    passwordInput.addEventListener(
-      "keydown",
-      (event) => {
-
-        if (event.key === "Enter") {
-
-          loginButton.click();
-
-        }
-
-      }
-    );
-
-
-
-    // ===================================
-    // ログアウト
-    // ===================================
-
-    logoutButton.addEventListener(
-      "click",
-      async () => {
-
-        await signOut(auth);
-
-      }
-    );
-
-
-
-    // ===================================
-    // 認証状態
-    // ===================================
-
-    onAuthStateChanged(
-      auth,
-      async (user) => {
-
-        currentUser = user;
-
-        cleanupShiftListener();
-        cleanupAvailabilityListener();
-
-
-        if (!user) {
-
-          currentTeacher = null;
-
-          currentShifts = [];
-
-          currentAvailabilities = [];
-
-          loginArea.style.display =
-            "block";
-
-          appArea.style.display =
-            "none";
-
-          teacherName.textContent =
-            "講師";
-
-          teacherEmail.textContent =
-            "";
-
-          message.textContent =
-            "";
-
-          renderAll();
-
-          return;
-        }
-
-
-        loginArea.style.display =
-          "none";
-
-        appArea.style.display =
-          "none";
+      } catch (error) {
+        console.error(error);
+        currentTeacher = null;
+        currentShifts = [];
+        currentAvailabilities = [];
+        appArea.style.display = "none";
 
         message.textContent =
-          "講師情報を確認しています…";
-
-
-        try {
-
-          const teacher =
-            await loadLoggedInTeacher(
-              user
-            );
-
-
-          currentTeacher =
-            teacher;
-
-
-          teacherName.textContent =
-            `${teacher.name || "講師"} さん`;
-
-
-          teacherEmail.textContent =
-            user.email || teacher.email || "";
-
-
-          appArea.style.display =
-            "block";
-
-
-          message.textContent =
-            "";
-
-
-          loadTeacherShifts(
-            teacher.id
-          );
-
-          loadTeacherAvailability(
-            teacher.id
-          );
-
-
-        } catch (error) {
-
-          console.error(error);
-
-          currentTeacher = null;
-
-          currentShifts = [];
-
-          currentAvailabilities = [];
-
-          appArea.style.display =
-            "none";
-
-          message.textContent =
-            error.message ||
-            "講師情報の読み込みに失敗しました。";
-
-        }
-
+          error.message || "講師情報の読み込みに失敗しました。";
       }
-    );
+    });
 
-
-
-    // ===================================
-    // users/{UID} から権限とteacherIdを取得
-    // そのteacherIdでteachersを読む
-    // ===================================
-
-    async function loadLoggedInTeacher(
-      user
-    ) {
-
+    async function loadLoggedInTeacher(user) {
       if (!user?.uid) {
-
-        throw new Error(
-          "ログインユーザーを確認できませんでした。"
-        );
-
+        throw new Error("ログインユーザーを確認できませんでした。");
       }
 
-
-      // 1. users/{Authentication UID} を読む
-      const userRef =
-        doc(
-          db,
-          "users",
-          user.uid
-        );
-
-
-      const userSnapshot =
-        await getDoc(
-          userRef
-        );
-
+      const userSnapshot = await getDoc(
+        doc(db, "users", user.uid)
+      );
 
       if (!userSnapshot.exists()) {
-
         throw new Error(
           "このアカウントのユーザー設定がありません。管理者に確認してください。"
         );
-
       }
 
+      const userData = userSnapshot.data();
 
-      const userData =
-        userSnapshot.data();
-
-
-      // 2. 利用停止ユーザーを拒否
-      if (
-        userData.active === false
-      ) {
-
-        throw new Error(
-          "このアカウントは現在利用できません。"
-        );
-
+      if (userData.active === false) {
+        throw new Error("このアカウントは現在利用できません。");
       }
 
+      const roles = Array.isArray(userData.roles)
+        ? userData.roles
+        : [];
 
-      // 3. teacher権限を確認
-      const roles =
-        Array.isArray(
-          userData.roles
-        )
-          ? userData.roles
-          : [];
-
-
-      if (
-        !roles.includes(
-          "teacher"
-        )
-      ) {
-
-        throw new Error(
-          "このアカウントには講師権限がありません。"
-        );
-
+      if (!roles.includes("teacher")) {
+        throw new Error("このアカウントには講師権限がありません。");
       }
 
-
-      // 4. usersに紐づけたteacherIdを取得
-      const teacherId =
-        String(
-          userData.teacherId ||
-          ""
-        ).trim();
-
+      const teacherId = String(userData.teacherId || "").trim();
 
       if (!teacherId) {
-
-        throw new Error(
-          "講師IDが設定されていません。管理者に確認してください。"
-        );
-
+        throw new Error("講師IDが設定されていません。管理者に確認してください。");
       }
 
+      const teacherSnapshot = await getDoc(
+        doc(db, "teachers", teacherId)
+      );
 
-      // 5. teachers/{teacherId} を読む
-      const teacherRef =
-        doc(
-          db,
-          "teachers",
-          teacherId
-        );
-
-
-      const teacherSnapshot =
-        await getDoc(
-          teacherRef
-        );
-
-
-      if (
-        !teacherSnapshot.exists()
-      ) {
-
-        throw new Error(
-          "対応する講師マスタが見つかりません。管理者に確認してください。"
-        );
-
+      if (!teacherSnapshot.exists()) {
+        throw new Error("対応する講師マスタが見つかりません。管理者に確認してください。");
       }
 
+      const teacherData = teacherSnapshot.data();
 
-      const teacherData =
-        teacherSnapshot.data();
-
-
-      if (
-        teacherData.active === false
-      ) {
-
-        throw new Error(
-          "講師アカウントが無効になっています。"
-        );
-
+      if (teacherData.active === false) {
+        throw new Error("講師アカウントが無効になっています。");
       }
 
-
-      // 給与計算でhourlyRateを使うため、
-      // teachersの情報をcurrentTeacherとして返す
       return {
-
-        id:
-          teacherSnapshot.id,
-
+        id: teacherSnapshot.id,
         ...teacherData,
-
-        // users側の情報も保持しておく
-        userName:
-          userData.name || "",
-
-        userEmail:
-          userData.email ||
-          user.email ||
-          "",
-
+        userName: userData.name || "",
+        userEmail: userData.email || user.email || "",
         roles
-
       };
-
     }
 
-
-
-    // ===================================
-    // 自分のシフトだけリアルタイム取得
-    // ===================================
-
-    function loadTeacherShifts(
-      teacherId
-    ) {
-
+    function loadTeacherShifts(teacherId) {
       cleanupShiftListener();
 
+      const shiftQuery = query(
+        collection(db, "shifts"),
+        where("teacherId", "==", teacherId)
+      );
 
-      const shiftQuery =
-        query(
-          collection(
-            db,
-            "shifts"
-          ),
-          where(
-            "teacherId",
-            "==",
-            teacherId
-          )
-        );
+      unsubscribeShifts = onSnapshot(
+        shiftQuery,
+        (snapshot) => {
+          const shifts = [];
 
+          snapshot.forEach((document) => {
+            shifts.push({
+              id: document.id,
+              ...document.data()
+            });
+          });
 
-      unsubscribeShifts =
-        onSnapshot(
-
-          shiftQuery,
-
-          (snapshot) => {
-
-            const shifts = [];
-
-
-            snapshot.forEach(
-              (document) => {
-
-                shifts.push({
-
-                  id:
-                    document.id,
-
-                  ...document.data()
-
-                });
-
-              }
-            );
-
-
-            shifts.sort(
-              compareShiftDateTime
-            );
-
-
-            currentShifts =
-              shifts;
-
-
-            renderAll();
-
-          },
-
-          (error) => {
-
-            console.error(error);
-
-            message.textContent =
-              "シフトの読み込みに失敗しました。";
-
-          }
-
-        );
-
+          shifts.sort(compareShiftDateTime);
+          currentShifts = shifts;
+          renderAll();
+        },
+        (error) => {
+          console.error(error);
+          message.textContent = "シフトの読み込みに失敗しました。";
+        }
+      );
     }
-
-
 
     function cleanupShiftListener() {
-
-      if (
-        unsubscribeShifts
-      ) {
-
+      if (unsubscribeShifts) {
         unsubscribeShifts();
-
-        unsubscribeShifts =
-          null;
-
+        unsubscribeShifts = null;
       }
-
     }
 
-
-
-    // ===================================
-    // 空き時間登録
-    // ===================================
-
-    addAvailabilityButton.addEventListener(
-      "click",
-      async () => {
-
-        if (!currentUser || !currentTeacher) {
-
-          message.textContent =
-            "講師としてログインしてください。";
-
-          return;
-
-        }
-
-
-        const date =
-          availabilityDate.value;
-
-        const startTime =
-          availabilityStartTime.value;
-
-        const endTime =
-          availabilityEndTime.value;
-
-
-        if (!date || !startTime || !endTime) {
-
-          message.textContent =
-            "日付・開始時間・終了時間を入力してください。";
-
-          return;
-
-        }
-
-
-        if (date < getLocalDateString(new Date())) {
-
-          message.textContent =
-            "過去の日付は登録できません。";
-
-          return;
-
-        }
-
-
-        if (endTime <= startTime) {
-
-          message.textContent =
-            "終了時間は開始時間より後にしてください。";
-
-          return;
-
-        }
-
-
-        const overlaps =
-          currentAvailabilities.some(
-            (item) => {
-
-              if (item.date !== date) {
-                return false;
-              }
-
-              return (
-                startTime < item.endTime &&
-                endTime > item.startTime
-              );
-
-            }
-          );
-
-
-        if (overlaps) {
-
-          message.textContent =
-            "その時間帯は、すでに登録済みの空き時間と重なっています。";
-
-          return;
-
-        }
-
-
-        try {
-
-          await addDoc(
-            collection(
-              db,
-              "availability"
-            ),
-            {
-              teacherId:
-                currentTeacher.id,
-
-              teacherName:
-                currentTeacher.name || "",
-
-              date,
-              startTime,
-              endTime,
-              active: true,
-              status: "open",
-
-              createdByUid:
-                currentUser.uid,
-
-              createdByEmail:
-                currentUser.email || "",
-
-              createdAt:
-                serverTimestamp()
-            }
-          );
-
-
-          availabilityStartTime.value =
-            "";
-
-          availabilityEndTime.value =
-            "";
-
-          message.textContent =
-            "空き時間を登録しました。";
-
-          clearMessageLater();
-
-        } catch (error) {
-
-          console.error(error);
-
-          message.textContent =
-            "空き時間を登録できませんでした。";
-
-        }
-
-      }
-    );
-
-
-
-    function loadTeacherAvailability(
-      teacherId
-    ) {
-
+    function loadTeacherAvailability(teacherId) {
       cleanupAvailabilityListener();
 
+      const availabilityQuery = query(
+        collection(db, "availability"),
+        where("teacherId", "==", teacherId)
+      );
 
-      const availabilityQuery =
-        query(
-          collection(
-            db,
-            "availability"
-          ),
-          where(
-            "teacherId",
-            "==",
-            teacherId
-          )
-        );
+      unsubscribeAvailability = onSnapshot(
+        availabilityQuery,
+        (snapshot) => {
+          const items = [];
 
+          snapshot.forEach((document) => {
+            const data = document.data();
 
-      unsubscribeAvailability =
-        onSnapshot(
-          availabilityQuery,
-          (snapshot) => {
+            if (data.active === false) return;
 
-            const items = [];
+            items.push({
+              id: document.id,
+              ...data
+            });
+          });
 
-            snapshot.forEach(
-              (document) => {
-
-                const data =
-                  document.data();
-
-                if (data.active === false) {
-                  return;
-                }
-
-                items.push({
-                  id: document.id,
-                  ...data
-                });
-
-              }
-            );
-
-
-            items.sort(
-              compareShiftDateTime
-            );
-
-            currentAvailabilities =
-              items;
-
-            renderAvailability();
-
-          },
-          (error) => {
-
-            console.error(error);
-
-            message.textContent =
-              "空き時間の読み込みに失敗しました。";
-
-          }
-        );
-
+          items.sort(compareShiftDateTime);
+          currentAvailabilities = items;
+          renderAvailability();
+          renderHeaderSummary();
+        },
+        (error) => {
+          console.error(error);
+          message.textContent = "空き時間の読み込みに失敗しました。";
+        }
+      );
     }
-
-
 
     function cleanupAvailabilityListener() {
-
       if (unsubscribeAvailability) {
-
         unsubscribeAvailability();
         unsubscribeAvailability = null;
-
       }
-
     }
 
-
-
-    function renderAvailability() {
-
-      availabilityList.innerHTML =
-        "";
-
-      const todayString =
-        getLocalDateString(
-          new Date()
+    // ---- Approval ----
+    function getPendingApprovalShifts() {
+      return currentShifts.filter((shift) => {
+        return (
+          shift.approvalStatus === "pending" &&
+          normalizeStatus(shift.status) === "tentative"
         );
+      });
+    }
 
-      const upcomingItems =
-        currentAvailabilities.filter(
-          (item) =>
-            item.date >= todayString &&
-            (item.status || "open") === "open"
-        );
+    function renderApprovals() {
+      approvalList.innerHTML = "";
 
+      const pending = getPendingApprovalShifts()
+        .sort(compareShiftDateTime);
 
-      if (upcomingItems.length === 0) {
-
-        availabilityEmpty.style.display =
-          "block";
-
+      if (pending.length === 0) {
+        approvalEmpty.style.display = "block";
         return;
-
       }
 
+      approvalEmpty.style.display = "none";
 
-      availabilityEmpty.style.display =
-        "none";
+      pending.forEach((shift) => {
+        const item = document.createElement("div");
+        item.className = "approval-item";
 
+        item.innerHTML = `
+          <div class="approval-title">
+            ${escapeHtml(shift.schoolName || "塾")} からの予約依頼
+          </div>
 
-      upcomingItems.forEach(
-        (item) => {
+          <div class="approval-time">
+            ${escapeHtml(formatDate(shift.date))}
+            ${escapeHtml(shift.startTime || "--:--")}〜${escapeHtml(shift.endTime || "--:--")}
+          </div>
 
-          const row =
-            document.createElement(
-              "div"
+          <div class="approval-meta">
+            生徒：<strong>${escapeHtml(shift.studentName || "未設定")}</strong>
+          </div>
+
+          <div class="approval-meta">
+            教科：${escapeHtml(
+              shift.subjectName || shift.subjectId || "未設定"
+            )}
+          </div>
+
+          ${
+            shift.lessonNote
+              ? `<div class="detail-note">${escapeHtml(shift.lessonNote)}</div>`
+              : ""
+          }
+
+          <div class="approval-actions">
+            <button class="approveButton" data-id="${shift.id}">
+              承認する
+            </button>
+
+            <button class="rejectButton" data-id="${shift.id}">
+              却下する
+            </button>
+          </div>
+        `;
+
+        approvalList.appendChild(item);
+      });
+
+      document.querySelectorAll(".approveButton").forEach((button) => {
+        button.addEventListener("click", () => approveRequest(button.dataset.id));
+      });
+
+      document.querySelectorAll(".rejectButton").forEach((button) => {
+        button.addEventListener("click", () => rejectRequest(button.dataset.id));
+      });
+    }
+
+    async function approveRequest(shiftId) {
+      const shift = currentShifts.find((item) => item.id === shiftId);
+
+      if (!shift || !currentTeacher) return;
+
+      const ok = confirm(
+        "この予約依頼を承認しますか？\n\n" +
+        `${formatDate(shift.date)} ${shift.startTime || ""}〜${shift.endTime || ""}\n` +
+        `生徒：${shift.studentName || ""}\n` +
+        `教科：${shift.subjectName || shift.subjectId || "未設定"}`
+      );
+
+      if (!ok) return;
+
+      const shiftRef = doc(db, "shifts", shiftId);
+
+      try {
+        await runTransaction(db, async (transaction) => {
+          const shiftSnapshot = await transaction.get(shiftRef);
+
+          if (!shiftSnapshot.exists()) {
+            throw new Error("SHIFT_NOT_FOUND");
+          }
+
+          const latestShift = shiftSnapshot.data();
+
+          if (
+            latestShift.teacherId !== currentTeacher.id ||
+            latestShift.approvalStatus !== "pending" ||
+            normalizeStatus(latestShift.status) !== "tentative"
+          ) {
+            throw new Error("REQUEST_CHANGED");
+          }
+
+          let availabilityRef = null;
+          let availabilitySnapshot = null;
+
+          if (latestShift.availabilityId) {
+            availabilityRef = doc(
+              db,
+              "availability",
+              latestShift.availabilityId
             );
 
-          row.className =
-            "availability-item";
+            availabilitySnapshot = await transaction.get(availabilityRef);
+          }
 
-          row.innerHTML = `
-            <div class="availability-main">
-              <div class="availability-date">
-                ${escapeHtml(formatDate(item.date))}
-              </div>
-              <div class="availability-time">
-                ${escapeHtml(item.startTime || "--:--")}
-                ～
-                ${escapeHtml(item.endTime || "--:--")}
-              </div>
-            </div>
-            <button
-              class="availability-delete"
-              type="button"
-              data-id="${escapeHtml(item.id)}"
-            >
-              削除
-            </button>
+          transaction.update(shiftRef, {
+            status: "confirmed",
+            approvalStatus: "approved",
+            approvedByUid: currentUser.uid,
+            approvedAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          });
+
+          if (
+            availabilityRef &&
+            availabilitySnapshot &&
+            availabilitySnapshot.exists()
+          ) {
+            const availabilityData = availabilitySnapshot.data();
+
+            if (
+              availabilityData.status === "requested" &&
+              availabilityData.requestedShiftId === shiftId
+            ) {
+              transaction.update(availabilityRef, {
+                status: "booked",
+                bookedShiftId: shiftId,
+                bookedBySchoolId: latestShift.schoolId || "",
+                bookedAt: serverTimestamp(),
+                requestedShiftId: "",
+                requestedBySchoolId: "",
+                requestedAt: null,
+                updatedAt: serverTimestamp()
+              });
+            }
+          }
+        });
+
+        message.textContent = "予約依頼を承認しました。";
+        clearMessageLater();
+
+      } catch (error) {
+        console.error(error);
+
+        message.textContent =
+          error.message === "REQUEST_CHANGED"
+            ? "この予約依頼はすでに状態が変更されています。"
+            : "予約依頼を承認できませんでした。";
+      }
+    }
+
+    async function rejectRequest(shiftId) {
+      const shift = currentShifts.find((item) => item.id === shiftId);
+
+      if (!shift || !currentTeacher) return;
+
+      const reason = prompt(
+        "却下理由を入力してください。\n空欄でも却下できます。"
+      );
+
+      if (reason === null) return;
+
+      const ok = confirm(
+        "この予約依頼を却下しますか？\n\n" +
+        `${formatDate(shift.date)} ${shift.startTime || ""}〜${shift.endTime || ""}\n` +
+        `生徒：${shift.studentName || ""}`
+      );
+
+      if (!ok) return;
+
+      const shiftRef = doc(db, "shifts", shiftId);
+
+      try {
+        await runTransaction(db, async (transaction) => {
+          const shiftSnapshot = await transaction.get(shiftRef);
+
+          if (!shiftSnapshot.exists()) {
+            throw new Error("SHIFT_NOT_FOUND");
+          }
+
+          const latestShift = shiftSnapshot.data();
+
+          if (
+            latestShift.teacherId !== currentTeacher.id ||
+            latestShift.approvalStatus !== "pending" ||
+            normalizeStatus(latestShift.status) !== "tentative"
+          ) {
+            throw new Error("REQUEST_CHANGED");
+          }
+
+          let availabilityRef = null;
+          let availabilitySnapshot = null;
+
+          if (latestShift.availabilityId) {
+            availabilityRef = doc(
+              db,
+              "availability",
+              latestShift.availabilityId
+            );
+
+            availabilitySnapshot = await transaction.get(availabilityRef);
+          }
+
+          transaction.update(shiftRef, {
+            status: "cancelled",
+            approvalStatus: "rejected",
+            rejectionReason: reason || "",
+            rejectedByUid: currentUser.uid,
+            rejectedAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          });
+
+          if (
+            availabilityRef &&
+            availabilitySnapshot &&
+            availabilitySnapshot.exists()
+          ) {
+            const availabilityData = availabilitySnapshot.data();
+
+            if (
+              availabilityData.status === "requested" &&
+              availabilityData.requestedShiftId === shiftId
+            ) {
+              transaction.update(availabilityRef, {
+                status: "open",
+                requestedShiftId: "",
+                requestedBySchoolId: "",
+                requestedAt: null,
+                updatedAt: serverTimestamp()
+              });
+            }
+          }
+        });
+
+        message.textContent = "予約依頼を却下しました。空き枠に戻しました。";
+        clearMessageLater();
+
+      } catch (error) {
+        console.error(error);
+
+        message.textContent =
+          error.message === "REQUEST_CHANGED"
+            ? "この予約依頼はすでに状態が変更されています。"
+            : "予約依頼を却下できませんでした。";
+      }
+    }
+
+    // ---- Calendar ----
+    prevMonthButton.addEventListener("click", () => {
+      calendarMonth--;
+
+      if (calendarMonth < 0) {
+        calendarMonth = 11;
+        calendarYear--;
+      }
+
+      renderCalendar();
+    });
+
+    nextMonthButton.addEventListener("click", () => {
+      calendarMonth++;
+
+      if (calendarMonth > 11) {
+        calendarMonth = 0;
+        calendarYear++;
+      }
+
+      renderCalendar();
+    });
+
+    function renderCalendar() {
+      calendarGrid.innerHTML = "";
+      calendarDetail.classList.remove("show");
+      calendarDetail.innerHTML = "";
+
+      calendarTitle.textContent =
+        `${calendarYear}年${calendarMonth + 1}月`;
+
+      const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+
+      weekdays.forEach((weekday, index) => {
+        const header = document.createElement("div");
+        header.className = "calendar-weekday";
+
+        if (index === 0) header.classList.add("sunday");
+        if (index === 6) header.classList.add("saturday");
+
+        header.textContent = weekday;
+        calendarGrid.appendChild(header);
+      });
+
+      const firstDay = new Date(calendarYear, calendarMonth, 1);
+      const firstWeekday = firstDay.getDay();
+      const daysInMonth =
+        new Date(calendarYear, calendarMonth + 1, 0).getDate();
+      const daysInPrevMonth =
+        new Date(calendarYear, calendarMonth, 0).getDate();
+
+      const todayString = getLocalDateString(new Date());
+
+      for (let cellIndex = 0; cellIndex < 42; cellIndex++) {
+        let year = calendarYear;
+        let month = calendarMonth;
+        let dayNumber;
+        let otherMonth = false;
+
+        if (cellIndex < firstWeekday) {
+          dayNumber =
+            daysInPrevMonth - firstWeekday + cellIndex + 1;
+          month--;
+          otherMonth = true;
+
+          if (month < 0) {
+            month = 11;
+            year--;
+          }
+
+        } else if (cellIndex >= firstWeekday + daysInMonth) {
+          dayNumber =
+            cellIndex - (firstWeekday + daysInMonth) + 1;
+          month++;
+          otherMonth = true;
+
+          if (month > 11) {
+            month = 0;
+            year++;
+          }
+
+        } else {
+          dayNumber = cellIndex - firstWeekday + 1;
+        }
+
+        const dateString = toDateString(year, month, dayNumber);
+        const dayCell = document.createElement("div");
+
+        dayCell.className = "calendar-day";
+
+        if (otherMonth) dayCell.classList.add("other-month");
+        if (dateString === todayString) dayCell.classList.add("today");
+
+        const dateNumber = document.createElement("div");
+        dateNumber.className = "calendar-date-number";
+        dateNumber.textContent = dayNumber;
+
+        dayCell.appendChild(dateNumber);
+
+        const dayShifts = currentShifts
+          .filter((shift) => shift.date === dateString)
+          .sort(compareShiftDateTime);
+
+        dayShifts.forEach((shift) => {
+          const button = document.createElement("button");
+          const status = normalizeStatus(shift.status);
+
+          button.className = "calendar-event";
+
+          if (shift.approvalStatus === "pending") {
+            button.classList.add("pending");
+          } else if (status === "completed") {
+            button.classList.add("completed");
+          } else if (status === "cancelled") {
+            button.classList.add("cancelled");
+          } else if (isOverdueUncompleted(shift)) {
+            button.classList.add("overdue");
+          }
+
+          button.innerHTML = `
+            <span class="calendar-event-time">
+              ${escapeHtml(shift.startTime || "--:--")}
+            </span><br>
+            ${escapeHtml(shift.studentName || "未設定")}<br>
+            ${escapeHtml(
+              shift.approvalStatus === "pending"
+                ? "承認待ち"
+                : shift.subjectName || getStatusLabel(status)
+            )}
           `;
 
-          availabilityList.appendChild(
-            row
-          );
+          button.addEventListener("click", () => {
+            showCalendarDetail(shift);
+          });
 
-        }
-      );
+          dayCell.appendChild(button);
+        });
 
-
-      document
-        .querySelectorAll(
-          ".availability-delete"
-        )
-        .forEach(
-          (button) => {
-
-            button.addEventListener(
-              "click",
-              async () => {
-
-                const availabilityId =
-                  button.dataset.id;
-
-                const item =
-                  currentAvailabilities.find(
-                    (value) =>
-                      value.id === availabilityId
-                  );
-
-                if (!item) {
-                  return;
-                }
-
-                const ok = confirm(
-                  `${formatDate(item.date)} ${item.startTime}～${item.endTime} の空き時間を削除しますか？`
-                );
-
-                if (!ok) {
-                  return;
-                }
-
-                try {
-
-                  await deleteDoc(
-                    doc(
-                      db,
-                      "availability",
-                      availabilityId
-                    )
-                  );
-
-                  message.textContent =
-                    "空き時間を削除しました。";
-
-                  clearMessageLater();
-
-                } catch (error) {
-
-                  console.error(error);
-
-                  message.textContent =
-                    "空き時間を削除できませんでした。";
-
-                }
-
-              }
-            );
-
-          }
-        );
-
-    }
-
-
-
-    // ===================================
-    // 月変更
-    // ===================================
-
-    summaryMonth.addEventListener(
-      "change",
-      () => {
-
-        renderMonthlySummary();
-
-        renderMonthlyShifts();
-
+        calendarGrid.appendChild(dayCell);
       }
-    );
-
-
-
-    // ===================================
-    // 全画面更新
-    // ===================================
-
-    function renderAll() {
-
-      renderAvailability();
-
-      renderUpcomingShifts();
-
-      renderMonthlySummary();
-
-      renderMonthlyShifts();
-
     }
 
+    function showCalendarDetail(shift) {
+      const status = normalizeStatus(shift.status);
 
+      calendarDetail.innerHTML = `
+        <strong>${escapeHtml(formatDate(shift.date))}</strong><br>
+        ${escapeHtml(shift.startTime || "--:--")}〜${escapeHtml(shift.endTime || "--:--")}<br>
+        生徒：${escapeHtml(shift.studentName || "未設定")}<br>
+        塾：${escapeHtml(shift.schoolName || "未設定")}<br>
+        教科：${escapeHtml(shift.subjectName || shift.subjectId || "未設定")}<br>
+        状態：${escapeHtml(
+          shift.approvalStatus === "pending"
+            ? "承認待ち"
+            : getStatusLabel(status)
+        )}
+        ${
+          shift.lessonNote
+            ? `<div class="detail-note">${escapeHtml(shift.lessonNote)}</div>`
+            : ""
+        }
+      `;
 
-    // ===================================
-    // 今後のシフト
-    // ===================================
+      calendarDetail.classList.add("show");
+    }
 
-    function renderUpcomingShifts() {
-
-      upcomingShiftList.innerHTML =
-        "";
-
-
-      const todayString =
-        getLocalDateString(
-          new Date()
-        );
-
-
-      const upcoming =
-        currentShifts.filter(
-          (shift) => {
-
-            const status =
-              normalizeStatus(
-                shift.status
-              );
-
-
-            return (
-
-              shift.date >=
-                todayString &&
-
-              status !==
-                "cancelled"
-
-            );
-
-          }
-        );
-
+    function isOverdueUncompleted(shift) {
+      const status = normalizeStatus(shift.status);
 
       if (
-        upcoming.length === 0
+        status === "completed" ||
+        status === "cancelled" ||
+        shift.approvalStatus === "pending"
       ) {
-
-        upcomingEmpty.style.display =
-          "block";
-
-        return;
-
+        return false;
       }
 
+      if (!shift.date) return false;
 
-      upcomingEmpty.style.display =
-        "none";
+      const endTime =
+        shift.endTime || shift.startTime || "23:59";
 
+      const endDateTime =
+        new Date(`${shift.date}T${endTime}:00`);
 
-      upcoming
-        .slice(0, 10)
-        .forEach(
-          (shift) => {
+      if (Number.isNaN(endDateTime.getTime())) {
+        return false;
+      }
 
-            upcomingShiftList.appendChild(
-              createShiftCard(
-                shift
-              )
-            );
+      return endDateTime.getTime() < Date.now();
+    }
 
+    // ---- Availability ----
+    addAvailabilityButton.addEventListener("click", async () => {
+      if (!currentUser || !currentTeacher) {
+        message.textContent = "講師としてログインしてください。";
+        return;
+      }
+
+      const date = availabilityDate.value;
+      const startTime = availabilityStartTime.value;
+      const endTime = availabilityEndTime.value;
+
+      if (!date || !startTime || !endTime) {
+        message.textContent = "日付・開始時間・終了時間を入力してください。";
+        return;
+      }
+
+      if (date < getLocalDateString(new Date())) {
+        message.textContent = "過去の日付は登録できません。";
+        return;
+      }
+
+      if (endTime <= startTime) {
+        message.textContent = "終了時間は開始時間より後にしてください。";
+        return;
+      }
+
+      const overlaps = currentAvailabilities.some((item) => {
+        if (item.date !== date) return false;
+        if (item.active === false) return false;
+
+        return (
+          startTime < item.endTime &&
+          endTime > item.startTime
+        );
+      });
+
+      if (overlaps) {
+        message.textContent =
+          "その時間帯は、すでに登録済みの空き時間と重なっています。";
+        return;
+      }
+
+      try {
+        await addDoc(
+          collection(db, "availability"),
+          {
+            teacherId: currentTeacher.id,
+            teacherName: currentTeacher.name || "",
+            date,
+            startTime,
+            endTime,
+            active: true,
+            status: "open",
+            createdByUid: currentUser.uid,
+            createdByEmail: currentUser.email || "",
+            createdAt: serverTimestamp()
           }
         );
 
+        availabilityStartTime.value = "";
+        availabilityEndTime.value = "";
+
+        message.textContent = "空き時間を登録しました。";
+        clearMessageLater();
+
+      } catch (error) {
+        console.error(error);
+        message.textContent = "空き時間を登録できませんでした。";
+      }
+    });
+
+    function renderAvailability() {
+      availabilityList.innerHTML = "";
+
+      const todayString = getLocalDateString(new Date());
+
+      const upcomingOpenItems = currentAvailabilities.filter((item) => {
+        return (
+          item.date >= todayString &&
+          (item.status || "open") === "open"
+        );
+      });
+
+      if (upcomingOpenItems.length === 0) {
+        availabilityEmpty.style.display = "block";
+        return;
+      }
+
+      availabilityEmpty.style.display = "none";
+
+      upcomingOpenItems.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "availability-item";
+
+        row.innerHTML = `
+          <div>
+            <div class="availability-date">
+              ${escapeHtml(formatDate(item.date))}
+            </div>
+
+            <div class="availability-time">
+              ${escapeHtml(item.startTime || "--:--")}〜${escapeHtml(item.endTime || "--:--")}
+            </div>
+          </div>
+
+          <button
+            class="availability-delete"
+            type="button"
+            data-id="${escapeHtml(item.id)}"
+          >
+            削除
+          </button>
+        `;
+
+        availabilityList.appendChild(row);
+      });
+
+      document.querySelectorAll(".availability-delete").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const item = currentAvailabilities.find(
+            (value) => value.id === button.dataset.id
+          );
+
+          if (!item) return;
+
+          const ok = confirm(
+            `${formatDate(item.date)} ${item.startTime}〜${item.endTime} の空き時間を削除しますか？`
+          );
+
+          if (!ok) return;
+
+          try {
+            await deleteDoc(
+              doc(db, "availability", item.id)
+            );
+
+            message.textContent = "空き時間を削除しました。";
+            clearMessageLater();
+
+          } catch (error) {
+            console.error(error);
+            message.textContent = "空き時間を削除できませんでした。";
+          }
+        });
+      });
     }
 
-
-
-    // ===================================
-    // 月別実績
-    // ===================================
+    // ---- Results ----
+    summaryMonth.addEventListener("change", () => {
+      renderMonthlySummary();
+      renderMonthlyShifts();
+    });
 
     function renderMonthlySummary() {
-
-      const targetMonth =
-        summaryMonth.value;
-
+      const targetMonth = summaryMonth.value;
 
       if (!targetMonth) {
-
-        completedCount.textContent =
-          "0";
-
-        completedHours.textContent =
-          "0時間";
-
-        salaryAmount.textContent =
-          "0円";
-
+        completedCount.textContent = "0";
+        completedHours.textContent = "0時間";
+        salaryAmount.textContent = "0円";
         return;
-
       }
 
-
-      const completed =
-        currentShifts.filter(
-          (shift) => {
-
-            return (
-
-              shift.date?.startsWith(
-                targetMonth
-              ) &&
-
-              normalizeStatus(
-                shift.status
-              ) ===
-                "completed"
-
-            );
-
-          }
+      const completed = currentShifts.filter((shift) => {
+        return (
+          shift.date?.startsWith(targetMonth) &&
+          normalizeStatus(shift.status) === "completed"
         );
+      });
 
+      let totalMinutes = 0;
 
-      let totalMinutes =
-        0;
-
-
-      completed.forEach(
-        (shift) => {
-
-          totalMinutes +=
-            calculateDurationMinutes(
-              shift.startTime,
-              shift.endTime
-            );
-
-        }
-      );
-
-
-      const hours =
-        totalMinutes / 60;
-
-
-      const hourlyRate =
-        Number(
-          currentTeacher
-            ?.hourlyRate
-        ) || 0;
-
-
-      const salary =
-        Math.round(
-          hours *
-          hourlyRate
+      completed.forEach((shift) => {
+        totalMinutes += calculateDurationMinutes(
+          shift.startTime,
+          shift.endTime
         );
+      });
 
+      const hours = totalMinutes / 60;
+      const hourlyRate = Number(currentTeacher?.hourlyRate) || 0;
+      const salary = Math.round(hours * hourlyRate);
 
-      completedCount.textContent =
-        `${completed.length}コマ`;
-
-
-      completedHours.textContent =
-        formatHours(
-          totalMinutes
-        );
-
-
+      completedCount.textContent = `${completed.length}コマ`;
+      completedHours.textContent = formatHours(totalMinutes);
       salaryAmount.textContent =
-        `${salary.toLocaleString(
-          "ja-JP"
-        )}円`;
-
+        `${salary.toLocaleString("ja-JP")}円`;
     }
 
-
-
-    // ===================================
-    // 月内シフト一覧
-    // ===================================
-
     function renderMonthlyShifts() {
+      monthlyShiftList.innerHTML = "";
 
-      monthlyShiftList.innerHTML =
-        "";
-
-
-      const targetMonth =
-        summaryMonth.value;
-
+      const targetMonth = summaryMonth.value;
 
       if (!targetMonth) {
-
-        monthlyEmpty.style.display =
-          "block";
-
+        monthlyEmpty.style.display = "block";
         return;
-
       }
 
-
-      const [
-        year,
-        month
-      ] =
-        targetMonth
-          .split("-")
-          .map(Number);
-
+      const [year, month] =
+        targetMonth.split("-").map(Number);
 
       monthlyTitle.textContent =
         `${year}年${month}月の授業`;
 
+      const monthly = currentShifts.filter((shift) => {
+        return shift.date?.startsWith(targetMonth);
+      });
 
-      const monthly =
-        currentShifts.filter(
-          (shift) => {
-
-            return (
-              shift.date?.startsWith(
-                targetMonth
-              )
-            );
-
-          }
-        );
-
-
-      if (
-        monthly.length === 0
-      ) {
-
-        monthlyEmpty.style.display =
-          "block";
-
+      if (monthly.length === 0) {
+        monthlyEmpty.style.display = "block";
         return;
-
       }
 
+      monthlyEmpty.style.display = "none";
 
-      monthlyEmpty.style.display =
-        "none";
-
-
-      monthly.forEach(
-        (shift) => {
-
+      monthly
+        .sort(compareShiftDateTime)
+        .forEach((shift) => {
           monthlyShiftList.appendChild(
-            createShiftCard(
-              shift
-            )
+            createShiftCard(shift)
           );
-
-        }
-      );
-
+        });
     }
 
+    function createShiftCard(shift) {
+      const card = document.createElement("div");
+      card.className = "shift-item";
 
-
-    // ===================================
-    // シフトカード
-    // ===================================
-
-    function createShiftCard(
-      shift
-    ) {
-
-      const card =
-        document.createElement(
-          "div"
-        );
-
-
-      card.className =
-        "shift-item";
-
-
-      const status =
-        normalizeStatus(
-          shift.status
-        );
-
+      const status = normalizeStatus(shift.status);
 
       card.innerHTML = `
-
         <div class="shift-date">
-
-          ${escapeHtml(
-            formatDate(
-              shift.date
-            )
-          )}
-
+          ${escapeHtml(formatDate(shift.date))}
         </div>
-
 
         <div class="shift-time">
-
-          ${escapeHtml(
-            shift.startTime ||
-            "--:--"
-          )}
-
-          ～
-
-          ${escapeHtml(
-            shift.endTime ||
-            "--:--"
-          )}
-
+          ${escapeHtml(shift.startTime || "--:--")}〜${escapeHtml(shift.endTime || "--:--")}
         </div>
 
-
-        <div class="shift-student">
-
-          生徒：
-
-          <strong>
-
-            ${escapeHtml(
-              shift.studentName ||
-              "未設定"
-            )}
-
-          </strong>
-
+        <div class="shift-meta">
+          生徒：<strong>${escapeHtml(shift.studentName || "未設定")}</strong>
         </div>
 
+        <div class="shift-meta">
+          教科：${escapeHtml(shift.subjectName || shift.subjectId || "未設定")}
+        </div>
 
-        <span
-          class="status ${getStatusClass(
-            status
-          )}"
-        >
+        <div class="shift-meta">
+          塾：${escapeHtml(shift.schoolName || "未設定")}
+        </div>
 
+        <span class="status ${getStatusClass(status)}">
           ${escapeHtml(
-            getStatusLabel(
-              status
-            )
+            shift.approvalStatus === "pending"
+              ? "承認待ち"
+              : getStatusLabel(status)
           )}
-
         </span>
 
+        ${
+          shift.lessonNote
+            ? `<div class="detail-note">${escapeHtml(shift.lessonNote)}</div>`
+            : ""
+        }
       `;
 
-
       return card;
-
     }
 
+    // ---- All render ----
+    function renderHeaderSummary() {
+      const todayString = getLocalDateString(new Date());
 
+      const pendingCount = getPendingApprovalShifts().length;
 
-    // ===================================
-    // 日時ソート
-    // ===================================
+      const upcomingCount = currentShifts.filter((shift) => {
+        const status = normalizeStatus(shift.status);
 
-    function compareShiftDateTime(
-      a,
-      b
-    ) {
-
-      const aValue =
-        `${a.date || ""} ${a.startTime || ""}`;
-
-      const bValue =
-        `${b.date || ""} ${b.startTime || ""}`;
-
-
-      return aValue.localeCompare(
-        bValue
-      );
-
-    }
-
-
-
-    // ===================================
-    // 時間計算
-    // ===================================
-
-    function calculateDurationMinutes(
-      startTime,
-      endTime
-    ) {
-
-      if (
-        !startTime ||
-        !endTime
-      ) {
-
-        return 0;
-
-      }
-
-
-      const [
-        startHour,
-        startMinute
-      ] =
-        startTime
-          .split(":")
-          .map(Number);
-
-
-      const [
-        endHour,
-        endMinute
-      ] =
-        endTime
-          .split(":")
-          .map(Number);
-
-
-      const start =
-        startHour * 60 +
-        startMinute;
-
-
-      const end =
-        endHour * 60 +
-        endMinute;
-
-
-      return Math.max(
-        0,
-        end - start
-      );
-
-    }
-
-
-
-    function formatHours(
-      minutes
-    ) {
-
-      const hours =
-        Math.floor(
-          minutes / 60
+        return (
+          shift.date >= todayString &&
+          status !== "cancelled" &&
+          shift.approvalStatus !== "pending"
         );
+      }).length;
 
+      const openCount = currentAvailabilities.filter((item) => {
+        return (
+          item.date >= todayString &&
+          (item.status || "open") === "open"
+        );
+      }).length;
 
-      const remainingMinutes =
-        minutes % 60;
+      pendingCountChip.textContent = `承認待ち ${pendingCount}件`;
+      approvalTabButton.textContent =
+        pendingCount > 0
+          ? `承認待ち (${pendingCount})`
+          : "承認待ち";
+      approvalTabButton.style.background =
+        pendingCount > 0 && !approvalTabButton.classList.contains("active")
+          ? "#fef3c7"
+          : "";
+      approvalTabButton.style.color =
+        pendingCount > 0 && !approvalTabButton.classList.contains("active")
+          ? "#92400e"
+          : "";
 
-
-      if (
-        remainingMinutes === 0
-      ) {
-
-        return `${hours}時間`;
-
-      }
-
-
-      return (
-        `${hours}時間` +
-        `${remainingMinutes}分`
-      );
-
+      upcomingCountChip.textContent = `今後の授業 ${upcomingCount}件`;
+      openCountChip.textContent = `空き枠 ${openCount}件`;
     }
 
+    function renderAll() {
+      renderCalendar();
+      renderApprovals();
+      renderAvailability();
+      renderMonthlySummary();
+      renderMonthlyShifts();
+      renderHeaderSummary();
+    }
 
-
-    // ===================================
-    // ステータス
-    // ===================================
-
-    function normalizeStatus(
-      status
-    ) {
-
+    // ---- Utility ----
+    function normalizeStatus(status) {
       const allowed = [
         "tentative",
         "confirmed",
@@ -2143,191 +1813,125 @@
         "cancelled"
       ];
 
-
-      return allowed.includes(
-        status
-      )
+      return allowed.includes(status)
         ? status
         : "tentative";
-
     }
 
-
-
-    function getStatusLabel(
-      status
-    ) {
-
+    function getStatusLabel(status) {
       const labels = {
-
-        tentative:
-          "予定（未定）",
-
-        confirmed:
-          "予定（確定）",
-
-        completed:
-          "実施済み",
-
-        cancelled:
-          "キャンセル"
-
+        tentative: "予定（未定）",
+        confirmed: "予定（確定）",
+        completed: "実施済み",
+        cancelled: "キャンセル"
       };
 
-
-      return (
-        labels[status] ||
-        "予定（未定）"
-      );
-
+      return labels[status] || "予定（未定）";
     }
 
-
-
-    function getStatusClass(
-      status
-    ) {
-
-      return (
-        `status-${status}`
-      );
-
+    function getStatusClass(status) {
+      return `status-${status}`;
     }
 
+    function compareShiftDateTime(a, b) {
+      const aValue =
+        `${a.date || ""} ${a.startTime || ""}`;
 
+      const bValue =
+        `${b.date || ""} ${b.startTime || ""}`;
 
-    // ===================================
-    // 日付表示
-    // ===================================
+      return aValue.localeCompare(bValue);
+    }
 
-    function formatDate(
-      dateString
-    ) {
+    function calculateDurationMinutes(startTime, endTime) {
+      if (!startTime || !endTime) return 0;
 
-      if (!dateString) {
-        return "日付未設定";
+      const [startHour, startMinute] =
+        startTime.split(":").map(Number);
+
+      const [endHour, endMinute] =
+        endTime.split(":").map(Number);
+
+      return Math.max(
+        0,
+        (endHour * 60 + endMinute) -
+        (startHour * 60 + startMinute)
+      );
+    }
+
+    function formatHours(minutes) {
+      const hours = Math.floor(minutes / 60);
+      const remainingMinutes = minutes % 60;
+
+      if (remainingMinutes === 0) {
+        return `${hours}時間`;
       }
 
+      return `${hours}時間${remainingMinutes}分`;
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return "日付未設定";
 
       const date =
-        new Date(
-          `${dateString}T00:00:00`
-        );
+        new Date(`${dateString}T00:00:00`);
 
-
-      if (
-        Number.isNaN(
-          date.getTime()
-        )
-      ) {
-
+      if (Number.isNaN(date.getTime())) {
         return dateString;
-
       }
 
-
-      const weekdays = [
-        "日",
-        "月",
-        "火",
-        "水",
-        "木",
-        "金",
-        "土"
-      ];
-
+      const weekdays =
+        ["日", "月", "火", "水", "木", "金", "土"];
 
       return (
         `${date.getMonth() + 1}月` +
         `${date.getDate()}日` +
-        `（${weekdays[
-          date.getDay()
-        ]}）`
+        `（${weekdays[date.getDay()]}）`
       );
-
     }
 
-
-
-    function getLocalDateString(
-      date
-    ) {
-
-      const year =
-        date.getFullYear();
-
-      const month =
-        String(
-          date.getMonth() + 1
-        ).padStart(
-          2,
-          "0"
-        );
-
-      const day =
-        String(
-          date.getDate()
-        ).padStart(
-          2,
-          "0"
-        );
-
-
+    function toDateString(year, monthIndex, day) {
       return (
-        `${year}-${month}-${day}`
+        `${year}-` +
+        `${String(monthIndex + 1).padStart(2, "0")}-` +
+        `${String(day).padStart(2, "0")}`
       );
-
     }
 
-
+    function getLocalDateString(date) {
+      return (
+        `${date.getFullYear()}-` +
+        `${String(date.getMonth() + 1).padStart(2, "0")}-` +
+        `${String(date.getDate()).padStart(2, "0")}`
+      );
+    }
 
     function clearMessageLater() {
-
-      setTimeout(
-        () => {
-          message.textContent = "";
-        },
-        2500
-      );
-
+      setTimeout(() => {
+        message.textContent = "";
+      }, 2600);
     }
 
-
-
-    // ===================================
-    // HTMLエスケープ
-    // ===================================
-
-    function escapeHtml(
-      value
-    ) {
-
-      return String(
-        value ?? ""
-      )
-        .replaceAll(
-          "&",
-          "&amp;"
-        )
-        .replaceAll(
-          "<",
-          "&lt;"
-        )
-        .replaceAll(
-          ">",
-          "&gt;"
-        )
-        .replaceAll(
-          '"',
-          "&quot;"
-        )
-        .replaceAll(
-          "'",
-          "&#039;"
-        );
-
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
+  </script>
 
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .catch((error) => {
+            console.error("Service Worker registration failed:", error);
+          });
+      });
+    }
   </script>
 
 </body>

@@ -4,7 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>講師シフト管理</title>
+    <link rel="manifest" href="/manifest.json">
 
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <meta name="theme-color" content="#f5f6f8">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="シフト管理">
   <style>
     * { box-sizing: border-box; }
 
@@ -567,6 +575,70 @@
 
     #emptyMessage { color: #777; }
 
+
+    .shift-list-toolbar {
+      max-width: 440px;
+      margin-bottom: 20px;
+    }
+
+    .shift-list-toolbar label {
+      margin-top: 0;
+    }
+
+    .shift-group {
+      margin-top: 24px;
+    }
+
+    .shift-group:first-child {
+      margin-top: 0;
+    }
+
+    .shift-group-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: #334155;
+    }
+
+    .shift-group-count {
+      display: inline-block;
+      min-width: 24px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: #475569;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .shift-item.is-today {
+      border-left: 4px solid #2563eb;
+      background: #f8fbff;
+    }
+
+    .shift-item.is-finished {
+      opacity: 0.46;
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .shift-item.is-finished:hover {
+      opacity: 0.72;
+    }
+
+    .shift-item.is-cancelled {
+      background: #f8fafc;
+    }
+
+    .shift-item-note {
+      margin-bottom: 10px;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
     @media (max-width: 700px) {
       body { padding: 18px 10px; }
       #app, #loginArea { padding: 18px; }
@@ -640,7 +712,7 @@
       <button class="tab-button active" data-tab="calendar">カレンダー</button>
       <button class="tab-button" data-tab="shift">シフト登録</button>
       <button class="tab-button" data-tab="salary">給与集計</button>
-      <button class="tab-button" data-tab="list">シフト一覧</button>
+      <button class="tab-button" data-tab="list">授業予定</button>
       <button class="tab-button" data-tab="master">マスタ管理</button>
     </nav>
 
@@ -747,15 +819,27 @@
       </div>
     </section>
 
-    <!-- 登録済みシフト -->
+    <!-- 授業予定 -->
     <section id="tab-list" class="tab-panel">
       <div class="shift-list-area">
-        <h2>登録済みシフト</h2>
+        <div class="panel-heading">
+          <h2>授業予定</h2>
+        </div>
+
+        <div class="shift-list-toolbar">
+          <label for="teacherSearch">講師名で検索</label>
+          <input
+            type="search"
+            id="teacherSearch"
+            placeholder="例：松家未来"
+            autocomplete="off"
+          >
+        </div>
 
         <div id="shiftList"></div>
 
         <p id="emptyMessage">
-          シフトはまだ登録されていません。
+          条件に一致する授業予定はありません。
         </p>
       </div>
     </section>
@@ -876,6 +960,7 @@
     const studentMasterList = document.getElementById("studentMasterList");
 
     const shiftList = document.getElementById("shiftList");
+    const teacherSearch = document.getElementById("teacherSearch");
     const emptyMessage = document.getElementById("emptyMessage");
     const message = document.getElementById("message");
 
@@ -902,6 +987,18 @@
         activateTab(button.dataset.tab);
       });
     });
+
+
+    teacherSearch.addEventListener("input", () => {
+      displayShifts(currentShifts);
+    });
+
+    // 終了時刻を過ぎた授業が自動で「終了した授業」へ移るように1分ごとに再描画
+    setInterval(() => {
+      if (currentUser) {
+        displayShifts(currentShifts);
+      }
+    }, 60 * 1000);
 
     // 状態
     let currentUser = null;
@@ -1577,66 +1674,157 @@
       renderSalarySummary();
     }
 
-    // 一覧表示
+    // 授業予定一覧
     function displayShifts(shifts) {
       shiftList.innerHTML = "";
 
-      if (shifts.length === 0) {
+      const keyword = teacherSearch.value.trim().toLowerCase();
+
+      const filteredShifts = shifts.filter((shift) => {
+        const teacherName = String(shift.teacherName || "").toLowerCase();
+        return !keyword || teacherName.includes(keyword);
+      });
+
+      if (filteredShifts.length === 0) {
         emptyMessage.style.display = "block";
         return;
       }
 
       emptyMessage.style.display = "none";
 
-      shifts.forEach((shift) => {
-        const item = document.createElement("div");
-        item.className = "shift-item";
+      const todayString = getLocalDateString(new Date());
 
-        item.innerHTML = `
-          <div class="teacher-name">
-            講師：${shift.teacherName}
-          </div>
+      const todayShifts = [];
+      const futureShifts = [];
+      const finishedShifts = [];
 
-          <div class="student-name">
-            生徒：${shift.studentName || "未設定"}
-          </div>
+      filteredShifts.forEach((shift) => {
+        if (isShiftFinished(shift)) {
+          finishedShifts.push(shift);
+          return;
+        }
 
-          <div class="shift-date">
-            ${formatDate(shift.date)}
-          </div>
+        if (shift.date === todayString) {
+          todayShifts.push(shift);
+          return;
+        }
 
-          <div class="shift-time">
-            ${shift.startTime} ～ ${shift.endTime}
-          </div>
-
-          <div class="shift-status ${getStatusClass(normalizeStatus(shift.status))}">
-            ${getStatusLabel(normalizeStatus(shift.status))}
-          </div>
-
-          <div class="status-quick-control">
-            <span>状態：</span>
-            <select class="statusQuickSelect" data-id="${shift.id}">
-              <option value="tentative" ${normalizeStatus(shift.status) === "tentative" ? "selected" : ""}>予定（未定）</option>
-              <option value="confirmed" ${normalizeStatus(shift.status) === "confirmed" ? "selected" : ""}>予定（確定）</option>
-              <option value="completed" ${normalizeStatus(shift.status) === "completed" ? "selected" : ""}>実施済み</option>
-              <option value="cancelled" ${normalizeStatus(shift.status) === "cancelled" ? "selected" : ""}>キャンセル</option>
-            </select>
-          </div>
-
-          <div class="shift-actions">
-            <button class="editButton" data-id="${shift.id}">
-              編集
-            </button>
-
-            <button class="deleteButton" data-id="${shift.id}">
-              削除
-            </button>
-          </div>
-        `;
-
-        shiftList.appendChild(item);
+        futureShifts.push(shift);
       });
 
+      todayShifts.sort(compareShiftDateTimeAscending);
+      futureShifts.sort(compareShiftDateTimeAscending);
+
+      // 終了済みは「最近終わった授業」から見えるように逆順
+      finishedShifts.sort((a, b) =>
+        compareShiftDateTimeAscending(b, a)
+      );
+
+      appendShiftGroup("今日の授業", todayShifts, "today");
+      appendShiftGroup("今後の授業", futureShifts, "future");
+      appendShiftGroup("終了した授業", finishedShifts, "finished");
+
+      bindShiftListEvents();
+    }
+
+    function appendShiftGroup(title, shifts, groupType) {
+      if (shifts.length === 0) return;
+
+      const group = document.createElement("section");
+      group.className = `shift-group shift-group-${groupType}`;
+
+      const heading = document.createElement("h3");
+      heading.className = "shift-group-title";
+      heading.innerHTML = `
+        <span>${escapeHtml(title)}</span>
+        <span class="shift-group-count">${shifts.length}</span>
+      `;
+      group.appendChild(heading);
+
+      shifts.forEach((shift) => {
+        const item = createShiftListItem(shift);
+
+        if (groupType === "today") {
+          item.classList.add("is-today");
+        }
+
+        if (groupType === "finished") {
+          item.classList.add("is-finished");
+        }
+
+        if (normalizeStatus(shift.status) === "cancelled") {
+          item.classList.add("is-cancelled");
+        }
+
+        group.appendChild(item);
+      });
+
+      shiftList.appendChild(group);
+    }
+
+    function createShiftListItem(shift) {
+      const item = document.createElement("div");
+      item.className = "shift-item";
+
+      const status = normalizeStatus(shift.status);
+      const finished = isShiftFinished(shift);
+
+      let finishedNote = "";
+      if (finished) {
+        finishedNote =
+          status === "cancelled"
+            ? '<div class="shift-item-note">キャンセル済み</div>'
+            : '<div class="shift-item-note">終了済み</div>';
+      }
+
+      item.innerHTML = `
+        <div class="teacher-name">
+          講師：${escapeHtml(shift.teacherName || "未設定")}
+        </div>
+
+        <div class="student-name">
+          生徒：${escapeHtml(shift.studentName || "未設定")}
+        </div>
+
+        <div class="shift-date">
+          ${escapeHtml(formatDate(shift.date))}
+        </div>
+
+        <div class="shift-time">
+          ${escapeHtml(shift.startTime || "--:--")} ～ ${escapeHtml(shift.endTime || "--:--")}
+        </div>
+
+        ${finishedNote}
+
+        <div class="shift-status ${getStatusClass(status)}">
+          ${getStatusLabel(status)}
+        </div>
+
+        <div class="status-quick-control">
+          <span>状態：</span>
+          <select class="statusQuickSelect" data-id="${shift.id}">
+            <option value="tentative" ${status === "tentative" ? "selected" : ""}>予定（未定）</option>
+            <option value="confirmed" ${status === "confirmed" ? "selected" : ""}>予定（確定）</option>
+            <option value="completed" ${status === "completed" ? "selected" : ""}>実施済み</option>
+            <option value="cancelled" ${status === "cancelled" ? "selected" : ""}>キャンセル</option>
+          </select>
+        </div>
+
+        <div class="shift-actions">
+          <button class="editButton" data-id="${shift.id}">
+            編集
+          </button>
+
+          <button class="deleteButton" data-id="${shift.id}">
+            削除
+          </button>
+        </div>
+      `;
+
+      return item;
+    }
+
+    function bindShiftListEvents() {
       document.querySelectorAll(".statusQuickSelect").forEach((select) => {
         select.addEventListener("change", async () => {
           const shiftId = select.dataset.id;
@@ -1679,7 +1867,6 @@
 
           const status = normalizeStatus(shift.status);
 
-          // まず全シフト共通の確認
           const firstConfirm = confirm(
             "このシフトを削除しますか？\n\n" +
             `講師：${shift.teacherName || "未設定"}\n` +
@@ -1693,7 +1880,6 @@
             return;
           }
 
-          // 「実施済み」だけは給与履歴に影響するので追加ロック
           if (status === "completed") {
             const secondConfirm = confirm(
               "【注意】このシフトは「実施済み」です。\n\n" +
@@ -1741,6 +1927,40 @@
           }
         });
       });
+    }
+
+    function compareShiftDateTimeAscending(a, b) {
+      const aValue = `${a.date || ""} ${a.startTime || ""}`;
+      const bValue = `${b.date || ""} ${b.startTime || ""}`;
+      return aValue.localeCompare(bValue);
+    }
+
+    function isShiftFinished(shift) {
+      const status = normalizeStatus(shift.status);
+
+      if (status === "completed" || status === "cancelled") {
+        return true;
+      }
+
+      if (!shift.date) {
+        return false;
+      }
+
+      const endTime = shift.endTime || shift.startTime || "23:59";
+      const endDateTime = new Date(`${shift.date}T${endTime}:00`);
+
+      if (Number.isNaN(endDateTime.getTime())) {
+        return false;
+      }
+
+      return endDateTime.getTime() < Date.now();
+    }
+
+    function getLocalDateString(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
     }
 
     // 編集開始
@@ -1976,6 +2196,21 @@
       const mm = String(month + 1).padStart(2, "0");
       const dd = String(day).padStart(2, "0");
       return `${yyyy}-${mm}-${dd}`;
+    }
+  </script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then(() => {
+            console.log("Service Worker registered");
+          })
+          .catch((error) => {
+            console.error("Service Worker registration failed:", error);
+          });
+      });
     }
   </script>
 </body>
